@@ -11,12 +11,12 @@ export function useGraphData() {
   useEffect(() => {
     async function loadData() {
       try {
-        // 加载位置数据
-        const positionsRes = await fetch('/src/data/concept_positions_final.json');
+        // 加载位置数据 - 使用 import.meta.url 确保路径在 GitHub Pages 上正确
+        const positionsRes = await fetch(new URL('../data/concept_positions_final.json', import.meta.url));
         const positions = await positionsRes.json();
 
         // 加载完整数据（包含关系）
-        const conceptsRes = await fetch('/src/data/ideology_dataset_comprehensive.json');
+        const conceptsRes = await fetch(new URL('../data/ideology_dataset_comprehensive.json', import.meta.url));
         const concepts = await conceptsRes.json();
 
         // 创建ID到概念的映射
