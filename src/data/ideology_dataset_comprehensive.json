@@ -1,0 +1,765 @@
+[
+  {
+    "id": "confucianism",
+    "name": "Confucianism",
+    "description": "Ancient Chinese philosophy emphasizing social harmony through proper relationships, filial piety, ritual propriety, and moral cultivation. Centers on the concept of ren (benevolence) and the importance of education and self-improvement.",
+    "era": -500,
+    "domains": ["philosophy", "ethics", "politics"],
+    "key_figures": ["Confucius", "Mencius", "Xunzi"],
+    "relationships": [
+      {"target": "virtue_ethics", "type": "similar_to", "description": "Shares emphasis on character cultivation and moral excellence"},
+      {"target": "legalism", "type": "opposes", "description": "Contrasts with legalist emphasis on strict laws over moral education"},
+      {"target": "natural_law", "type": "similar_to", "description": "Both believe in universal moral principles accessible through reason"}
+    ]
+  },
+  {
+    "id": "taoism",
+    "name": "Taoism (Daoism)",
+    "description": "Ancient Chinese philosophy emphasizing living in harmony with the Tao (the Way), naturalness, spontaneity, and wu wei (effortless action). Advocates simplicity and non-interference with natural order.",
+    "era": -400,
+    "domains": ["philosophy", "metaphysics", "ethics"],
+    "key_figures": ["Laozi", "Zhuangzi"],
+    "relationships": [
+      {"target": "confucianism", "type": "opposes", "description": "Rejects Confucian emphasis on social ritual and structured morality"},
+      {"target": "anarchism", "type": "influenced", "description": "Influenced anarchist thought through emphasis on minimal governance"},
+      {"target": "buddhism", "type": "synthesized_with", "description": "Merged with Buddhism to form Chan/Zen Buddhism"}
+    ]
+  },
+  {
+    "id": "legalism",
+    "name": "Legalism",
+    "description": "Ancient Chinese philosophy advocating strict laws, harsh punishments, and strong centralized authority. Believes human nature is selfish and requires external control rather than moral education.",
+    "era": -300,
+    "domains": ["politics", "philosophy"],
+    "key_figures": ["Han Feizi", "Shang Yang"],
+    "relationships": [
+      {"target": "confucianism", "type": "opposes", "description": "Rejects moral education in favor of strict legal control"},
+      {"target": "authoritarianism", "type": "foundation_for", "description": "Provides early philosophical foundation for authoritarian governance"},
+      {"target": "realism_politics", "type": "similar_to", "description": "Shares cynical view of human nature and emphasis on power"}
+    ]
+  },
+  {
+    "id": "platonism",
+    "name": "Platonism",
+    "description": "Ancient Greek philosophy centered on theory of Forms - abstract, perfect, eternal entities of which physical objects are imperfect copies. Emphasizes reason over senses and the immortality of the soul.",
+    "era": -380,
+    "domains": ["philosophy", "metaphysics", "epistemology"],
+    "key_figures": ["Plato", "Socrates"],
+    "relationships": [
+      {"target": "idealism", "type": "foundation_for", "description": "Established idealist metaphysics emphasizing mind/ideas over matter"},
+      {"target": "rationalism", "type": "foundation_for", "description": "Pioneered rationalist epistemology prioritizing reason over sensation"},
+      {"target": "aristotelianism", "type": "influenced", "description": "Influenced student Aristotle who both adopted and critiqued Platonic thought"}
+    ]
+  },
+  {
+    "id": "aristotelianism",
+    "name": "Aristotelianism",
+    "description": "Ancient Greek philosophy emphasizing empirical observation, logic, and the golden mean. Focuses on virtue as habit, teleological understanding of nature, and substance metaphysics.",
+    "era": -350,
+    "domains": ["philosophy", "ethics", "metaphysics", "science"],
+    "key_figures": ["Aristotle"],
+    "relationships": [
+      {"target": "virtue_ethics", "type": "foundation_for", "description": "Established virtue ethics focused on character and eudaimonia"},
+      {"target": "empiricism", "type": "influenced", "description": "Influenced empiricism through emphasis on observation"},
+      {"target": "thomism", "type": "influenced", "description": "Became foundation of medieval Christian philosophy through Aquinas"},
+      {"target": "natural_law", "type": "foundation_for", "description": "Developed natural law theory based on human nature and teleology"}
+    ]
+  },
+  {
+    "id": "stoicism",
+    "name": "Stoicism",
+    "description": "Ancient Greco-Roman philosophy emphasizing virtue, reason, and acceptance of fate. Teaches control over emotions, living in accordance with nature, and distinguishing between what we can and cannot control.",
+    "era": -300,
+    "domains": ["philosophy", "ethics"],
+    "key_figures": ["Zeno of Citium", "Epictetus", "Marcus Aurelius", "Seneca"],
+    "relationships": [
+      {"target": "cynicism", "type": "evolved_from", "description": "Developed from Cynic philosophy while moderating its extreme asceticism"},
+      {"target": "virtue_ethics", "type": "similar_to", "description": "Shares focus on virtue as the highest good"},
+      {"target": "buddhism", "type": "similar_to", "description": "Parallels Buddhist teachings on acceptance and emotional equanimity"}
+    ]
+  },
+  {
+    "id": "epicureanism",
+    "name": "Epicureanism",
+    "description": "Ancient Greek philosophy focused on achieving happiness through pleasure, friendship, and absence of pain. Emphasizes simple living, atomistic materialism, and freedom from fear of death and gods.",
+    "era": -300,
+    "domains": ["philosophy", "ethics", "metaphysics"],
+    "key_figures": ["Epicurus"],
+    "relationships": [
+      {"target": "hedonism", "type": "similar_to", "description": "Advocates pleasure as highest good but emphasizes intellectual over bodily pleasure"},
+      {"target": "materialism", "type": "foundation_for", "description": "Developed atomistic materialism denying supernatural intervention"},
+      {"target": "utilitarianism", "type": "influenced", "description": "Influenced utilitarian focus on happiness and pleasure"}
+    ]
+  },
+  {
+    "id": "cynicism",
+    "name": "Cynicism",
+    "description": "Ancient Greek philosophy advocating living in virtue and agreement with nature, rejecting conventional desires for wealth, power, and fame. Promotes extreme asceticism and shameless honesty.",
+    "era": -400,
+    "domains": ["philosophy", "ethics"],
+    "key_figures": ["Diogenes", "Antisthenes"],
+    "relationships": [
+      {"target": "stoicism", "type": "influenced", "description": "Influenced Stoicism which moderated its extreme practices"},
+      {"target": "asceticism", "type": "exemplifies", "description": "Exemplifies ascetic rejection of material comfort"}
+    ]
+  },
+  {
+    "id": "skepticism",
+    "name": "Skepticism",
+    "description": "Philosophical position questioning the possibility of certain knowledge. Ancient skeptics advocated suspension of judgment, while modern forms question specific knowledge claims or methods.",
+    "era": -300,
+    "domains": ["philosophy", "epistemology"],
+    "key_figures": ["Pyrrho", "Sextus Empiricus", "David Hume"],
+    "relationships": [
+      {"target": "empiricism", "type": "influenced", "description": "Hume's empiricism led to skepticism about causation and induction"},
+      {"target": "rationalism", "type": "opposes", "description": "Questions rationalist claims to certain knowledge through reason alone"},
+      {"target": "postmodernism", "type": "influenced", "description": "Influenced postmodern skepticism toward grand narratives and objective truth"}
+    ]
+  },
+  {
+    "id": "buddhism",
+    "name": "Buddhism",
+    "description": "Ancient Indian philosophy and religion centered on the Four Noble Truths and the Eightfold Path. Teaches that suffering arises from attachment and can be overcome through enlightenment and cessation of desire.",
+    "era": -500,
+    "domains": ["philosophy", "religion", "ethics"],
+    "key_figures": ["Siddhartha Gautama (Buddha)", "Nagarjuna"],
+    "relationships": [
+      {"target": "stoicism", "type": "similar_to", "description": "Shares emphasis on acceptance, emotional control, and inner peace"},
+      {"target": "taoism", "type": "synthesized_with", "description": "Merged with Taoism to form Chan/Zen Buddhism"},
+      {"target": "nihilism", "type": "distinct_from", "description": "Often misunderstood as nihilistic but teaches liberation not meaninglessness"}
+    ]
+  },
+  {
+    "id": "natural_law",
+    "name": "Natural Law Theory",
+    "description": "Theory that certain rights and moral values are inherent in nature and can be discovered through reason, independent of human-made laws. Grounds morality in human nature and purpose.",
+    "era": -300,
+    "domains": ["philosophy", "politics", "ethics", "law"],
+    "key_figures": ["Aristotle", "Cicero", "Thomas Aquinas"],
+    "relationships": [
+      {"target": "aristotelianism", "type": "evolved_from", "description": "Developed from Aristotelian teleology and virtue ethics"},
+      {"target": "thomism", "type": "integrated_into", "description": "Integrated into Christian theology by Aquinas"},
+      {"target": "social_contract", "type": "influenced", "description": "Influenced social contract theories through concept of natural rights"},
+      {"target": "legal_positivism", "type": "opposes", "description": "Opposes legal positivism which separates law from morality"}
+    ]
+  },
+  {
+    "id": "thomism",
+    "name": "Thomism",
+    "description": "Medieval synthesis of Aristotelian philosophy with Christian theology by Thomas Aquinas. Emphasizes reason and faith as complementary paths to truth, natural law, and Five Ways to prove God's existence.",
+    "era": 1270,
+    "domains": ["philosophy", "theology", "ethics"],
+    "key_figures": ["Thomas Aquinas"],
+    "relationships": [
+      {"target": "aristotelianism", "type": "synthesized_with", "description": "Synthesized Aristotelian philosophy with Christian doctrine"},
+      {"target": "natural_law", "type": "developed", "description": "Developed comprehensive natural law moral theory"},
+      {"target": "scholasticism", "type": "exemplifies", "description": "Exemplifies scholastic method of systematic theological reasoning"}
+    ]
+  },
+  {
+    "id": "renaissance_humanism",
+    "name": "Renaissance Humanism",
+    "description": "Intellectual movement emphasizing human dignity, classical learning, and secular concerns. Focused on rhetoric, history, poetry, and moral philosophy based on Greek and Roman texts.",
+    "era": 1400,
+    "domains": ["philosophy", "culture", "education"],
+    "key_figures": ["Petrarch", "Erasmus", "Pico della Mirandola"],
+    "relationships": [
+      {"target": "enlightenment", "type": "influenced", "description": "Influenced Enlightenment emphasis on reason and human potential"},
+      {"target": "individualism", "type": "promoted", "description": "Promoted individual achievement and human-centered worldview"},
+      {"target": "secularism", "type": "influenced", "description": "Contributed to growing secularization of thought"}
+    ]
+  },
+  {
+    "id": "rationalism",
+    "name": "Rationalism",
+    "description": "Epistemological position that reason is the primary source of knowledge, emphasizing deductive logic, innate ideas, and a priori truths. Knowledge derived from rational principles rather than sensory experience.",
+    "era": 1640,
+    "domains": ["philosophy", "epistemology"],
+    "key_figures": ["René Descartes", "Baruch Spinoza", "Gottfried Leibniz"],
+    "relationships": [
+      {"target": "empiricism", "type": "opposes", "description": "Opposes empiricist claim that knowledge comes primarily from sense experience"},
+      {"target": "platonism", "type": "evolved_from", "description": "Continues Platonic tradition of prioritizing reason over senses"},
+      {"target": "idealism", "type": "aligned_with", "description": "Often aligned with idealist metaphysics emphasizing mind over matter"},
+      {"target": "enlightenment", "type": "contributed_to", "description": "Contributed to Enlightenment confidence in human reason"}
+    ]
+  },
+  {
+    "id": "empiricism",
+    "name": "Empiricism",
+    "description": "Epistemological view that knowledge comes primarily from sensory experience rather than innate ideas or pure reason. Emphasizes observation, experimentation, and a posteriori knowledge.",
+    "era": 1690,
+    "domains": ["philosophy", "epistemology", "science"],
+    "key_figures": ["John Locke", "David Hume", "George Berkeley"],
+    "relationships": [
+      {"target": "rationalism", "type": "opposes", "description": "Opposes rationalist claim to knowledge through reason alone"},
+      {"target": "scientific_method", "type": "foundation_for", "description": "Provides philosophical foundation for scientific method"},
+      {"target": "positivism", "type": "influenced", "description": "Influenced positivist emphasis on observable, verifiable facts"},
+      {"target": "pragmatism", "type": "influenced", "description": "Influenced pragmatist focus on practical experience"}
+    ]
+  },
+  {
+    "id": "social_contract",
+    "name": "Social Contract Theory",
+    "description": "Political theory that legitimate authority derives from consent of the governed, who surrender some freedoms for protection and social order. Government exists to serve the people who create it.",
+    "era": 1650,
+    "domains": ["politics", "philosophy"],
+    "key_figures": ["Thomas Hobbes", "John Locke", "Jean-Jacques Rousseau"],
+    "relationships": [
+      {"target": "liberalism", "type": "foundation_for", "description": "Provides theoretical foundation for liberal democracy and individual rights"},
+      {"target": "natural_law", "type": "built_on", "description": "Built on natural law concept of inherent human rights"},
+      {"target": "democracy", "type": "justifies", "description": "Provides philosophical justification for democratic governance"},
+      {"target": "anarchism", "type": "opposed_by", "description": "Rejected by anarchists who deny legitimacy of any state authority"}
+    ]
+  },
+  {
+    "id": "liberalism",
+    "name": "Liberalism",
+    "description": "Political philosophy emphasizing individual liberty, equal rights, constitutional government, and free markets. Values consent of the governed, rule of law, and limited state power.",
+    "era": 1690,
+    "domains": ["politics", "economics"],
+    "key_figures": ["John Locke", "John Stuart Mill", "Adam Smith"],
+    "relationships": [
+      {"target": "social_contract", "type": "built_on", "description": "Built on social contract theory of consensual government"},
+      {"target": "capitalism", "type": "aligned_with", "description": "Generally aligned with capitalist economic systems"},
+      {"target": "democracy", "type": "promotes", "description": "Promotes democratic governance and political participation"},
+      {"target": "conservatism", "type": "opposes", "description": "Historically opposed to conservative emphasis on tradition and hierarchy"},
+      {"target": "socialism", "type": "opposes", "description": "Opposes socialist critique of private property and markets"}
+    ]
+  },
+  {
+    "id": "conservatism",
+    "name": "Conservatism",
+    "description": "Political ideology emphasizing tradition, social stability, gradual change, and preservation of established institutions. Skeptical of radical reform and values organic social development.",
+    "era": 1790,
+    "domains": ["politics"],
+    "key_figures": ["Edmund Burke", "Russell Kirk"],
+    "relationships": [
+      {"target": "liberalism", "type": "opposes", "description": "Opposes liberal emphasis on individual rights over traditional institutions"},
+      {"target": "traditionalism", "type": "aligned_with", "description": "Aligned with traditionalist preservation of cultural heritage"},
+      {"target": "enlightenment", "type": "skeptical_of", "description": "Skeptical of Enlightenment faith in reason and progress"}
+    ]
+  },
+  {
+    "id": "enlightenment",
+    "name": "Enlightenment",
+    "description": "Intellectual and philosophical movement emphasizing reason, science, individual rights, and progress. Challenged traditional authority, promoted religious tolerance, and advocated for human autonomy.",
+    "era": 1700,
+    "domains": ["philosophy", "politics", "culture"],
+    "key_figures": ["Voltaire", "Immanuel Kant", "John Locke", "Montesquieu"],
+    "relationships": [
+      {"target": "rationalism", "type": "promoted", "description": "Promoted rationalist confidence in human reason"},
+      {"target": "liberalism", "type": "influenced", "description": "Influenced liberal political philosophy"},
+      {"target": "romanticism", "type": "opposed_by", "description": "Opposed by Romantic emphasis on emotion and tradition"},
+      {"target": "secularism", "type": "promoted", "description": "Promoted secular governance and religious tolerance"}
+    ]
+  },
+  {
+    "id": "utilitarianism",
+    "name": "Utilitarianism",
+    "description": "Ethical theory that the right action is the one that maximizes overall happiness or well-being. Founded on consequentialist reasoning and the principle of 'greatest good for greatest number.'",
+    "era": 1780,
+    "domains": ["philosophy", "ethics", "politics"],
+    "key_figures": ["Jeremy Bentham", "John Stuart Mill"],
+    "relationships": [
+      {"target": "consequentialism", "type": "exemplifies", "description": "Exemplifies consequentialist ethics judging actions by outcomes"},
+      {"target": "liberalism", "type": "influenced", "description": "Influenced liberal reform movements and policy"},
+      {"target": "deontology", "type": "opposes", "description": "Opposes deontological emphasis on duties over consequences"},
+      {"target": "epicureanism", "type": "evolved_from", "description": "Evolved from Epicurean focus on pleasure and happiness"}
+    ]
+  },
+  {
+    "id": "kantian_ethics",
+    "name": "Kantian Ethics (Deontology)",
+    "description": "Moral philosophy based on duty and universal principles. Right action follows categorical imperatives regardless of consequences. Emphasizes human dignity and autonomy.",
+    "era": 1785,
+    "domains": ["philosophy", "ethics"],
+    "key_figures": ["Immanuel Kant"],
+    "relationships": [
+      {"target": "deontology", "type": "foundation_for", "description": "Established modern deontological ethics"},
+      {"target": "utilitarianism", "type": "opposes", "description": "Opposes utilitarian focus on consequences over duty"},
+      {"target": "enlightenment", "type": "exemplifies", "description": "Exemplifies Enlightenment emphasis on reason and autonomy"},
+      {"target": "social_contract", "type": "influenced", "description": "Influenced through concept of rational self-legislation"}
+    ]
+  },
+  {
+    "id": "romanticism",
+    "name": "Romanticism",
+    "description": "Cultural and philosophical movement emphasizing emotion, imagination, nature, and individual expression. Reacted against Enlightenment rationalism and industrial modernity.",
+    "era": 1800,
+    "domains": ["philosophy", "culture", "arts"],
+    "key_figures": ["Jean-Jacques Rousseau", "Johann Gottfried Herder"],
+    "relationships": [
+      {"target": "enlightenment", "type": "opposes", "description": "Opposed Enlightenment emphasis on pure reason over emotion"},
+      {"target": "nationalism", "type": "influenced", "description": "Influenced nationalism through emphasis on cultural uniqueness"},
+      {"target": "existentialism", "type": "influenced", "description": "Influenced existentialism through focus on individual authenticity"}
+    ]
+  },
+  {
+    "id": "hegelianism",
+    "name": "Hegelianism",
+    "description": "Dialectical philosophy viewing history as progressive development of absolute spirit through thesis-antithesis-synthesis. Emphasizes idealism, holism, and the rationality of the real.",
+    "era": 1820,
+    "domains": ["philosophy", "metaphysics", "politics"],
+    "key_figures": ["Georg Wilhelm Friedrich Hegel"],
+    "relationships": [
+      {"target": "idealism", "type": "exemplifies", "description": "Exemplifies absolute idealism where reality is manifestation of mind/spirit"},
+      {"target": "dialectical_materialism", "type": "influenced", "description": "Dialectical method adopted by Marx and inverted to materialism"},
+      {"target": "marxism", "type": "influenced", "description": "Heavily influenced Marxist historical and dialectical analysis"},
+      {"target": "historicism", "type": "promoted", "description": "Promoted historicist view of ideas developing through time"}
+    ]
+  },
+  {
+    "id": "socialism",
+    "name": "Socialism",
+    "description": "Political and economic ideology advocating collective or state ownership of means of production, emphasizing equality, cooperation, and democratic control over economy.",
+    "era": 1830,
+    "domains": ["politics", "economics"],
+    "key_figures": ["Robert Owen", "Charles Fourier", "Karl Marx"],
+    "relationships": [
+      {"target": "capitalism", "type": "opposes", "description": "Fundamentally opposes capitalist private ownership and profit motive"},
+      {"target": "marxism", "type": "related_to", "description": "Marxism is revolutionary form grounded in specific analysis"},
+      {"target": "communism", "type": "related_to", "description": "Communism is radical form seeking classless, stateless society"},
+      {"target": "social_democracy", "type": "evolved_into", "description": "Moderate branch evolved into social democracy"},
+      {"target": "utopianism", "type": "early_form", "description": "Early utopian socialism preceded scientific socialism"}
+    ]
+  },
+  {
+    "id": "anarchism",
+    "name": "Anarchism",
+    "description": "Political philosophy opposing all forms of hierarchical authority and advocating for voluntary, cooperative organization without state power. Emphasizes individual freedom and mutual aid.",
+    "era": 1840,
+    "domains": ["politics", "philosophy"],
+    "key_figures": ["Pierre-Joseph Proudhon", "Mikhail Bakunin", "Peter Kropotkin"],
+    "relationships": [
+      {"target": "socialism", "type": "related_to", "description": "Shares socialist opposition to capitalism but rejects state socialism"},
+      {"target": "libertarianism", "type": "related_to", "description": "Shares libertarian opposition to state power but from left perspective"},
+      {"target": "marxism", "type": "opposes", "description": "Opposes Marxist dictatorship of proletariat and vanguard party"},
+      {"target": "social_contract", "type": "rejects", "description": "Rejects social contract justification for state authority"},
+      {"target": "taoism", "type": "influenced_by", "description": "Some anarchists influenced by Taoist non-interference"}
+    ]
+  },
+  {
+    "id": "marxism",
+    "name": "Marxism",
+    "description": "Revolutionary political and economic theory analyzing capitalism through class struggle and material conditions. Advocates for communism, worker control of production, and abolition of private property.",
+    "era": 1850,
+    "domains": ["politics", "economics", "philosophy"],
+    "key_figures": ["Karl Marx", "Friedrich Engels"],
+    "relationships": [
+      {"target": "dialectical_materialism", "type": "founded_on", "description": "Founded on materialist inversion of Hegelian dialectics"},
+      {"target": "hegelianism", "type": "evolved_from", "description": "Adopted and inverted Hegel's dialectical method"},
+      {"target": "socialism", "type": "form_of", "description": "Represents scientific/revolutionary form of socialism"},
+      {"target": "communism", "type": "foundation_for", "description": "Provides theoretical foundation for communist movement"},
+      {"target": "capitalism", "type": "opposes", "description": "Fundamentally critiques and seeks to overthrow capitalism"},
+      {"target": "anarchism", "type": "conflicts_with", "description": "Conflicts with anarchism over role of state in revolution"}
+    ]
+  },
+  {
+    "id": "communism",
+    "name": "Communism",
+    "description": "Revolutionary ideology seeking classless, stateless society with common ownership of means of production. Based on Marxist analysis of capitalism and historical materialism.",
+    "era": 1848,
+    "domains": ["politics", "economics"],
+    "key_figures": ["Karl Marx", "Vladimir Lenin", "Mao Zedong"],
+    "relationships": [
+      {"target": "marxism", "type": "based_on", "description": "Based on Marxist theory and analysis"},
+      {"target": "socialism", "type": "radical_form", "description": "Represents revolutionary endpoint of socialist development"},
+      {"target": "capitalism", "type": "opposes", "description": "Seeks complete abolition of capitalist relations"},
+      {"target": "totalitarianism", "type": "accused_of", "description": "Critics accuse communist states of totalitarianism"}
+    ]
+  },
+  {
+    "id": "existentialism",
+    "name": "Existentialism",
+    "description": "Philosophy emphasizing individual existence, freedom, choice, and responsibility. Rejects essence preceding existence, focuses on authentic living in face of absurdity and alienation.",
+    "era": 1840,
+    "domains": ["philosophy", "ethics"],
+    "key_figures": ["Søren Kierkegaard", "Jean-Paul Sartre", "Albert Camus"],
+    "relationships": [
+      {"target": "phenomenology", "type": "related_to", "description": "Related to phenomenology's focus on lived experience"},
+      {"target": "absurdism", "type": "similar_to", "description": "Shares absurdist recognition of meaninglessness but emphasizes creating meaning"},
+      {"target": "nihilism", "type": "responds_to", "description": "Responds to nihilism by asserting individual meaning-making"},
+      {"target": "romanticism", "type": "influenced_by", "description": "Influenced by Romantic emphasis on individual authenticity"}
+    ]
+  },
+  {
+    "id": "pragmatism",
+    "name": "Pragmatism",
+    "description": "American philosophy evaluating ideas and beliefs by their practical consequences and usefulness. Truth is what works in practice; meaning derives from effects.",
+    "era": 1870,
+    "domains": ["philosophy", "epistemology"],
+    "key_figures": ["Charles Sanders Peirce", "William James", "John Dewey"],
+    "relationships": [
+      {"target": "empiricism", "type": "evolved_from", "description": "Evolved from empiricist emphasis on experience"},
+      {"target": "consequentialism", "type": "aligned_with", "description": "Aligned with consequentialist focus on outcomes"},
+      {"target": "rationalism", "type": "opposes", "description": "Opposes rationalist search for absolute truths"}
+    ]
+  },
+  {
+    "id": "nationalism",
+    "name": "Nationalism",
+    "description": "Political ideology emphasizing nation as fundamental unit of political loyalty, promoting national sovereignty, cultural unity, and self-determination.",
+    "era": 1800,
+    "domains": ["politics"],
+    "key_figures": ["Johann Gottfried Herder", "Giuseppe Mazzini"],
+    "relationships": [
+      {"target": "romanticism", "type": "influenced_by", "description": "Influenced by Romantic emphasis on cultural uniqueness"},
+      {"target": "fascism", "type": "exploited_by", "description": "Exploited by fascism for ultra-nationalist authoritarianism"},
+      {"target": "internationalism", "type": "opposes", "description": "Opposes internationalist cooperation across borders"},
+      {"target": "imperialism", "type": "both_opposes_and_promotes", "description": "Can oppose foreign imperialism while promoting own expansion"}
+    ]
+  },
+  {
+    "id": "feminism",
+    "name": "Feminism",
+    "description": "Political and philosophical movement advocating for women's rights, gender equality, and challenging patriarchal structures, norms, and assumptions across society.",
+    "era": 1890,
+    "domains": ["politics", "philosophy", "ethics", "social"],
+    "key_figures": ["Mary Wollstonecraft", "Simone de Beauvoir", "bell hooks"],
+    "relationships": [
+      {"target": "liberalism", "type": "built_on", "description": "Liberal feminism built on liberal rights tradition"},
+      {"target": "marxism", "type": "synthesized_with", "description": "Socialist feminism synthesizes with Marxist class analysis"},
+      {"target": "postmodernism", "type": "influenced_by", "description": "Third-wave feminism influenced by postmodern theory"},
+      {"target": "social_justice", "type": "part_of", "description": "Part of broader social justice movements"}
+    ]
+  },
+  {
+    "id": "phenomenology",
+    "name": "Phenomenology",
+    "description": "Philosophical method studying structures of consciousness and experience from first-person perspective. Brackets or suspends assumptions about external reality to examine phenomena as they appear.",
+    "era": 1900,
+    "domains": ["philosophy", "epistemology"],
+    "key_figures": ["Edmund Husserl", "Martin Heidegger", "Maurice Merleau-Ponty"],
+    "relationships": [
+      {"target": "existentialism", "type": "influenced", "description": "Influenced existentialist focus on lived experience"},
+      {"target": "idealism", "type": "related_to", "description": "Related to idealist focus on consciousness"},
+      {"target": "hermeneutics", "type": "influenced", "description": "Influenced hermeneutic approaches to interpretation"}
+    ]
+  },
+  {
+    "id": "logical_positivism",
+    "name": "Logical Positivism",
+    "description": "Philosophy asserting meaningful statements must be empirically verifiable or analytically true. Rejects metaphysics as meaningless; promotes unity of science and formal logic.",
+    "era": 1920,
+    "domains": ["philosophy", "epistemology"],
+    "key_figures": ["Vienna Circle", "A.J. Ayer", "Rudolf Carnap"],
+    "relationships": [
+      {"target": "empiricism", "type": "radical_form", "description": "Represents radical form of empiricism with verification principle"},
+      {"target": "scientism", "type": "promotes", "description": "Promotes science as only valid form of knowledge"},
+      {"target": "metaphysics", "type": "rejects", "description": "Rejects metaphysical claims as meaningless"},
+      {"target": "analytic_philosophy", "type": "contributed_to", "description": "Contributed to analytic philosophy tradition"}
+    ]
+  },
+  {
+    "id": "fascism",
+    "name": "Fascism",
+    "description": "Authoritarian ultra-nationalist ideology emphasizing strong centralized state, militarism, suppression of opposition, and often racial or national supremacy. Rejects liberalism, Marxism, and democracy.",
+    "era": 1920,
+    "domains": ["politics"],
+    "key_figures": ["Benito Mussolini", "Giovanni Gentile"],
+    "relationships": [
+      {"target": "authoritarianism", "type": "extreme_form", "description": "Represents extreme form of authoritarian governance"},
+      {"target": "nationalism", "type": "exploits", "description": "Exploits nationalism for ultra-nationalist purposes"},
+      {"target": "totalitarianism", "type": "exemplifies", "description": "Often exemplifies totalitarian control of society"},
+      {"target": "liberalism", "type": "opposes", "description": "Fundamentally opposes liberal democracy and individual rights"},
+      {"target": "marxism", "type": "opposes", "description": "Violently opposes Marxism and communism"}
+    ]
+  },
+  {
+    "id": "libertarianism",
+    "name": "Libertarianism",
+    "description": "Political philosophy maximizing individual liberty and minimizing state power. Emphasizes property rights, free markets, voluntary association, and non-aggression principle.",
+    "era": 1950,
+    "domains": ["politics", "economics"],
+    "key_figures": ["Friedrich Hayek", "Robert Nozick", "Ayn Rand"],
+    "relationships": [
+      {"target": "liberalism", "type": "radical_form", "description": "Represents radical form of classical liberalism"},
+      {"target": "capitalism", "type": "strongly_supports", "description": "Strongly supports laissez-faire capitalism"},
+      {"target": "anarchism", "type": "related_to", "description": "Right-libertarianism shares anarchist opposition to state from different basis"},
+      {"target": "socialism", "type": "opposes", "description": "Opposes socialist state control of economy"}
+    ]
+  },
+  {
+    "id": "postmodernism",
+    "name": "Postmodernism",
+    "description": "Philosophical movement skeptical of grand narratives, objective truth, and universal values. Emphasizes plurality, deconstruction, power relations, and cultural relativism.",
+    "era": 1960,
+    "domains": ["philosophy", "epistemology", "politics", "culture"],
+    "key_figures": ["Jacques Derrida", "Michel Foucault", "Jean-François Lyotard"],
+    "relationships": [
+      {"target": "modernism", "type": "reacts_against", "description": "Reacts against modernist faith in progress and reason"},
+      {"target": "relativism", "type": "promotes", "description": "Often promotes epistemic and moral relativism"},
+      {"target": "critical_theory", "type": "influenced", "description": "Influenced critical theory and identity politics"},
+      {"target": "enlightenment", "type": "critiques", "description": "Critiques Enlightenment universalism and rationality"}
+    ]
+  },
+  {
+    "id": "environmentalism",
+    "name": "Environmentalism",
+    "description": "Political and ethical movement emphasizing protection of natural environment, sustainability, biodiversity conservation, and addressing ecological degradation and climate change.",
+    "era": 1970,
+    "domains": ["politics", "ethics", "social"],
+    "key_figures": ["Rachel Carson", "Aldo Leopold", "Arne Naess"],
+    "relationships": [
+      {"target": "deep_ecology", "type": "includes", "description": "Includes deep ecology emphasizing intrinsic value of nature"},
+      {"target": "capitalism", "type": "critiques", "description": "Eco-socialists critique capitalism's environmental destruction"},
+      {"target": "utilitarianism", "type": "extends", "description": "Some extend utilitarian concern to animals and ecosystems"},
+      {"target": "social_justice", "type": "intersects", "description": "Environmental justice links to social justice"}
+    ]
+  },
+  {
+    "id": "virtue_ethics",
+    "name": "Virtue Ethics",
+    "description": "Ethical framework focusing on character and virtues rather than rules or consequences. Asks 'what kind of person should I be?' and emphasizes cultivation of moral excellence.",
+    "era": -350,
+    "domains": ["philosophy", "ethics"],
+    "key_figures": ["Aristotle", "Philippa Foot", "Alasdair MacIntyre"],
+    "relationships": [
+      {"target": "aristotelianism", "type": "based_on", "description": "Based on Aristotelian eudaimonistic ethics"},
+      {"target": "utilitarianism", "type": "opposes", "description": "Opposes utilitarian focus on consequences over character"},
+      {"target": "deontology", "type": "opposes", "description": "Opposes deontological focus on rules over virtues"},
+      {"target": "confucianism", "type": "similar_to", "description": "Similar to Confucian emphasis on moral cultivation"}
+    ]
+  },
+  {
+    "id": "idealism",
+    "name": "Idealism",
+    "description": "Metaphysical position that reality is fundamentally mental, experiential, or consciousness-dependent. Denies that matter exists independently of mind or perception.",
+    "era": -380,
+    "domains": ["philosophy", "metaphysics"],
+    "key_figures": ["Plato", "George Berkeley", "Georg Hegel"],
+    "relationships": [
+      {"target": "platonism", "type": "founded_by", "description": "Founded by Plato's theory of Forms"},
+      {"target": "materialism", "type": "opposes", "description": "Fundamentally opposes materialist metaphysics"},
+      {"target": "phenomenology", "type": "influenced", "description": "Influenced phenomenological focus on consciousness"},
+      {"target": "hegelianism", "type": "exemplified_by", "description": "Hegel developed absolute idealism"}
+    ]
+  },
+  {
+    "id": "materialism",
+    "name": "Materialism",
+    "description": "Metaphysical position that only matter and physical processes exist. Denies existence of immaterial substances like souls or abstract forms independent of matter.",
+    "era": -300,
+    "domains": ["philosophy", "metaphysics"],
+    "key_figures": ["Democritus", "Thomas Hobbes", "Karl Marx"],
+    "relationships": [
+      {"target": "idealism", "type": "opposes", "description": "Fundamentally opposes idealist metaphysics"},
+      {"target": "epicureanism", "type": "exemplified_by", "description": "Epicurean atomism exemplified ancient materialism"},
+      {"target": "dialectical_materialism", "type": "evolved_into", "description": "Evolved into Marxist dialectical materialism"},
+      {"target": "physicalism", "type": "modern_form", "description": "Physicalism is modern scientific form"}
+    ]
+  },
+  {
+    "id": "dialectical_materialism",
+    "name": "Dialectical Materialism",
+    "description": "Marxist philosophical framework combining Hegelian dialectics with materialism. Views historical development through material conditions and class struggle in dialectical process.",
+    "era": 1850,
+    "domains": ["philosophy", "metaphysics", "politics"],
+    "key_figures": ["Karl Marx", "Friedrich Engels"],
+    "relationships": [
+      {"target": "hegelianism", "type": "inverted", "description": "Inverted Hegel's idealist dialectics to materialist basis"},
+      {"target": "materialism", "type": "developed", "description": "Developed materialism with dialectical method"},
+      {"target": "marxism", "type": "foundation_of", "description": "Provides philosophical foundation for Marxist theory"},
+      {"target": "historical_materialism", "type": "applied_as", "description": "Applied to history as historical materialism"}
+    ]
+  },
+  {
+    "id": "nihilism",
+    "name": "Nihilism",
+    "description": "Philosophical position that life lacks objective meaning, purpose, or intrinsic value. Often associated with rejection of moral principles and traditional values.",
+    "era": 1850,
+    "domains": ["philosophy", "ethics", "metaphysics"],
+    "key_figures": ["Friedrich Nietzsche", "Max Stirner"],
+    "relationships": [
+      {"target": "existentialism", "type": "responded_to_by", "description": "Existentialism responds by asserting individual meaning-making"},
+      {"target": "absurdism", "type": "related_to", "description": "Absurdism accepts absurdity but seeks authentic living"},
+      {"target": "postmodernism", "type": "influenced", "description": "Influenced postmodern skepticism toward universal values"}
+    ]
+  },
+  {
+    "id": "absurdism",
+    "name": "Absurdism",
+    "description": "Philosophy recognizing inherent conflict between human search for meaning and universe's meaninglessness. Advocates living authentically despite absurdity rather than despair or false hope.",
+    "era": 1940,
+    "domains": ["philosophy", "ethics"],
+    "key_figures": ["Albert Camus"],
+    "relationships": [
+      {"target": "existentialism", "type": "related_to", "description": "Related to existentialism but rejects creating subjective meaning"},
+      {"target": "nihilism", "type": "responds_to", "description": "Responds to nihilism by embracing life despite meaninglessness"},
+      {"target": "stoicism", "type": "similar_to", "description": "Similar to Stoic acceptance of what cannot be changed"}
+    ]
+  },
+  {
+    "id": "transhumanism",
+    "name": "Transhumanism",
+    "description": "Philosophy advocating use of technology to enhance human physical, cognitive, and psychological capabilities, potentially transcending biological limitations through science and technology.",
+    "era": 1990,
+    "domains": ["philosophy", "ethics", "technology"],
+    "key_figures": ["Nick Bostrom", "Ray Kurzweil"],
+    "relationships": [
+      {"target": "posthumanism", "type": "related_to", "description": "Related to posthumanist questioning of human nature boundaries"},
+      {"target": "utilitarianism", "type": "often_aligned", "description": "Often aligned with utilitarian goal of reducing suffering"},
+      {"target": "bioconservatism", "type": "opposed_by", "description": "Opposed by bioconservatives warning of dehumanization"}
+    ]
+  },
+  {
+    "id": "capitalism",
+    "name": "Capitalism",
+    "description": "Economic system based on private ownership of means of production, market exchange, wage labor, and capital accumulation driven by profit motive. Production for exchange rather than use.",
+    "era": 1750,
+    "domains": ["economics", "politics"],
+    "key_figures": ["Adam Smith", "David Ricardo"],
+    "relationships": [
+      {"target": "liberalism", "type": "aligned_with", "description": "Aligned with liberal political economy"},
+      {"target": "socialism", "type": "opposed_by", "description": "Fundamentally opposed by socialist critique"},
+      {"target": "marxism", "type": "critiqued_by", "description": "Subject of Marxist analysis and critique"},
+      {"target": "libertarianism", "type": "championed_by", "description": "Championed by libertarian free market advocates"}
+    ]
+  },
+  {
+    "id": "democracy",
+    "name": "Democracy",
+    "description": "Political system where power is vested in the people, either directly or through elected representatives. Emphasizes political equality, majority rule, and protection of minority rights.",
+    "era": -500,
+    "domains": ["politics"],
+    "key_figures": ["Pericles", "John Locke", "Jean-Jacques Rousseau"],
+    "relationships": [
+      {"target": "liberalism", "type": "aligned_with", "description": "Liberal democracy combines with constitutional rights"},
+      {"target": "social_contract", "type": "justified_by", "description": "Justified by social contract theory"},
+      {"target": "fascism", "type": "opposed_by", "description": "Rejected by fascism as weak and decadent"},
+      {"target": "republicanism", "type": "related_to", "description": "Republicanism emphasizes civic virtue in democracy"}
+    ]
+  },
+  {
+    "id": "social_democracy",
+    "name": "Social Democracy",
+    "description": "Political ideology combining socialist values with democratic processes. Advocates mixed economy with both private enterprise and strong welfare state, labor rights, and regulation.",
+    "era": 1880,
+    "domains": ["politics", "economics"],
+    "key_figures": ["Eduard Bernstein", "Olof Palme"],
+    "relationships": [
+      {"target": "socialism", "type": "moderate_form", "description": "Represents moderate reformist form of socialism"},
+      {"target": "capitalism", "type": "regulates", "description": "Seeks to regulate rather than abolish capitalism"},
+      {"target": "marxism", "type": "diverged_from", "description": "Diverged from revolutionary Marxism toward reform"},
+      {"target": "liberalism", "type": "synthesizes_with", "description": "Synthesizes liberal democracy with socialist economics"}
+    ]
+  },
+  {
+    "id": "neoliberalism",
+    "name": "Neoliberalism",
+    "description": "Political-economic ideology emphasizing free markets, deregulation, privatization, and reduced government intervention. Extends market logic to social spheres and promotes global trade.",
+    "era": 1980,
+    "domains": ["politics", "economics"],
+    "key_figures": ["Friedrich Hayek", "Milton Friedman"],
+    "relationships": [
+      {"target": "liberalism", "type": "revival_of", "description": "Revival of classical liberal economics"},
+      {"target": "capitalism", "type": "promotes", "description": "Promotes deregulated free market capitalism"},
+      {"target": "socialism", "type": "opposes", "description": "Strongly opposes socialist state intervention"},
+      {"target": "social_democracy", "type": "challenges", "description": "Challenges social democratic welfare state"}
+    ]
+  },
+  {
+    "id": "deontology",
+    "name": "Deontology",
+    "description": "Ethical theory that judges morality of actions based on adherence to rules, duties, or principles rather than consequences. Right action follows moral law regardless of outcomes.",
+    "era": 1785,
+    "domains": ["philosophy", "ethics"],
+    "key_figures": ["Immanuel Kant", "W.D. Ross"],
+    "relationships": [
+      {"target": "kantian_ethics", "type": "exemplified_by", "description": "Kant's categorical imperative exemplifies deontological ethics"},
+      {"target": "consequentialism", "type": "opposes", "description": "Opposes consequentialist focus on outcomes over duties"},
+      {"target": "virtue_ethics", "type": "contrasts_with", "description": "Contrasts with virtue ethics focus on character"}
+    ]
+  },
+  {
+    "id": "consequentialism",
+    "name": "Consequentialism",
+    "description": "Ethical theory that judges morality solely by consequences of actions. Right action produces best overall outcome, regardless of the means or agent's intentions.",
+    "era": 1780,
+    "domains": ["philosophy", "ethics"],
+    "key_figures": ["Jeremy Bentham", "John Stuart Mill"],
+    "relationships": [
+      {"target": "utilitarianism", "type": "exemplified_by", "description": "Utilitarianism is most famous consequentialist theory"},
+      {"target": "deontology", "type": "opposes", "description": "Opposes deontological focus on duties over outcomes"},
+      {"target": "pragmatism", "type": "aligned_with", "description": "Aligned with pragmatist focus on practical results"}
+    ]
+  },
+  {
+    "id": "critical_theory",
+    "name": "Critical Theory",
+    "description": "Frankfurt School philosophical approach critiquing society and culture through integrating social sciences. Analyzes power structures, ideology, and seeks human emancipation.",
+    "era": 1930,
+    "domains": ["philosophy", "social theory", "politics"],
+    "key_figures": ["Max Horkheimer", "Theodor Adorno", "Jürgen Habermas"],
+    "relationships": [
+      {"target": "marxism", "type": "developed_from", "description": "Developed from Marxist critique of capitalism and ideology"},
+      {"target": "postmodernism", "type": "influenced", "description": "Influenced postmodern emphasis on power and discourse"},
+      {"target": "enlightenment", "type": "critiques", "description": "Dialectic of Enlightenment critiqued instrumental reason"}
+    ]
+  },
+  {
+    "id": "effective_altruism",
+    "name": "Effective Altruism",
+    "description": "Contemporary movement applying evidence and reason to determine most effective ways to benefit others. Emphasizes quantitative analysis of charitable impact and impartial concern for all.",
+    "era": 2010,
+    "domains": ["philosophy", "ethics", "social"],
+    "key_figures": ["Peter Singer", "William MacAskill"],
+    "relationships": [
+      {"target": "utilitarianism", "type": "applies", "description": "Applies utilitarian ethics to philanthropy and careers"},
+      {"target": "consequentialism", "type": "based_on", "description": "Based on consequentialist focus on outcomes"},
+      {"target": "rationalism", "type": "employs", "description": "Employs rational analysis and cost-benefit reasoning"}
+    ]
+  },
+  {
+    "id": "cosmopolitanism",
+    "name": "Cosmopolitanism",
+    "description": "Philosophy viewing all humans as belonging to single moral community. Emphasizes universal human dignity over local or national loyalties and advocates global justice.",
+    "era": -300,
+    "domains": ["philosophy", "ethics", "politics"],
+    "key_figures": ["Diogenes", "Immanuel Kant", "Martha Nussbaum"],
+    "relationships": [
+      {"target": "stoicism", "type": "related_to", "description": "Stoics promoted cosmopolitan ideal of universal human community"},
+      {"target": "nationalism", "type": "opposes", "description": "Opposes nationalist prioritization of compatriots"},
+      {"target": "internationalism", "type": "similar_to", "description": "Similar to internationalist cooperation across borders"}
+    ]
+  },
+  {
+    "id": "communitarianism",
+    "name": "Communitarianism",
+    "description": "Political philosophy emphasizing community values, social bonds, and common good over individual rights. Critiques liberal individualism and emphasizes embedded social nature of persons.",
+    "era": 1980,
+    "domains": ["philosophy", "politics", "ethics"],
+    "key_figures": ["Michael Sandel", "Alasdair MacIntyre", "Charles Taylor"],
+    "relationships": [
+      {"target": "liberalism", "type": "critiques", "description": "Critiques liberal emphasis on individual autonomy over community"},
+      {"target": "conservatism", "type": "aligned_with", "description": "Shares conservative concern for tradition and social bonds"},
+      {"target": "republicanism", "type": "related_to", "description": "Related to republican emphasis on civic virtue"}
+    ]
+  },
+  {
+    "id": "utopianism",
+    "name": "Utopianism",
+    "description": "Political and philosophical tradition envisioning ideal societies. Ranges from detailed blueprints for perfect communities to general aspirations for radical social transformation.",
+    "era": 1516,
+    "domains": ["politics", "philosophy", "social"],
+    "key_figures": ["Thomas More", "Charles Fourier", "Robert Owen"],
+    "relationships": [
+      {"target": "socialism", "type": "early_form", "description": "Utopian socialism preceded Marxist scientific socialism"},
+      {"target": "anarchism", "type": "influenced", "description": "Influenced anarchist visions of stateless cooperation"},
+      {"target": "realism_politics", "type": "opposed_by", "description": "Criticized by political realists as impractical idealism"}
+    ]
+  },
+  {
+    "id": "realism_politics",
+    "name": "Political Realism",
+    "description": "International relations theory emphasizing power, national interest, and self-help in anarchic international system. Skeptical of morality and ideology in politics.",
+    "era": 1940,
+    "domains": ["politics", "international relations"],
+    "key_figures": ["Thucydides", "Niccolò Machiavelli", "Hans Morgenthau"],
+    "relationships": [
+      {"target": "legalism", "type": "similar_to", "description": "Similar to ancient Chinese Legalist cynicism about human nature"},
+      {"target": "idealism", "type": "opposes", "description": "Opposes idealist faith in international cooperation and law"},
+      {"target": "utopianism", "type": "critiques", "description": "Critiques utopian visions as ignoring power realities"}
+    ]
+  }
+]
