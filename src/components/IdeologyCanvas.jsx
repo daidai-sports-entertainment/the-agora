@@ -24,7 +24,7 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
     const g = svg.append('g').attr('class', 'main-group');
 
     // Calculate scales
-    const yExtent = d3.extent(data.nodes, d => d.y); // Semantic range
+    const yExtent = d3.extent(data.nodes, d => d.x); // Semantic embedding range (Y-axis)
 
     const margin = { top: 40, right: 100, bottom: 80, left: 100 };
 
@@ -141,19 +141,19 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
       .join('line')
       .attr('x1', d => {
         const source = data.nodes.find(n => n.id === d.source);
-        return yearToSegmentedX(source.x);
+        return yearToSegmentedX(source.era);  // X-axis = time (era)
       })
       .attr('y1', d => {
         const source = data.nodes.find(n => n.id === d.source);
-        return yScale(source.y);
+        return yScale(source.x);  // Y-axis = semantic embedding (x)
       })
       .attr('x2', d => {
         const target = data.nodes.find(n => n.id === d.target);
-        return yearToSegmentedX(target.x);
+        return yearToSegmentedX(target.era);  // X-axis = time (era)
       })
       .attr('y2', d => {
         const target = data.nodes.find(n => n.id === d.target);
-        return yScale(target.y);
+        return yScale(target.x);  // Y-axis = semantic embedding (x)
       })
       .attr('stroke', d => getEdgeColor(d.type, false))
       .attr('stroke-width', 1.5)
@@ -167,8 +167,8 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
     const nebulae = [];
 
     data.nodes.forEach((node, i) => {
-      const nodeX = yearToSegmentedX(node.x);
-      const nodeY = yScale(node.y);
+      const nodeX = yearToSegmentedX(node.era);  // X-axis = time
+      const nodeY = yScale(node.x);  // Y-axis = semantic embedding
 
       // Count nearby nodes
       let nearbyCount = 0;
@@ -176,8 +176,8 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
 
       data.nodes.forEach((other, j) => {
         if (i === j) return;
-        const otherX = yearToSegmentedX(other.x);
-        const otherY = yScale(other.y);
+        const otherX = yearToSegmentedX(other.era);  // X-axis = time
+        const otherY = yScale(other.x);  // Y-axis = semantic embedding
         const distance = Math.sqrt(
           Math.pow(nodeX - otherX, 2) +
           Math.pow(nodeY - otherY, 2)
@@ -249,7 +249,7 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
       .selectAll('g')
       .data(data.nodes)
       .join('g')
-      .attr('transform', d => `translate(${yearToSegmentedX(d.x)}, ${yScale(d.y)})`);
+      .attr('transform', d => `translate(${yearToSegmentedX(d.era)}, ${yScale(d.x)})`);
 
     // 节点圆圈 - Starfield effect with random sizes and glow
     nodes.append('circle')
