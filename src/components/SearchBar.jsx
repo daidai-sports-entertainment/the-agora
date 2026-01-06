@@ -1,15 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
+import { formatCategory, formatEra, getText } from '../utils/i18n';
 
 /**
  * Search bar with fuzzy search and autocomplete
  */
-export function SearchBar({ data, onSelectNode }) {
+export function SearchBar({ data, onSelectNode, language }) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
+  const t = getText(language);
 
   // Simple fuzzy search function
   const fuzzySearch = (searchQuery) => {
@@ -132,7 +134,7 @@ export function SearchBar({ data, onSelectNode }) {
         <input
           ref={inputRef}
           type="text"
-          placeholder="Search concepts..."
+          placeholder={t.searchPlaceholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -167,14 +169,10 @@ export function SearchBar({ data, onSelectNode }) {
               <div style={styles.resultName}>{node.name}</div>
               <div style={styles.resultMeta}>
                 <span style={styles.resultEra}>
-                  {node.era < 0 ? `${Math.abs(node.era)} BCE` : `${node.era} CE`}
+                  {formatEra(node.era, language)}
                 </span>
                 <span style={styles.resultDomain}>
-                  {node.domains.includes('philosophy') && node.domains.includes('politics')
-                    ? 'Philosophy + Politics'
-                    : node.domains.includes('politics')
-                    ? 'Politics'
-                    : 'Philosophy'}
+                  {formatCategory(node.domains, language)}
                 </span>
               </div>
             </div>
@@ -188,21 +186,23 @@ export function SearchBar({ data, onSelectNode }) {
 const styles = {
   container: {
     position: 'relative',
-    width: '300px'
+    width: '320px'
   },
   searchBox: {
     position: 'relative',
     display: 'flex',
     alignItems: 'center',
-    backgroundColor: '#0f3460',
-    borderRadius: '8px',
-    border: '2px solid #34495e',
-    transition: 'all 0.3s ease'
+    backgroundColor: 'rgba(17, 25, 43, 0.8)',
+    borderRadius: '12px',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    boxShadow: '0 10px 30px rgba(5, 8, 15, 0.45)',
+    transition: 'all 0.3s ease',
+    backdropFilter: 'blur(8px)'
   },
   searchIcon: {
     fontSize: '16px',
     padding: '0 12px',
-    color: '#95a5a6'
+    color: 'var(--color-muted)'
   },
   input: {
     flex: 1,
@@ -210,7 +210,7 @@ const styles = {
     backgroundColor: 'transparent',
     border: 'none',
     outline: 'none',
-    color: '#eaeaea',
+    color: 'var(--color-ink)',
     fontSize: '14px',
     fontFamily: 'inherit'
   },
@@ -219,7 +219,7 @@ const styles = {
     background: 'none',
     border: 'none',
     fontSize: '24px',
-    color: '#95a5a6',
+    color: 'var(--color-muted)',
     cursor: 'pointer',
     lineHeight: '1',
     transition: 'color 0.2s'
@@ -229,10 +229,10 @@ const styles = {
     top: 'calc(100% + 8px)',
     left: 0,
     right: 0,
-    backgroundColor: '#16213e',
-    borderRadius: '8px',
-    border: '2px solid #34495e',
-    boxShadow: '0 8px 24px rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(17, 23, 38, 0.92)',
+    borderRadius: '12px',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    boxShadow: '0 18px 40px rgba(3, 6, 12, 0.6)',
     maxHeight: '400px',
     overflowY: 'auto',
     zIndex: 1000
@@ -240,16 +240,16 @@ const styles = {
   resultItem: {
     padding: '12px 16px',
     cursor: 'pointer',
-    borderBottom: '1px solid #0f3460',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
     transition: 'background-color 0.2s'
   },
   resultItemSelected: {
-    backgroundColor: '#0f3460'
+    backgroundColor: 'rgba(255, 255, 255, 0.06)'
   },
   resultName: {
     fontSize: '15px',
-    fontWeight: 'bold',
-    color: '#3498db',
+    fontWeight: 600,
+    color: 'var(--color-accent)',
     marginBottom: '4px'
   },
   resultMeta: {
@@ -258,9 +258,9 @@ const styles = {
     fontSize: '12px'
   },
   resultEra: {
-    color: '#95a5a6'
+    color: 'var(--color-muted)'
   },
   resultDomain: {
-    color: '#bdc3c7'
+    color: 'var(--color-muted)'
   }
 };

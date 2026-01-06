@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
+import { getText } from '../utils/i18n';
 
 /**
  * Welcome modal that appears on first visit
  * Shows instructions and can be dismissed
  */
-export function WelcomeModal({ onClose }) {
+export function WelcomeModal({ onClose, language }) {
   const [isVisible, setIsVisible] = useState(false);
+  const t = getText(language);
 
   useEffect(() => {
     // Check if user has seen modal before
@@ -28,28 +30,22 @@ export function WelcomeModal({ onClose }) {
       <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
         <button style={styles.closeButton} onClick={handleClose}>×</button>
 
-        <h2 style={styles.title}>Welcome to The Agora</h2>
-        <p style={styles.message}>
-          Explore the evolution of philosophical and political thought from ancient to contemporary times. Click any node to begin your journey.
-        </p>
+        <h2 style={styles.title}>{t.welcomeTitle}</h2>
+        <p style={styles.message}>{t.welcomeMessage}</p>
 
         <div style={styles.features}>
-          <div style={styles.feature}>
-            <span style={styles.icon}>🖱️</span>
-            <span>Click nodes to reveal connections</span>
-          </div>
-          <div style={styles.feature}>
-            <span style={styles.icon}>🔍</span>
-            <span>Scroll to zoom and drag to pan</span>
-          </div>
-          <div style={styles.feature}>
-            <span style={styles.icon}>📖</span>
-            <span>View details in the side panel</span>
-          </div>
+          {t.welcomeFeatures.map((feature, index) => (
+            <div key={feature} style={styles.feature}>
+              <span style={styles.icon}>
+                {index === 0 ? '🖱️' : index === 1 ? '🔭' : '📖'}
+              </span>
+              <span>{feature}</span>
+            </div>
+          ))}
         </div>
 
         <button style={styles.startButton} onClick={handleClose}>
-          Start Exploring
+          {t.startExploring}
         </button>
       </div>
     </div>
@@ -71,13 +67,13 @@ const styles = {
     backdropFilter: 'blur(4px)'
   },
   modal: {
-    backgroundColor: '#16213e',
+    backgroundColor: 'rgba(15, 21, 36, 0.96)',
     borderRadius: '16px',
     padding: '40px',
     maxWidth: '500px',
     width: '90%',
     boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
-    border: '2px solid #3498db',
+    border: '1px solid rgba(255, 255, 255, 0.12)',
     position: 'relative'
   },
   closeButton: {
@@ -87,7 +83,7 @@ const styles = {
     background: 'none',
     border: 'none',
     fontSize: '32px',
-    color: '#95a5a6',
+    color: 'var(--color-muted)',
     cursor: 'pointer',
     lineHeight: '1',
     padding: '0',
@@ -97,14 +93,15 @@ const styles = {
   },
   title: {
     fontSize: '32px',
-    fontWeight: 'bold',
-    color: '#3498db',
+    fontWeight: 600,
+    color: 'var(--color-accent)',
     margin: '0 0 20px 0',
-    textAlign: 'center'
+    textAlign: 'center',
+    fontFamily: 'var(--font-title)'
   },
   message: {
     fontSize: '18px',
-    color: '#ecf0f1',
+    color: 'var(--color-ink)',
     lineHeight: '1.6',
     textAlign: 'center',
     marginBottom: '32px'
@@ -120,7 +117,7 @@ const styles = {
     alignItems: 'center',
     gap: '12px',
     fontSize: '16px',
-    color: '#bdc3c7'
+    color: 'var(--color-muted)'
   },
   icon: {
     fontSize: '24px',
@@ -131,9 +128,9 @@ const styles = {
     width: '100%',
     padding: '16px',
     fontSize: '18px',
-    fontWeight: 'bold',
+    fontWeight: 600,
     color: '#fff',
-    backgroundColor: '#3498db',
+    backgroundColor: 'var(--color-accent-strong)',
     border: 'none',
     borderRadius: '8px',
     cursor: 'pointer',

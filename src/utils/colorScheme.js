@@ -6,14 +6,14 @@
  */
 
 export const COLORS = {
-  PHILOSOPHY: '#3498db',  // 蓝色
-  POLITICS: '#e74c3c',     // 红色
-  BOTH: '#9b59b6',         // 紫色
-  EDGE_DEFAULT: '#bdc3c7', // 边的默认颜色
-  EDGE_HIGHLIGHT: '#34495e', // 边的高亮颜色
-  EDGE_OPPOSE: '#e74c3c',  // 对立关系的边
-  BACKGROUND: '#1a1a2e',   // 深色背景
-  TEXT: '#eaeaea'          // 文字颜色
+  PHILOSOPHY: '#8fb4ff',  // 蓝色
+  POLITICS: '#d48b8b',     // 红色
+  BOTH: '#3fd6b5',         // 青绿色
+  EDGE_DEFAULT: '#5e6a7d', // 边的默认颜色
+  EDGE_HIGHLIGHT: '#d8b77a', // 边的高亮颜色
+  EDGE_OPPOSE: '#d48b8b',  // 对立关系的边
+  BACKGROUND: '#0b0f1a',   // 深色背景
+  TEXT: '#e9e4da'          // 文字颜色
 };
 
 /**

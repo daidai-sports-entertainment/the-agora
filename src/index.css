@@ -1,9 +1,28 @@
 /* Global styles for Ideology Universe */
 
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap');
+
+:root {
+  --font-title: 'Lora', 'Georgia', serif;
+  --font-body: 'Lora', 'Georgia', serif;
+  --color-bg: #0b0f1a;
+  --color-surface: #0f1524;
+  --color-panel: #101a2d;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-ink: #e9e4da;
+  --color-muted: #a8b1c2;
+  --color-accent: #e6c98a;
+  --color-accent-strong: #d8b77a;
+  --color-glow: #8fb4ff;
+  --color-philosophy: #8fb4ff;
+  --color-politics: #d48b8b;
+  --color-both: #3fd6b5;
+}
+
 /* Beautiful custom scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #3498db #0f3460;
+  scrollbar-color: var(--color-accent) #0e1424;
 }
 
 /* Webkit browsers (Chrome, Safari, Edge) */
@@ -13,25 +32,25 @@
 }
 
 *::-webkit-scrollbar-track {
-  background: #0f3460;
+  background: #0e1424;
   border-radius: 10px;
   margin: 4px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #3498db 0%, #2980b9 100%);
+  background: linear-gradient(180deg, #e6c98a 0%, #b79f6c 100%);
   border-radius: 10px;
-  border: 2px solid #0f3460;
+  border: 2px solid #0e1424;
   transition: all 0.3s ease;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #5dade2 0%, #3498db 100%);
-  border: 2px solid #16213e;
+  background: linear-gradient(180deg, #f0d9a6 0%, #e6c98a 100%);
+  border: 2px solid #141d32;
 }
 
 *::-webkit-scrollbar-thumb:active {
-  background: linear-gradient(180deg, #2980b9 0%, #1f6391 100%);
+  background: linear-gradient(180deg, #b79f6c 0%, #907a4b 100%);
 }
 
 /* Smooth scrolling */
@@ -43,10 +62,18 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
+  background: radial-gradient(circle at top, rgba(22, 31, 50, 0.9) 0%, rgba(7, 9, 16, 0.98) 65%);
+  color: var(--color-ink);
+}
+
+button:focus,
+button:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 /* Add subtle hover effects to relationship cards in InfoPanel */
@@ -56,5 +83,14 @@ body {
 
 .relationship-card:hover {
   transform: translateX(4px);
-  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 10px 28px rgba(230, 201, 138, 0.2);
+}
+
+@keyframes lensPulse {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.95;
+  }
 }

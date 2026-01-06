@@ -40,6 +40,19 @@
 
 ---
 
+## 📝 更新日志
+
+### 2026-01-05
+- 新增中英切换（右侧面板开关），并统一中英文界面文案
+- 视觉风格升级：典雅宇宙主题、Lora 字体、面板与背景质感优化
+- 交互增强：望远镜式聚焦、右下角缩放与重置控制
+- 图例支持多选筛选（Philosophy / Politics / Philosophy + Politics）
+- 节点缓慢闪烁与微弱漂浮，强化星空感
+- 主画布新增语义提示语（斜体浮层）
+- 交叉概念颜色调整为 Cyan-Green，更易区分
+
+---
+
 ## 🚀 快速开始
 
 ### 前置要求
@@ -96,7 +109,7 @@ ideology-universe/
 
 - **哲学概念**（如Platonism, Stoicism）→ 蓝色
 - **政治概念**（如Liberalism, Fascism）→ 红色
-- **交叉概念**（如Marxism, Confucianism）→ 紫色
+- **交叉概念**（如Marxism, Confucianism）→ 青绿色（Cyan-Green）
 
 这突出了一个关键洞察：**很多思想横跨哲学和政治领域**，这正是思想史的魅力所在。
 
@@ -226,5 +239,6 @@ MIT License
 ## 📞 联系
 
 有问题或建议？欢迎提Issue！
+我的邮箱：yd2598@columbia.edu
 
 **Enjoy exploring the universe of ideas! 🌌**

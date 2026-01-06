@@ -1,17 +1,59 @@
 import { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
-import { getNodeColor, getNodeStyle, getEdgeColor, COLORS } from '../utils/colorScheme';
+import { getNodeColor, getEdgeColor, COLORS } from '../utils/colorScheme';
+import { formatEra, getText } from '../utils/i18n';
 
 /**
  * 主可视化画布组件
  * 核心功能：点击节点 → 高亮所有关联的节点和边
  */
-export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNodeSelect }) {
+export function IdeologyCanvas({
+  data,
+  selectedNode: externalSelectedNode,
+  onNodeSelect,
+  language,
+  onRegisterControls,
+  filterDomain
+}) {
   const svgRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 1200, height: 800 });
+  const zoomRef = useRef(null);
+  const svgSelectionRef = useRef(null);
 
   useEffect(() => {
     if (!data.nodes.length) return;
+
+    const t = getText(language);
+    const nodeById = new Map(data.nodes.map(node => [node.id, node]));
+
+    const matchesFilter = (node) => {
+      if (!filterDomain || filterDomain.length === 0) return true;
+      const hasPhilosophy = node.domains.includes('philosophy');
+      const hasPolitics = node.domains.includes('politics');
+      const category = hasPhilosophy && hasPolitics
+        ? 'both'
+        : hasPolitics
+          ? 'politics'
+          : 'philosophy';
+
+      return filterDomain.includes(category);
+    };
+
+    const matchesEdgeFilter = (edge) => {
+      if (!filterDomain || filterDomain.length === 0) return true;
+      const source = nodeById.get(edge.source);
+      const target = nodeById.get(edge.target);
+      if (!source || !target) return false;
+      return matchesFilter(source) && matchesFilter(target);
+    };
+
+    const toRGBA = (hex, alpha) => {
+      const sanitized = hex.replace('#', '');
+      const r = parseInt(sanitized.slice(0, 2), 16);
+      const g = parseInt(sanitized.slice(2, 4), 16);
+      const b = parseInt(sanitized.slice(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
 
     // 清空之前的内容
     d3.select(svgRef.current).selectAll('*').remove();
@@ -19,6 +61,8 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
     const svg = d3.select(svgRef.current)
       .attr('width', dimensions.width)
       .attr('height', dimensions.height);
+
+    svgSelectionRef.current = svg;
 
     // 创建主绘图组（用于缩放）
     const g = svg.append('g').attr('class', 'main-group');
@@ -30,11 +74,11 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
 
     // Segmented time axis - 5 equal-width eras
     const eras = [
-      { name: 'Ancient', start: -500, end: 0, color: '#8e44ad' },
-      { name: 'Medieval', start: 0, end: 1500, color: '#2980b9' },
-      { name: 'Enlightenment', start: 1500, end: 1700, color: '#27ae60' },
-      { name: 'Modern', start: 1700, end: 1900, color: '#f39c12' },
-      { name: 'Contemporary', start: 1900, end: 2010, color: '#e74c3c' }
+      { name: t.eraNames[0], start: -500, end: 0, color: '#5c6fb3' },
+      { name: t.eraNames[1], start: 0, end: 1500, color: '#4f7aa3' },
+      { name: t.eraNames[2], start: 1500, end: 1700, color: '#6c9a8b' },
+      { name: t.eraNames[3], start: 1700, end: 1900, color: '#b59f6a' },
+      { name: t.eraNames[4], start: 1900, end: 2010, color: '#b57474' }
     ];
 
     const totalWidth = dimensions.width - margin.left - margin.right;
@@ -93,6 +137,7 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
         .style('fill', era.color)
         .style('font-size', '14px')
         .style('font-weight', 'bold')
+        .style('font-family', 'var(--font-title)')
         .text(era.name);
 
       // Year range label below
@@ -103,7 +148,8 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
         .style('fill', COLORS.TEXT)
         .style('font-size', '11px')
         .style('opacity', 0.6)
-        .text(`${era.start < 0 ? Math.abs(era.start) + ' BCE' : era.start} - ${era.end}`);
+        .style('font-family', 'var(--font-body)')
+        .text(`${formatEra(era.start, language)} - ${formatEra(era.end, language)}`);
     });
 
     // Y-axis label (semantic dimension has no absolute meaning)
@@ -116,7 +162,8 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
       .style('fill', COLORS.TEXT)
       .style('font-size', '12px')
       .style('opacity', 0.5)
-      .text('← Semantic Similarity →');
+      .style('font-family', 'var(--font-body)')
+      .text(t.axisLabel);
 
     // 计算节点的连接关系（用于高亮）
     const nodeConnections = new Map();
@@ -161,6 +208,8 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
       .attr('stroke-dasharray', d => {
         return d.type === 'opposes' ? '5,5' : '0';
       });
+
+    const effectsLayer = g.append('g').attr('class', 'effects');
 
     // Calculate node clusters for nebula effect
     const clusterRadius = 80; // px - distance to consider "close"
@@ -249,7 +298,11 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
       .selectAll('g')
       .data(data.nodes)
       .join('g')
-      .attr('transform', d => `translate(${yearToSegmentedX(d.era)}, ${yScale(d.x)})`);
+      .attr('transform', d => {
+        d.baseX = yearToSegmentedX(d.era);
+        d.baseY = yScale(d.x);
+        return `translate(${d.baseX}, ${d.baseY})`;
+      });
 
     // 节点圆圈 - Starfield effect with random sizes and glow
     nodes.append('circle')
@@ -261,33 +314,63 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
       })
       .attr('fill', d => getNodeColor(d))
       .attr('stroke', 'none')  // Remove white border for softer look
-      .attr('opacity', 0.85)   // Slightly more visible
+      .attr('opacity', d => (matchesFilter(d) ? 0.85 : 0.2))
       .style('cursor', 'pointer')
       .style('filter', d => {
-        // Glow effect - larger glow for larger stars
+        const baseColor = getNodeColor(d);
+        if (!matchesFilter(d)) {
+          return `drop-shadow(0 0 2px ${toRGBA(baseColor, 0.2)})`;
+        }
         const blurRadius = d.starSize * 1.2;
-        return `drop-shadow(0 0 ${blurRadius}px ${getNodeColor(d)})`;
+        return `drop-shadow(0 0 ${blurRadius}px ${baseColor})`;
       });
 
     // Add subtle twinkle animation to each node
     nodes.selectAll('circle').each(function(d) {
-      // Random delay and duration for natural effect
-      const delay = Math.random() * 3000;
-      const duration = 2000 + Math.random() * 2000; // 2-4 seconds
-
       const twinkle = () => {
+        const delay = Math.random() * 2000;
+        const duration = 1800 + Math.random() * 2600;
+        const minOpacity = matchesFilter(d) ? 0.55 : 0.18;
+        const maxOpacity = matchesFilter(d) ? 0.95 : 0.25;
+
         d3.select(this)
           .transition()
           .delay(delay)
           .duration(duration)
-          .attr('opacity', 0.7)
+          .attr('opacity', minOpacity)
           .transition()
           .duration(duration)
-          .attr('opacity', 1.0)
-          .on('end', twinkle); // Loop forever
+          .attr('opacity', maxOpacity)
+          .on('end', twinkle);
       };
 
       twinkle();
+    });
+
+    nodes.each(function(d) {
+      const node = d3.select(this);
+      const drift = () => {
+        const dx = (Math.random() - 0.5) * 6;
+        const dy = (Math.random() - 0.5) * 6;
+        const duration = 4000 + Math.random() * 3000;
+
+        if (!matchesFilter(d)) {
+          return;
+        }
+
+        node
+          .transition()
+          .duration(duration)
+          .ease(d3.easeSinInOut)
+          .attr('transform', `translate(${d.baseX + dx}, ${d.baseY + dy})`)
+          .transition()
+          .duration(duration)
+          .ease(d3.easeSinInOut)
+          .attr('transform', `translate(${d.baseX}, ${d.baseY})`)
+          .on('end', drift);
+      };
+
+      drift();
     });
 
     // 节点标签
@@ -298,10 +381,115 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
       .style('fill', COLORS.TEXT)
       .style('font-size', '11px')
       .style('font-weight', '500')
+      .style('font-family', 'var(--font-body)')
       .style('pointer-events', 'none')
       .style('user-select', 'none')
       .style('opacity', 0)
       .text(d => d.name);
+
+    const applyFilterBaseState = () => {
+      nodes.selectAll('circle')
+        .attr('opacity', d => (matchesFilter(d) ? 0.85 : 0.2))
+        .attr('stroke', d => (matchesFilter(d) ? '#8a94a8' : 'transparent'))
+        .attr('stroke-width', d => (matchesFilter(d) ? 1 : 0))
+        .style('filter', d => {
+          const baseColor = getNodeColor(d);
+          if (!matchesFilter(d)) {
+            return `drop-shadow(0 0 2px ${toRGBA(baseColor, 0.2)})`;
+          }
+          const blurRadius = d.starSize * 1.2;
+          return `drop-shadow(0 0 ${blurRadius}px ${baseColor})`;
+        });
+
+      nodes.selectAll('text')
+        .interrupt()
+        .style('opacity', 0)
+        .style('font-weight', '500');
+
+      edges
+        .attr('stroke', d => getEdgeColor(d.type, false))
+        .attr('stroke-width', d => (matchesEdgeFilter(d) ? 1.2 : 1))
+        .attr('stroke-opacity', d => {
+          if (!filterDomain || filterDomain.length === 0) return 0;
+          return matchesEdgeFilter(d) ? 0.25 : 0;
+        });
+    };
+
+    const zoom = d3.zoom()
+      .scaleExtent([0.5, 5])
+      .on('zoom', (event) => {
+        g.attr('transform', event.transform);
+      });
+
+    zoomRef.current = zoom;
+
+    const zoomBy = (factor) => {
+      if (!svgSelectionRef.current || !zoomRef.current) return;
+      svgSelectionRef.current
+        .transition()
+        .duration(300)
+        .call(zoomRef.current.scaleBy, factor);
+    };
+
+    const resetView = () => {
+      if (!svgSelectionRef.current || !zoomRef.current) return;
+      svgSelectionRef.current
+        .transition()
+        .duration(500)
+        .ease(d3.easeCubicOut)
+        .call(zoomRef.current.transform, d3.zoomIdentity);
+    };
+
+    onRegisterControls?.({
+      zoomIn: () => zoomBy(1.2),
+      zoomOut: () => zoomBy(0.8),
+      reset: resetView
+    });
+
+    const focusOnNode = (node) => {
+      const focusScale = 1.6;
+      const nodeX = yearToSegmentedX(node.era);
+      const nodeY = yScale(node.x);
+      const translateX = (dimensions.width / 2) - (nodeX * focusScale);
+      const translateY = (dimensions.height / 2) - (nodeY * focusScale);
+
+      svg.transition()
+        .duration(900)
+        .ease(d3.easeCubicOut)
+        .call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(focusScale));
+    };
+
+    const resetFocus = () => {
+      svg.transition()
+        .duration(700)
+        .ease(d3.easeCubicOut)
+        .call(zoom.transform, d3.zoomIdentity);
+    };
+
+    const spawnDiscoveryPulse = (node) => {
+      const nodeX = yearToSegmentedX(node.era);
+      const nodeY = yScale(node.x);
+      const pulseColor = '#e6c98a';
+
+      effectsLayer.append('circle')
+        .attr('cx', nodeX)
+        .attr('cy', nodeY)
+        .attr('r', (node.starSize || 8) + 8)
+        .attr('fill', 'none')
+        .attr('stroke', pulseColor)
+        .attr('stroke-width', 2)
+        .attr('opacity', 0.9)
+        .style('filter', 'drop-shadow(0 0 12px rgba(230, 201, 138, 0.65))')
+        .transition()
+        .duration(1200)
+        .ease(d3.easeCubicOut)
+        .attr('r', 70)
+        .attr('opacity', 0)
+        .remove();
+    };
+
+    svg.call(zoom);
+    applyFilterBaseState();
 
     // Function to highlight a node and its connections
     const highlightNode = (d, element) => {
@@ -317,16 +505,19 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
       // 更新节点样式
       nodes.selectAll('circle')
         .attr('opacity', node => {
-          if (node.id === d.id) return 1; // 选中的节点
-          if (connectedIds.has(node.id)) return 1; // 连接的节点
-          return 0.15; // 其他节点半透明
+          if (!matchesFilter(node)) return 0.2;
+          if (node.id === d.id) return 1;
+          if (connectedIds.has(node.id)) return 1;
+          return 0.2;
         })
         .attr('stroke', node => {
-          if (node.id === d.id) return '#ffd700'; // 选中节点金色边框
-          if (connectedIds.has(node.id)) return '#ffffff';
-          return '#ffffff';
+          if (!matchesFilter(node)) return 'transparent';
+          if (node.id === d.id) return '#e6c98a'; // 选中节点金色边框
+          if (connectedIds.has(node.id)) return '#e9e4da';
+          return '#6b768a';
         })
         .attr('stroke-width', node => {
+          if (!matchesFilter(node)) return 0;
           if (node.id === d.id) return 3;
           if (connectedIds.has(node.id)) return 2;
           return 1;
@@ -334,12 +525,15 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
 
       // 更新节点标签
       nodes.selectAll('text')
+        .interrupt()
         .style('opacity', node => {
-          if (node.id === d.id) return 1;              // Selected: fully visible
-          if (connectedIds.has(node.id)) return 0.6;   // Connected: semi-visible
-          return 0;                                     // Others: hidden
+          if (!matchesFilter(node)) return 0;
+          if (node.id === d.id) return 1;
+          if (connectedIds.has(node.id)) return 0.6;
+          return 0;
         })
         .style('font-weight', node => {
+          if (!matchesFilter(node)) return '500';
           if (node.id === d.id) return 'bold';
           if (connectedIds.has(node.id)) return '600';
           return '500';
@@ -357,49 +551,41 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
         })
         .attr('stroke-opacity', edge => {
           const isRelated = edge.source === d.id || edge.target === d.id;
-          return isRelated ? 1.0 : 0;  // Hide unrelated edges completely
+          if (!matchesEdgeFilter(edge)) return 0;
+          return isRelated ? 1.0 : 0;
         });
     };
 
     // 核心交互：点击节点高亮关联
     nodes.on('click', function(event, d) {
+      if (!matchesFilter(d)) return;
       event.stopPropagation();
       onNodeSelect(d);
       highlightNode(d, this);
+      spawnDiscoveryPulse(d);
+      focusOnNode(d);
     });
 
     // Handle external selection (e.g., from search)
-    if (externalSelectedNode) {
+    if (externalSelectedNode && matchesFilter(externalSelectedNode)) {
       highlightNode(externalSelectedNode);
+      spawnDiscoveryPulse(externalSelectedNode);
+      focusOnNode(externalSelectedNode);
     }
 
     // 点击画布空白处取消选择
     svg.on('click', function() {
       onNodeSelect(null);
 
-      // 恢复所有节点
-      nodes.selectAll('circle')
-        .attr('opacity', 0.8)
-        .attr('stroke', '#ffffff')
-        .attr('stroke-width', 1);
+      applyFilterBaseState();
 
-      // Hide all labels again
-      nodes.selectAll('text')
-        .transition()
-        .duration(300)
-        .style('opacity', 0)
-        .style('font-weight', '500');
-
-      // 恢复所有边
-      edges
-        .attr('stroke', d => getEdgeColor(d.type, false))
-        .attr('stroke-width', 1.5)
-        .attr('stroke-opacity', 0);  // Keep edges hidden when deselected
+      resetFocus();
     });
 
     // 悬停效果 - Enhanced for starfield
     nodes.on('mouseenter', function(event, d) {
       if (externalSelectedNode) return; // 如果已选中节点，不响应悬停
+      if (!matchesFilter(d)) return;
 
       // Enlarge node smoothly (works with any base size)
       d3.select(this).select('circle')
@@ -432,6 +618,7 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
 
     nodes.on('mouseleave', function(event, d) {
       if (externalSelectedNode) return;
+      if (!matchesFilter(d)) return;
 
       // Restore node size
       d3.select(this).select('circle')
@@ -454,16 +641,7 @@ export function IdeologyCanvas({ data, selectedNode: externalSelectedNode, onNod
         .style('font-weight', '500');
     });
 
-    // 缩放功能
-    const zoom = d3.zoom()
-      .scaleExtent([0.5, 5])
-      .on('zoom', (event) => {
-        g.attr('transform', event.transform);
-      });
-
-    svg.call(zoom);
-
-  }, [data, dimensions, externalSelectedNode, onNodeSelect]);
+  }, [data, dimensions, externalSelectedNode, onNodeSelect, language, onRegisterControls, filterDomain]);
 
   return (
     <div style={{

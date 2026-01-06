@@ -59,14 +59,14 @@ export function ParticleBackground() {
         const twinkle = Math.sin(this.twinklePhase) * 0.3 + 0.7;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(200, 220, 255, ${this.opacity * twinkle})`;
+        ctx.fillStyle = `rgba(230, 215, 180, ${this.opacity * twinkle})`;
         ctx.fill();
 
         // Add glow for brighter stars
         if (this.z > 2) {
           ctx.beginPath();
           ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(100, 150, 255, ${this.opacity * twinkle * 0.2})`;
+          ctx.fillStyle = `rgba(140, 180, 255, ${this.opacity * twinkle * 0.18})`;
           ctx.fill();
         }
       }
