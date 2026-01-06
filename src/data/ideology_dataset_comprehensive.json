@@ -144,6 +144,55 @@
     ]
   },
   {
+    "id": "augustinianism",
+    "name": "Augustinianism",
+    "description": "Early Christian philosophy emphasizing divine grace, original sin, predestination, and the divided will. Synthesizes Neoplatonic philosophy with Christian doctrine.",
+    "era": 400,
+    "domains": ["philosophy", "theology", "ethics"],
+    "key_figures": ["Augustine of Hippo"],
+    "relationships": [
+      {"target": "platonism", "type": "influenced_by", "description": "Influenced by Neoplatonic metaphysics"},
+      {"target": "thomism", "type": "influenced", "description": "Influenced medieval Christian philosophy"}
+    ]
+  },
+  {
+    "id": "islamic_philosophy",
+    "name": "Islamic Philosophy (Falsafa)",
+    "description": "Medieval Islamic philosophical tradition synthesizing Greek philosophy with Islamic theology. Emphasized reason, logic, and reconciliation of philosophy with revelation.",
+    "era": 900,
+    "domains": ["philosophy", "theology", "science"],
+    "key_figures": ["Al-Farabi", "Avicenna", "Averroes"],
+    "relationships": [
+      {"target": "aristotelianism", "type": "preserved_and_developed", "description": "Preserved Aristotelian philosophy during medieval period"},
+      {"target": "scholasticism", "type": "influenced", "description": "Influenced European scholasticism through translations"}
+    ]
+  },
+  {
+    "id": "scholasticism",
+    "name": "Scholasticism",
+    "description": "Medieval European philosophical method using dialectical reasoning to reconcile theology with philosophy. Emphasizes systematic analysis and synthesis of faith and reason.",
+    "era": 1100,
+    "domains": ["philosophy", "theology"],
+    "key_figures": ["Peter Abelard", "Thomas Aquinas", "Duns Scotus"],
+    "relationships": [
+      {"target": "aristotelianism", "type": "built_on", "description": "Built on Aristotelian logic and metaphysics"},
+      {"target": "islamic_philosophy", "type": "influenced_by", "description": "Learned from Islamic philosophical commentaries"},
+      {"target": "thomism", "type": "includes", "description": "Thomism represents its culmination"}
+    ]
+  },
+  {
+    "id": "nominalism",
+    "name": "Nominalism",
+    "description": "Medieval philosophical position denying real existence of universals. Only individual particulars exist; general terms are merely names or mental concepts.",
+    "era": 1320,
+    "domains": ["philosophy", "metaphysics"],
+    "key_figures": ["William of Ockham"],
+    "relationships": [
+      {"target": "scholasticism", "type": "critiqued", "description": "Critiqued scholastic realism"},
+      {"target": "empiricism", "type": "anticipated", "description": "Anticipated empiricist epistemology"}
+    ]
+  },
+  {
     "id": "thomism",
     "name": "Thomism",
     "description": "Medieval synthesis of Aristotelian philosophy with Christian theology by Thomas Aquinas. Emphasizes reason and faith as complementary paths to truth, natural law, and Five Ways to prove God's existence.",
@@ -165,8 +214,45 @@
     "key_figures": ["Petrarch", "Erasmus", "Pico della Mirandola"],
     "relationships": [
       {"target": "enlightenment", "type": "influenced", "description": "Influenced Enlightenment emphasis on reason and human potential"},
-      {"target": "individualism", "type": "promoted", "description": "Promoted individual achievement and human-centered worldview"},
-      {"target": "secularism", "type": "influenced", "description": "Contributed to growing secularization of thought"}
+      {"target": "platonism", "type": "revived", "description": "Revived interest in Platonic philosophy"},
+      {"target": "scholasticism", "type": "critiqued", "description": "Critiqued medieval scholastic method"}
+    ]
+  },
+  {
+    "id": "machiavellianism",
+    "name": "Machiavellianism",
+    "description": "Political philosophy emphasizing pragmatic power politics over moral idealism. Argues effective rulers must be willing to act immorally when necessary for state interests.",
+    "era": 1513,
+    "domains": ["politics", "philosophy"],
+    "key_figures": ["Niccolò Machiavelli"],
+    "relationships": [
+      {"target": "realism_politics", "type": "foundation_for", "description": "Laid foundation for modern political realism"},
+      {"target": "natural_law", "type": "challenged", "description": "Challenged natural law's role in politics"}
+    ]
+  },
+  {
+    "id": "mercantilism",
+    "name": "Mercantilism",
+    "description": "Economic theory emphasizing national wealth through trade surplus, accumulation of gold, protectionism, and state intervention in economy. Dominant economic doctrine before capitalism.",
+    "era": 1600,
+    "domains": ["economics", "politics"],
+    "key_figures": ["Jean-Baptiste Colbert", "Thomas Mun"],
+    "relationships": [
+      {"target": "capitalism", "type": "preceded", "description": "Preceded and was replaced by free market capitalism"},
+      {"target": "liberalism", "type": "opposed_by", "description": "Opposed by liberal free trade economics"}
+    ]
+  },
+  {
+    "id": "republicanism",
+    "name": "Republicanism",
+    "description": "Political ideology emphasizing civic virtue, popular sovereignty, and mixed government. Opposes monarchy and tyranny, values political participation and the common good.",
+    "era": -500,
+    "domains": ["politics", "philosophy"],
+    "key_figures": ["Cicero", "Machiavelli", "James Madison"],
+    "relationships": [
+      {"target": "democracy", "type": "related_to", "description": "Related but emphasizes civic virtue over pure democracy"},
+      {"target": "liberalism", "type": "influenced", "description": "Influenced liberal democratic theory"},
+      {"target": "social_contract", "type": "aligned_with", "description": "Aligned with social contract ideas of popular sovereignty"}
     ]
   },
   {
@@ -250,7 +336,32 @@
       {"target": "rationalism", "type": "promoted", "description": "Promoted rationalist confidence in human reason"},
       {"target": "liberalism", "type": "influenced", "description": "Influenced liberal political philosophy"},
       {"target": "romanticism", "type": "opposed_by", "description": "Opposed by Romantic emphasis on emotion and tradition"},
-      {"target": "secularism", "type": "promoted", "description": "Promoted secular governance and religious tolerance"}
+      {"target": "renaissance_humanism", "type": "evolved_from", "description": "Evolved from Renaissance humanist tradition"}
+    ]
+  },
+  {
+    "id": "secularism",
+    "name": "Secularism",
+    "description": "Principle of separating religion from political, social, and educational institutions. Advocates for government neutrality on religious matters and freedom of religion and conscience.",
+    "era": 1750,
+    "domains": ["politics", "philosophy"],
+    "key_figures": ["Voltaire", "Thomas Jefferson", "John Stuart Mill"],
+    "relationships": [
+      {"target": "enlightenment", "type": "emerged_from", "description": "Emerged from Enlightenment critique of religious authority"},
+      {"target": "liberalism", "type": "aligned_with", "description": "Aligned with liberal principles of tolerance and pluralism"}
+    ]
+  },
+  {
+    "id": "individualism",
+    "name": "Individualism",
+    "description": "Moral and political philosophy prioritizing individual autonomy, rights, and self-reliance over collective or state authority. Values personal freedom and self-determination.",
+    "era": 1800,
+    "domains": ["philosophy", "politics", "ethics"],
+    "key_figures": ["John Stuart Mill", "Alexis de Tocqueville", "Ralph Waldo Emerson"],
+    "relationships": [
+      {"target": "liberalism", "type": "central_to", "description": "Central value of liberal political philosophy"},
+      {"target": "romanticism", "type": "promoted_by", "description": "Promoted by Romantic emphasis on individual genius"},
+      {"target": "communitarianism", "type": "opposed_by", "description": "Critiqued by communitarian emphasis on community"}
     ]
   },
   {
@@ -480,6 +591,58 @@
     ]
   },
   {
+    "id": "totalitarianism",
+    "name": "Totalitarianism",
+    "description": "Political system characterized by absolute state control over all aspects of public and private life. Features single-party rule, state ideology, mass surveillance, and suppression of dissent.",
+    "era": 1920,
+    "domains": ["politics"],
+    "key_figures": ["Hannah Arendt"],
+    "relationships": [
+      {"target": "fascism", "type": "exemplified_by", "description": "Fascist regimes exemplified totalitarian control"},
+      {"target": "communism", "type": "associated_with", "description": "Communist states accused of totalitarian practices"},
+      {"target": "authoritarianism", "type": "extreme_form", "description": "Represents extreme form of authoritarian governance"}
+    ]
+  },
+  {
+    "id": "authoritarianism",
+    "name": "Authoritarianism",
+    "description": "Political system emphasizing strong centralized power, limited political freedoms, and obedience to authority. Lacks democratic accountability and pluralism.",
+    "era": 1900,
+    "domains": ["politics"],
+    "key_figures": ["Carl Schmitt"],
+    "relationships": [
+      {"target": "democracy", "type": "opposes", "description": "Opposes democratic distribution of power"},
+      {"target": "liberalism", "type": "opposes", "description": "Rejects liberal individual rights and freedoms"},
+      {"target": "legalism", "type": "similar_to", "description": "Similar to ancient Legalist advocacy of strong state"}
+    ]
+  },
+  {
+    "id": "imperialism",
+    "name": "Imperialism",
+    "description": "Policy of extending power and influence through colonization, military force, or economic domination. Involves political and economic control over foreign territories.",
+    "era": 1870,
+    "domains": ["politics", "economics"],
+    "key_figures": ["Cecil Rhodes", "Lenin (critic)"],
+    "relationships": [
+      {"target": "nationalism", "type": "related_to", "description": "Often driven by nationalist expansion"},
+      {"target": "capitalism", "type": "linked_to", "description": "Lenin linked imperialism to capitalist expansion"},
+      {"target": "marxism", "type": "critiqued_by", "description": "Critiqued by Marxist anti-colonial theory"}
+    ]
+  },
+  {
+    "id": "internationalism",
+    "name": "Internationalism",
+    "description": "Political principle advocating cooperation between nations for common goals. Emphasizes global solidarity over national interests and supports international institutions.",
+    "era": 1900,
+    "domains": ["politics"],
+    "key_figures": ["Woodrow Wilson", "Karl Marx"],
+    "relationships": [
+      {"target": "nationalism", "type": "opposes", "description": "Opposes nationalist prioritization of own nation"},
+      {"target": "cosmopolitanism", "type": "similar_to", "description": "Similar to cosmopolitan global moral community"},
+      {"target": "socialism", "type": "related_to", "description": "Socialist internationalism promotes worker solidarity"}
+    ]
+  },
+  {
     "id": "postmodernism",
     "name": "Postmodernism",
     "description": "Philosophical movement skeptical of grand narratives, objective truth, and universal values. Emphasizes plurality, deconstruction, power relations, and cultural relativism.",
@@ -695,6 +858,32 @@
       {"target": "marxism", "type": "developed_from", "description": "Developed from Marxist critique of capitalism and ideology"},
       {"target": "postmodernism", "type": "influenced", "description": "Influenced postmodern emphasis on power and discourse"},
       {"target": "enlightenment", "type": "critiques", "description": "Dialectic of Enlightenment critiqued instrumental reason"}
+    ]
+  },
+  {
+    "id": "populism",
+    "name": "Populism",
+    "description": "Political approach appealing to 'the people' against 'the elite.' Emphasizes direct popular sovereignty, anti-establishment rhetoric, and often charismatic leadership. Can emerge from left or right.",
+    "era": 1890,
+    "domains": ["politics"],
+    "key_figures": ["William Jennings Bryan", "Juan Perón"],
+    "relationships": [
+      {"target": "democracy", "type": "claims_to_represent", "description": "Claims to represent true popular will"},
+      {"target": "liberalism", "type": "tensions_with", "description": "Often tensions with liberal institutions and norms"},
+      {"target": "nationalism", "type": "often_combined", "description": "Often combined with nationalist rhetoric"}
+    ]
+  },
+  {
+    "id": "progressivism",
+    "name": "Progressivism",
+    "description": "Political philosophy advocating social reform, government intervention to address inequality, and scientific/rational approaches to social problems. Emphasizes progress through active reform.",
+    "era": 1890,
+    "domains": ["politics", "social"],
+    "key_figures": ["Theodore Roosevelt", "John Dewey"],
+    "relationships": [
+      {"target": "liberalism", "type": "evolved_from", "description": "Evolved from liberal tradition with more interventionism"},
+      {"target": "social_democracy", "type": "similar_to", "description": "Similar to social democratic welfare policies"},
+      {"target": "conservatism", "type": "opposes", "description": "Opposes conservative resistance to change"}
     ]
   },
   {
