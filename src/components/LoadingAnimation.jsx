@@ -22,7 +22,7 @@ export function LoadingAnimation() {
 
       <div style={styles.textContainer}>
         <h2 style={styles.title}>Loading The Agora...</h2>
-        <p style={styles.subtitle}>Mapping the landscape of ideas across 2,500 years</p>
+        <p style={styles.subtitle}>Mapping the landscape of ideas from ancient to contemporary thought</p>
       </div>
 
       <style>{keyframes}</style>

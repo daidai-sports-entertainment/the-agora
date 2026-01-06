@@ -38,9 +38,9 @@ export function InfoPanel({ selectedNode }) {
           </div>
 
           <div style={styles.stats}>
-            <p>📚 56 concepts</p>
-            <p>🔗 203 relationships</p>
-            <p>⏱️ Spanning 2,500 years</p>
+            <p>📚 71 concepts</p>
+            <p>🔗 Explore ideas across history</p>
+            <p>⏱️ Ancient to Contemporary</p>
           </div>
         </div>
       </div>

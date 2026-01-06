@@ -30,7 +30,7 @@ export function WelcomeModal({ onClose }) {
 
         <h2 style={styles.title}>Welcome to The Agora</h2>
         <p style={styles.message}>
-          Explore 2,500 years of philosophical and political thought. Click any node or use the search bar to begin your journey.
+          Explore the evolution of philosophical and political thought from ancient to contemporary times. Click any node to begin your journey.
         </p>
 
         <div style={styles.features}>
