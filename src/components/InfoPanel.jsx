@@ -20,7 +20,7 @@ export function InfoPanel({ selectedNode, language, onLanguageChange, totalNodes
 
   if (!selectedNode) {
     return (
-      <div style={styles.panel}>
+      <div style={styles.panel} className="info-panel">
         <div style={styles.languageRow}>
           <span style={styles.languageLabel}>{t.languageLabel}</span>
           <div style={styles.languageToggle}>
@@ -92,7 +92,7 @@ export function InfoPanel({ selectedNode, language, onLanguageChange, totalNodes
   const category = formatCategory(selectedNode.domains, language);
 
   return (
-    <div style={styles.panel}>
+    <div style={styles.panel} className="info-panel">
       <div style={styles.languageRow}>
         <span style={styles.languageLabel}>{t.languageLabel}</span>
         <div style={styles.languageToggle}>
@@ -204,7 +204,8 @@ const styles = {
     padding: '24px',
     overflowY: 'auto',
     boxShadow: '-10px 0 30px rgba(3, 5, 10, 0.55)',
-    borderLeft: '1px solid var(--color-border)'
+    borderLeft: '1px solid var(--color-border)',
+    position: 'relative'
   },
   languageRow: {
     display: 'flex',

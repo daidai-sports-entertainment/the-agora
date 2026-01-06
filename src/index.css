@@ -76,6 +76,73 @@ button:focus-visible {
   box-shadow: none;
 }
 
+.info-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.info-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(230, 215, 180, 0.38) 0 1px, transparent 2px),
+    radial-gradient(circle at 82% 28%, rgba(140, 180, 255, 0.42) 0 1.6px, transparent 3px),
+    radial-gradient(circle at 30% 55%, rgba(255, 255, 255, 0.3) 0 1.2px, transparent 2.5px),
+    radial-gradient(circle at 68% 78%, rgba(180, 146, 224, 0.32) 0 1.3px, transparent 2.6px),
+    radial-gradient(circle at 45% 38%, rgba(230, 201, 138, 0.32) 0 1.1px, transparent 2.4px),
+    radial-gradient(circle at 22% 70%, rgba(140, 180, 255, 0.28) 0 0.9px, transparent 2px),
+    radial-gradient(circle at 75% 52%, rgba(255, 255, 255, 0.24) 0 0.8px, transparent 2px),
+    radial-gradient(circle at 10% 50%, rgba(230, 215, 180, 0.3) 0 0.9px, transparent 2px),
+    radial-gradient(circle at 55% 65%, rgba(140, 180, 255, 0.32) 0 1px, transparent 2.2px),
+    radial-gradient(circle at 88% 18%, rgba(255, 255, 255, 0.26) 0 0.9px, transparent 2px),
+    radial-gradient(circle at 40% 85%, rgba(180, 146, 224, 0.28) 0 1px, transparent 2.2px);
+  opacity: 0.95;
+  mix-blend-mode: screen;
+  animation: panelTwinkle 6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.info-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 18% 82%, rgba(140, 180, 255, 0.35) 0 1px, transparent 2.5px),
+    radial-gradient(circle at 58% 12%, rgba(230, 215, 180, 0.3) 0 0.9px, transparent 2px),
+    radial-gradient(circle at 84% 58%, rgba(255, 255, 255, 0.28) 0 1px, transparent 2px),
+    radial-gradient(circle at 48% 88%, rgba(180, 146, 224, 0.26) 0 0.9px, transparent 2.2px),
+    radial-gradient(circle at 65% 40%, rgba(140, 180, 255, 0.3) 0 0.9px, transparent 2.2px),
+    radial-gradient(circle at 30% 35%, rgba(230, 215, 180, 0.26) 0 0.8px, transparent 2px);
+  opacity: 0.88;
+  mix-blend-mode: screen;
+  animation: panelDrift 18s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.info-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes panelTwinkle {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.6; }
+}
+
+@keyframes panelDrift {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(-8px, 6px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes headerTwinkle {
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 0.95; }
+}
+
 /* Add subtle hover effects to relationship cards in InfoPanel */
 .relationship-card {
   transition: all 0.2s ease;

@@ -68,6 +68,7 @@ function App() {
       <ParticleBackground />
       <WelcomeModal language={language} />
       <header style={styles.header}>
+        <div style={styles.headerStars} aria-hidden="true" />
         <div style={styles.headerLeft}>
           <h1 style={styles.logo}>{t.appTitle}</h1>
           <p style={styles.tagline}>{t.tagline}</p>
@@ -240,11 +241,32 @@ const styles = {
     position: 'relative',
     zIndex: 5
   },
+  headerStars: {
+    position: 'absolute',
+    inset: 0,
+    backgroundImage: `
+      radial-gradient(circle at 12% 20%, rgba(230, 215, 180, 0.4) 0 1px, transparent 2px),
+      radial-gradient(circle at 75% 25%, rgba(140, 180, 255, 0.45) 0 1.4px, transparent 3px),
+      radial-gradient(circle at 40% 55%, rgba(255, 255, 255, 0.28) 0 1px, transparent 2px),
+      radial-gradient(circle at 85% 70%, rgba(180, 146, 224, 0.32) 0 1.2px, transparent 2.6px),
+      radial-gradient(circle at 25% 75%, rgba(230, 201, 138, 0.3) 0 1px, transparent 2px),
+      radial-gradient(circle at 55% 18%, rgba(255, 255, 255, 0.26) 0 0.9px, transparent 2px),
+      radial-gradient(circle at 18% 60%, rgba(140, 180, 255, 0.32) 0 1px, transparent 2.4px),
+      radial-gradient(circle at 62% 48%, rgba(230, 215, 180, 0.28) 0 0.9px, transparent 2px)
+    `,
+    opacity: 0.85,
+    mixBlendMode: 'screen',
+    animation: 'headerTwinkle 7s ease-in-out infinite',
+    pointerEvents: 'none',
+    zIndex: 0
+  },
   headerLeft: {
     display: 'flex',
     flexDirection: 'column',
     gap: '4px',
-    flex: '0 0 auto'
+    flex: '0 0 auto',
+    position: 'relative',
+    zIndex: 1
   },
   logo: {
     fontSize: '28px',
@@ -266,13 +288,17 @@ const styles = {
     flex: '1 1 auto',
     display: 'flex',
     justifyContent: 'center',
-    padding: '0 24px'
+    padding: '0 24px',
+    position: 'relative',
+    zIndex: 1
   },
   headerRight: {
     display: 'flex',
     gap: '24px',
     alignItems: 'center',
-    flex: '0 0 auto'
+    flex: '0 0 auto',
+    position: 'relative',
+    zIndex: 1
   },
   legend: {
     display: 'flex',
@@ -324,7 +350,7 @@ const styles = {
     textAlign: 'center',
     fontStyle: 'italic',
     fontSize: '13px',
-    color: 'var(--color-muted)',
+    color: 'rgba(168, 177, 194, 0.65)',
     letterSpacing: '0.2px',
     textShadow: '0 6px 18px rgba(4, 6, 12, 0.8)',
     zIndex: 1,
