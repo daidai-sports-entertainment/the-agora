@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { getNodeColor } from '../utils/colorScheme';
 import {
   formatCategory,
@@ -6,17 +7,385 @@ import {
   formatRelationType,
   getText
 } from '../utils/i18n';
+import {
+  getLayerDisplayName,
+  getLayerIcon
+} from '../utils/relationOntology';
+import { generateWarnings } from '../utils/pathFinding';
 
 /**
  * Right side information panel - displays selected concept details
+ * or influence path information
  */
-export function InfoPanel({ selectedNode, language, onLanguageChange, totalNodes }) {
+export function InfoPanel({ selectedNode, language, onLanguageChange, totalNodes, pathResult, pathMode, onClearPath }) {
   const t = getText(language);
+  const [showQualityTooltip, setShowQualityTooltip] = useState(false);
+
   const handleLanguageToggle = (nextLanguage) => {
     if (nextLanguage !== language) {
       onLanguageChange?.(nextLanguage);
     }
   };
+
+  // 如果有路径结果，显示路径信息
+  if (pathResult && pathResult.path && pathResult.path.length > 0) {
+    return (
+      <div style={styles.panel} className="info-panel">
+        <div style={styles.languageRow}>
+          <span style={styles.languageLabel}>{t.languageLabel}</span>
+          <div style={styles.languageToggle}>
+            <button
+              type="button"
+              onClick={() => handleLanguageToggle('en')}
+              style={{
+                ...styles.languageOption,
+                ...(language === 'en' ? styles.languageOptionActive : {})
+              }}
+              aria-pressed={language === 'en'}
+            >
+              {t.languageEN}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleLanguageToggle('zh')}
+              style={{
+                ...styles.languageOption,
+                ...(language === 'zh' ? styles.languageOptionActive : {})
+              }}
+              aria-pressed={language === 'zh'}
+            >
+              {t.languageZH}
+            </button>
+          </div>
+        </div>
+
+        <div style={styles.header}>
+          <h2 style={{...styles.conceptName, color: '#e6c98a'}}>
+            {language === 'zh' ? '影响路径' : 'Influence Path'}
+          </h2>
+          <div style={styles.meta}>
+            <span style={styles.era}>
+              {pathResult.path[0].node?.name} → {pathResult.path[pathResult.path.length - 1].node?.name}
+            </span>
+          </div>
+        </div>
+
+        <div style={styles.section}>
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+              <h3 style={{...styles.sectionTitle, margin: 0}}>
+                {language === 'zh' ? '📊 路径概览' : '📊 Path Overview'}
+              </h3>
+              {pathResult.quality && (
+                <div
+                  style={styles.qualityIconContainer}
+                  onMouseEnter={() => setShowQualityTooltip(true)}
+                  onMouseLeave={() => setShowQualityTooltip(false)}
+                >
+                  <span style={styles.qualityIcon}>ℹ️</span>
+                  {showQualityTooltip && (
+                    <div style={styles.qualityTooltip}>
+                      <div style={styles.qualityTooltipContent}>
+                        <div style={styles.qualityBadge}>
+                          <span style={styles.qualityBadgeIcon}>
+                            {getLayerIcon(pathResult.quality.type)}
+                          </span>
+                          <span style={styles.qualityBadgeText}>
+                            {getLayerDisplayName(pathResult.quality.type, language)}
+                          </span>
+                        </div>
+
+                        <div style={styles.qualityScore}>
+                          <span style={styles.qualityScoreLabel}>
+                            {language === 'zh' ? '可信度' : 'Confidence'}:
+                          </span>
+                          <span style={{
+                            ...styles.qualityScoreValue,
+                            color: pathResult.quality.score >= 80 ? '#4caf50' :
+                                   pathResult.quality.score >= 50 ? '#ffa726' :
+                                   '#ef5350'
+                          }}>
+                            {pathResult.quality.score >= 80 ? '🟢' :
+                             pathResult.quality.score >= 50 ? '🟡' :
+                             '🔴'}
+                            {' '}
+                            {pathResult.quality.score}%
+                          </span>
+                        </div>
+
+                        {pathResult.quality.warnings && pathResult.quality.warnings.length > 0 && (
+                          <div style={styles.qualityWarnings}>
+                            <div style={styles.qualityWarningTitle}>
+                              ⚠️ {language === 'zh' ? '注意' : 'Warnings'}:
+                            </div>
+                            {generateWarnings(pathResult.quality.warnings, language).map((warning, index) => (
+                              <div key={index} style={styles.qualityWarningItem}>
+                                • {warning}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={onClearPath}
+              style={styles.resetButton}
+              title={language === 'zh' ? '重新选择' : 'Reset selection'}
+            >
+              🔄
+            </button>
+          </div>
+          <div style={styles.pathStats}>
+            <div style={styles.pathStat}>
+              <span style={styles.pathStatLabel}>
+                {language === 'zh' ? '总步数' : 'Total Steps'}:
+              </span>
+              <span style={styles.pathStatValue}>{pathResult.length}</span>
+            </div>
+            <div style={styles.pathStat}>
+              <span style={styles.pathStatLabel}>
+                {language === 'zh' ? '概念数' : 'Concepts'}:
+              </span>
+              <span style={styles.pathStatValue}>{pathResult.path.length}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style={styles.section}>
+          <h3 style={styles.sectionTitle}>
+            {language === 'zh' ? '🗺️ 详细路径' : '🗺️ Detailed Path'}
+          </h3>
+          <div style={styles.pathSteps}>
+            {pathResult.path.map((step, index) => {
+              const node = step.node;
+              const edge = pathResult.edges[index];
+              const stepNumber = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'][index] || (index + 1);
+
+              return (
+                <div key={step.nodeId}>
+                  <div style={styles.pathStep}>
+                    <div style={styles.pathStepNumber}>{stepNumber}</div>
+                    <div style={styles.pathStepContent}>
+                      <div style={styles.pathStepName}>{node?.name || step.nodeId}</div>
+                      <div style={styles.pathStepEra}>
+                        {node ? formatEra(node.era, language) : ''}
+                      </div>
+                    </div>
+                  </div>
+                  {edge && (
+                    <div style={styles.pathArrow}>
+                      <span style={styles.pathArrowIcon}>↓</span>
+                      <span style={styles.pathArrowLabel}>
+                        {formatRelationType(edge.type, language)}
+                      </span>
+                      {edge.description && (
+                        <div style={styles.pathArrowDesc}>{edge.description}</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 如果路径搜索失败（pathResult明确为null）
+  if (pathMode && pathResult === null) {
+    return (
+      <div style={styles.panel} className="info-panel">
+        <div style={styles.languageRow}>
+          <span style={styles.languageLabel}>{t.languageLabel}</span>
+          <div style={styles.languageToggle}>
+            <button
+              type="button"
+              onClick={() => handleLanguageToggle('en')}
+              style={{
+                ...styles.languageOption,
+                ...(language === 'en' ? styles.languageOptionActive : {})
+              }}
+              aria-pressed={language === 'en'}
+            >
+              {t.languageEN}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleLanguageToggle('zh')}
+              style={{
+                ...styles.languageOption,
+                ...(language === 'zh' ? styles.languageOptionActive : {})
+              }}
+              aria-pressed={language === 'zh'}
+            >
+              {t.languageZH}
+            </button>
+          </div>
+        </div>
+
+        <div style={styles.welcome}>
+          <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px'}}>
+            <h2 style={{...styles.title, margin: 0}}>
+              {language === 'zh' ? '❌ 未找到路径' : '❌ No Path Found'}
+            </h2>
+            <button
+              type="button"
+              onClick={onClearPath}
+              style={styles.resetButton}
+              title={language === 'zh' ? '重新选择' : 'Reset selection'}
+            >
+              🔄
+            </button>
+          </div>
+          <p style={styles.subtitle}>
+            {language === 'zh'
+              ? '这两个概念之间没有找到符合质量标准的影响路径。'
+              : 'No valid influence path found between these concepts that meets quality standards.'}
+          </p>
+
+          <div style={styles.instructions}>
+            <h3 style={styles.sectionTitle}>
+              {language === 'zh' ? '可能的原因' : 'Possible Reasons'}
+            </h3>
+            <ul style={styles.list}>
+              <li>
+                {language === 'zh'
+                  ? '这两个思想之间没有直接或间接的影响关系'
+                  : 'No direct or indirect influence relationship exists'}
+              </li>
+              <li>
+                {language === 'zh'
+                  ? '路径过长（超过4步）或质量分数过低（低于40分）'
+                  : 'Path too long (>4 steps) or quality score too low (<40)'}
+              </li>
+              <li>
+                {language === 'zh'
+                  ? '路径混合了不兼容的关系类型（如对立关系和继承关系混用）'
+                  : 'Path mixes incompatible relation types'}
+              </li>
+            </ul>
+          </div>
+
+          <p style={{...styles.subtitle, marginTop: '24px'}}>
+            {language === 'zh'
+              ? '请尝试选择其他概念组合。'
+              : 'Please try selecting different concepts.'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // 如果处于路径模式但还没有开始计算路径
+  if (pathMode && pathResult === undefined) {
+    return (
+      <div style={styles.panel} className="info-panel">
+        <div style={styles.languageRow}>
+          <span style={styles.languageLabel}>{t.languageLabel}</span>
+          <div style={styles.languageToggle}>
+            <button
+              type="button"
+              onClick={() => handleLanguageToggle('en')}
+              style={{
+                ...styles.languageOption,
+                ...(language === 'en' ? styles.languageOptionActive : {})
+              }}
+              aria-pressed={language === 'en'}
+            >
+              {t.languageEN}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleLanguageToggle('zh')}
+              style={{
+                ...styles.languageOption,
+                ...(language === 'zh' ? styles.languageOptionActive : {})
+              }}
+              aria-pressed={language === 'zh'}
+            >
+              {t.languageZH}
+            </button>
+          </div>
+        </div>
+
+        <div style={styles.welcome}>
+          <h2 style={styles.title}>
+            {language === 'zh' ? '🔍 查找影响路径' : '🔍 Find Influence Path'}
+          </h2>
+          <p style={styles.subtitle}>
+            {language === 'zh'
+              ? '追踪思想如何在历史中传播和演进'
+              : 'Trace how ideas spread and evolve through history'}
+          </p>
+
+          <div style={styles.instructions}>
+            <h3 style={styles.sectionTitle}>
+              {language === 'zh' ? '使用方法' : 'How to Use'}
+            </h3>
+            <ul style={styles.list}>
+              <li>
+                {language === 'zh'
+                  ? '第一步：点击任意概念作为起点（将以蓝色高亮）'
+                  : 'Step 1: Click any concept as the start point (highlighted in blue)'}
+              </li>
+              <li>
+                {language === 'zh'
+                  ? '第二步：点击另一个概念作为终点'
+                  : 'Step 2: Click another concept as the end point'}
+              </li>
+              <li>
+                {language === 'zh'
+                  ? '系统将自动计算并显示影响路径'
+                  : 'The system will automatically calculate and display the influence path'}
+              </li>
+              <li>
+                {language === 'zh'
+                  ? '点击 ✕ 按钮或再次点击 🔍 按钮退出路径模式'
+                  : 'Click ✕ or 🔍 again to exit path mode'}
+              </li>
+            </ul>
+          </div>
+
+          {selectedNode && (
+            <div style={styles.pathSelection}>
+              <h3 style={styles.sectionTitle}>
+                {language === 'zh' ? '✨ 已选择起点' : '✨ Start Point Selected'}
+              </h3>
+              <div style={{...styles.pathSelectedNode, borderColor: '#8fb4ff'}}>
+                <div style={styles.pathSelectedName}>{selectedNode.name}</div>
+                <div style={styles.pathSelectedEra}>{formatEra(selectedNode.era, language)}</div>
+              </div>
+
+              <div style={{...styles.constellationHint, marginTop: '16px'}}>
+                <p style={styles.constellationText}>
+                  {language === 'zh'
+                    ? '✨ 星图中亮起的思想可以在4步内到达'
+                    : '✨ Illuminated ideas can be reached within 4 steps'}
+                </p>
+                <p style={{...styles.constellationText, opacity: 0.7}}>
+                  {language === 'zh'
+                    ? '暗淡的思想暂时无法通过有效路径连接'
+                    : 'Dimmed ideas cannot be connected through valid paths'}
+                </p>
+              </div>
+
+              <p style={{...styles.subtitle, marginTop: '16px'}}>
+                {language === 'zh'
+                  ? '💫 现在请选择一个亮起的终点...'
+                  : '💫 Now select an illuminated end point...'}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   if (!selectedNode) {
     return (
@@ -379,5 +748,234 @@ const styles = {
     display: 'flex',
     flexDirection: 'column',
     gap: '4px'
+  },
+  pathStats: {
+    display: 'flex',
+    gap: '16px',
+    padding: '12px',
+    backgroundColor: 'rgba(230, 201, 138, 0.1)',
+    borderRadius: '12px',
+    border: '1px solid rgba(230, 201, 138, 0.2)'
+  },
+  pathStat: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px'
+  },
+  pathStatLabel: {
+    fontSize: '12px',
+    color: 'var(--color-muted)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px'
+  },
+  pathStatValue: {
+    fontSize: '20px',
+    fontWeight: 'bold',
+    color: '#e6c98a'
+  },
+  pathSteps: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  pathStep: {
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: '12px',
+    padding: '12px',
+    backgroundColor: 'rgba(13, 23, 41, 0.75)',
+    borderRadius: '12px',
+    border: '1px solid rgba(230, 201, 138, 0.3)',
+    boxShadow: '0 10px 24px rgba(3, 6, 12, 0.35)'
+  },
+  pathStepNumber: {
+    fontSize: '20px',
+    color: '#e6c98a',
+    fontWeight: 'bold',
+    flexShrink: 0
+  },
+  pathStepContent: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px'
+  },
+  pathStepName: {
+    fontSize: '16px',
+    fontWeight: 600,
+    color: 'var(--color-ink)'
+  },
+  pathStepEra: {
+    fontSize: '13px',
+    color: 'var(--color-muted)'
+  },
+  pathArrow: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '8px 0',
+    gap: '4px'
+  },
+  pathArrowIcon: {
+    fontSize: '20px',
+    color: '#e6c98a'
+  },
+  pathArrowLabel: {
+    fontSize: '12px',
+    fontWeight: 600,
+    color: '#e6c98a',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px'
+  },
+  pathArrowDesc: {
+    fontSize: '11px',
+    color: 'var(--color-muted)',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    maxWidth: '280px'
+  },
+  pathSelection: {
+    marginTop: '8px'
+  },
+  pathSelectedNode: {
+    padding: '12px',
+    backgroundColor: 'rgba(13, 23, 41, 0.75)',
+    borderRadius: '12px',
+    border: '2px solid',
+    boxShadow: '0 10px 24px rgba(3, 6, 12, 0.35)'
+  },
+  pathSelectedName: {
+    fontSize: '16px',
+    fontWeight: 600,
+    color: 'var(--color-ink)',
+    marginBottom: '4px'
+  },
+  pathSelectedEra: {
+    fontSize: '13px',
+    color: 'var(--color-muted)'
+  },
+  qualityContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+    padding: '16px',
+    backgroundColor: 'rgba(13, 23, 41, 0.75)',
+    borderRadius: '12px',
+    border: '1px solid rgba(230, 201, 138, 0.3)',
+    boxShadow: '0 10px 24px rgba(3, 6, 12, 0.35)'
+  },
+  qualityBadge: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '8px 12px',
+    backgroundColor: 'rgba(230, 201, 138, 0.15)',
+    borderRadius: '8px',
+    border: '1px solid rgba(230, 201, 138, 0.3)'
+  },
+  qualityBadgeIcon: {
+    fontSize: '18px'
+  },
+  qualityBadgeText: {
+    fontSize: '14px',
+    fontWeight: 600,
+    color: '#e6c98a'
+  },
+  qualityScore: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '8px 0'
+  },
+  qualityScoreLabel: {
+    fontSize: '14px',
+    color: 'var(--color-muted)'
+  },
+  qualityScoreValue: {
+    fontSize: '16px',
+    fontWeight: 'bold'
+  },
+  qualityWarnings: {
+    padding: '12px',
+    backgroundColor: 'rgba(239, 83, 80, 0.1)',
+    borderRadius: '8px',
+    border: '1px solid rgba(239, 83, 80, 0.3)'
+  },
+  qualityWarningTitle: {
+    fontSize: '13px',
+    fontWeight: 600,
+    color: '#ef5350',
+    marginBottom: '8px'
+  },
+  qualityWarningItem: {
+    fontSize: '12px',
+    color: 'var(--color-ink)',
+    lineHeight: '1.5',
+    marginBottom: '4px'
+  },
+  qualityInfo: {
+    fontSize: '12px',
+    color: 'var(--color-muted)',
+    fontStyle: 'italic',
+    textAlign: 'center'
+  },
+  constellationHint: {
+    padding: '12px',
+    backgroundColor: 'rgba(230, 201, 138, 0.08)',
+    borderRadius: '8px',
+    border: '1px solid rgba(230, 201, 138, 0.2)'
+  },
+  constellationText: {
+    fontSize: '13px',
+    color: 'var(--color-ink)',
+    margin: '4px 0',
+    lineHeight: '1.5'
+  },
+  qualityIconContainer: {
+    position: 'relative',
+    display: 'inline-block',
+    cursor: 'pointer'
+  },
+  qualityIcon: {
+    fontSize: '16px',
+    display: 'inline-block',
+    transition: 'transform 0.2s ease'
+  },
+  qualityTooltip: {
+    position: 'absolute',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    top: '28px',
+    zIndex: 1000,
+    minWidth: '280px',
+    maxWidth: '320px'
+  },
+  qualityTooltipContent: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+    padding: '16px',
+    backgroundColor: 'rgba(13, 23, 41, 0.98)',
+    borderRadius: '12px',
+    border: '1px solid rgba(230, 201, 138, 0.4)',
+    boxShadow: '0 12px 32px rgba(3, 6, 12, 0.6)',
+    backdropFilter: 'blur(8px)'
+  },
+  resetButton: {
+    width: '32px',
+    height: '32px',
+    borderRadius: '8px',
+    border: '1px solid rgba(230, 201, 138, 0.3)',
+    backgroundColor: 'rgba(230, 201, 138, 0.1)',
+    color: '#e6c98a',
+    fontSize: '16px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.2s ease',
+    ':hover': {
+      backgroundColor: 'rgba(230, 201, 138, 0.2)',
+      borderColor: 'rgba(230, 201, 138, 0.5)'
+    }
   }
 };

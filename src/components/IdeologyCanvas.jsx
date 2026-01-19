@@ -2,10 +2,12 @@ import { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import { getNodeColor, getEdgeColor, COLORS } from '../utils/colorScheme';
 import { formatEra, getText } from '../utils/i18n';
+import { findSemanticPath, calculatePathQuality } from '../utils/pathFinding';
 
 /**
  * 主可视化画布组件
  * 核心功能：点击节点 → 高亮所有关联的节点和边
+ * 新增功能：影响路径追踪
  */
 export function IdeologyCanvas({
   data,
@@ -13,12 +15,220 @@ export function IdeologyCanvas({
   onNodeSelect,
   language,
   onRegisterControls,
-  filterDomain
+  filterDomain,
+  pathMode,
+  pathStart,
+  pathEnd,
+  onPathNodeSelect,
+  pathResult,
+  onPathResult
 }) {
   const svgRef = useRef(null);
-  const [dimensions, setDimensions] = useState({ width: 1200, height: 800 });
+  const [dimensions] = useState({ width: 1200, height: 800 });
   const zoomRef = useRef(null);
   const svgSelectionRef = useRef(null);
+  const nodesSelectionRef = useRef(null);
+  const edgesSelectionRef = useRef(null);
+  const highlightPathRef = useRef(null);
+  const applyFilterBaseStateRef = useRef(null);
+  const yearToSegmentedXRef = useRef(null);
+  const yScaleRef = useRef(null);
+  const effectsLayerRef = useRef(null);
+  const fireworkTimersRef = useRef([]); // 存储所有烟花定时器
+
+  // 独立的effect用于计算路径（不触发重新渲染）
+  useEffect(() => {
+    if (pathMode && pathStart && pathEnd && pathResult === undefined) {
+      try {
+        // 使用增强的语义路径搜索
+        const result = findSemanticPath(pathStart.id, pathEnd.id, data.nodes, data.edges, {
+          maxLength: 4,        // 最多4步
+          minScore: 40         // 最低40分
+        });
+
+        // 如果找到路径，确保有质量评分
+        if (result && !result.quality) {
+          result.quality = calculatePathQuality(result);
+        }
+
+        // 即使result为null也要调用，让父组件知道没有找到路径
+        onPathResult?.(result);
+      } catch (error) {
+        console.error('Error calculating path:', error);
+        onPathResult?.(null);
+      }
+    }
+  }, [pathMode, pathStart, pathEnd, pathResult, data.nodes, data.edges, onPathResult]);
+
+  // 独立的effect用于高亮路径（不重新渲染整个图）
+  useEffect(() => {
+    if (!nodesSelectionRef.current || !edgesSelectionRef.current) return;
+
+    // 清理函数：停止所有动画和定时器
+    const cleanup = () => {
+      // 清除所有烟花定时器
+      fireworkTimersRef.current.forEach(timer => clearTimeout(timer));
+      fireworkTimersRef.current = [];
+
+      // 停止所有闪烁动画
+      if (nodesSelectionRef.current) {
+        nodesSelectionRef.current.selectAll('circle').interrupt();
+      }
+
+      // 清除所有烟花粒子
+      if (effectsLayerRef.current) {
+        effectsLayerRef.current.selectAll('circle').remove();
+      }
+    };
+
+    if (pathResult && pathResult.path && highlightPathRef.current) {
+      // 有路径结果，高亮路径
+      cleanup(); // 先清理
+      highlightPathRef.current(pathResult);
+    } else if (pathMode && pathStart && !pathEnd && pathResult === undefined && applyFilterBaseStateRef.current) {
+      // 路径模式，已选起点，还没选终点 - 显示"星座回应"效果
+      cleanup(); // 先清理之前的效果
+      const nodes = nodesSelectionRef.current;
+
+      // 计算从起点可达的所有节点（使用与实际路径查找相同的逻辑）
+      const reachableNodes = new Set();
+      data.nodes.forEach(node => {
+        if (node.id === pathStart.id) {
+          reachableNodes.add(node.id);
+        } else {
+          // 使用相同的语义路径搜索来判断可达性
+          const path = findSemanticPath(pathStart.id, node.id, data.nodes, data.edges, {
+            maxLength: 4,
+            minScore: 40
+          });
+          if (path) {
+            reachableNodes.add(node.id);
+          }
+        }
+      });
+
+      // 应用"星座回应"效果 - 更明显的视觉反馈
+      nodes.selectAll('circle')
+        .interrupt() // 停止所有现有动画
+        .attr('opacity', node => {
+          if (node.id === pathStart.id) return 1; // 起点：完全不透明
+          if (reachableNodes.has(node.id)) return 1; // 可达节点：完全明亮
+          return 0.2; // 不可达节点：非常暗淡
+        })
+        .attr('fill', node => {
+          if (node.id === pathStart.id) return '#8fb4ff'; // 起点：亮蓝色
+          if (reachableNodes.has(node.id)) return '#ffeb3b'; // 可达节点：亮黄色（更醒目）
+          return getNodeColor(node); // 不可达节点：保持原色但透明
+        })
+        .attr('stroke', node => {
+          if (node.id === pathStart.id) return '#ffffff'; // 起点：白色边框
+          if (reachableNodes.has(node.id)) return '#ffffff'; // 可达节点：白色边框
+          return 'transparent';
+        })
+        .attr('stroke-width', node => {
+          if (node.id === pathStart.id) return 4;
+          if (reachableNodes.has(node.id)) return 3;
+          return 0;
+        })
+        .attr('transform', node => {
+          if (node.id === pathStart.id) return 'scale(1.5)'; // 起点：更大
+          if (reachableNodes.has(node.id)) return 'scale(1.2)'; // 可达节点：明显放大
+          return 'scale(1)';
+        })
+        .style('filter', node => {
+          if (node.id === pathStart.id) {
+            return `drop-shadow(0 0 12px #8fb4ff) drop-shadow(0 0 24px #8fb4ff)`;
+          }
+          if (reachableNodes.has(node.id)) {
+            return `drop-shadow(0 0 12px #ffeb3b) drop-shadow(0 0 24px #ffeb3b)`;
+          }
+          const baseColor = getNodeColor(node);
+          return `drop-shadow(0 0 2px ${baseColor})`;
+        });
+
+      // 为可达节点添加强烈的闪烁动画
+      nodes.selectAll('circle').each(function(node) {
+        if (reachableNodes.has(node.id) && node.id !== pathStart.id) {
+          const circle = d3.select(this);
+
+          // 闪烁动画：在亮黄色和橙色之间快速切换
+          function blink() {
+            circle
+              .transition()
+              .duration(400)
+              .attr('fill', '#ff9800') // 橙色
+              .style('filter', 'drop-shadow(0 0 16px #ff9800) drop-shadow(0 0 32px #ff9800)')
+              .transition()
+              .duration(400)
+              .attr('fill', '#ffeb3b') // 亮黄色
+              .style('filter', 'drop-shadow(0 0 12px #ffeb3b) drop-shadow(0 0 24px #ffeb3b)')
+              .on('end', blink);
+          }
+          blink();
+        }
+      });
+
+      // 为可达节点添加持续的烟花爆炸动画
+      if (yearToSegmentedXRef.current && yScaleRef.current && effectsLayerRef.current) {
+        data.nodes.forEach(node => {
+          if (reachableNodes.has(node.id) && node.id !== pathStart.id) {
+            const nodeX = yearToSegmentedXRef.current(node.era);
+            const nodeY = yScaleRef.current(node.x);
+
+            // 创建持续的烟花效果（每1.5秒爆发一次）
+            function createFirework() {
+              // 检查是否还在 path mode 且起点仍然选中
+              if (!pathMode || !pathStart || pathEnd || pathResult !== undefined) {
+                return; // 停止创建新烟花
+              }
+
+              // 每次爆发12个粒子，更密集
+              for (let i = 0; i < 12; i++) {
+                const angle = (i / 12) * Math.PI * 2;
+                const distance = 35 + Math.random() * 25;
+                const endX = nodeX + Math.cos(angle) * distance;
+                const endY = nodeY + Math.sin(angle) * distance;
+
+                if (effectsLayerRef.current) {
+                  effectsLayerRef.current.append('circle')
+                    .attr('cx', nodeX)
+                    .attr('cy', nodeY)
+                    .attr('r', 3)
+                    .attr('fill', i % 2 === 0 ? '#ffeb3b' : '#ff9800') // 黄色和橙色交替
+                    .attr('opacity', 1)
+                    .transition()
+                    .duration(1000)
+                    .ease(d3.easeCubicOut)
+                    .attr('cx', endX)
+                    .attr('cy', endY)
+                    .attr('r', 0.8)
+                    .attr('opacity', 0)
+                    .remove();
+                }
+              }
+
+              // 1.5秒后再次爆发
+              const timerId = setTimeout(createFirework, 1500);
+              fireworkTimersRef.current.push(timerId);
+            }
+
+            // 初始延迟随机，让不同节点不同步
+            const initialTimerId = setTimeout(createFirework, Math.random() * 500);
+            fireworkTimersRef.current.push(initialTimerId);
+          }
+        });
+      }
+    } else {
+      // 不在正确的状态（退出路径模式、选择了终点、或有路径结果），清理所有效果
+      cleanup();
+      if (applyFilterBaseStateRef.current) {
+        applyFilterBaseStateRef.current();
+      }
+    }
+
+    // 返回清理函数
+    return cleanup;
+  }, [pathResult, pathMode, pathStart, pathEnd, filterDomain, data.nodes, data.edges]);
 
   useEffect(() => {
     if (!data.nodes.length) return;
@@ -96,6 +306,10 @@ export function IdeologyCanvas({
     const yScale = d3.scaleLinear()
       .domain(yExtent)
       .range([dimensions.height - margin.bottom, margin.top]);
+
+    // 保存函数到 ref 供其他 useEffect 使用
+    yearToSegmentedXRef.current = yearToSegmentedX;
+    yScaleRef.current = yScale;
 
     // Draw segmented X-axis with colored backgrounds
     const axisGroup = g.append('g')
@@ -209,7 +423,10 @@ export function IdeologyCanvas({
         return d.type === 'opposes' ? '5,5' : '0';
       });
 
+    edgesSelectionRef.current = edges;
+
     const effectsLayer = g.append('g').attr('class', 'effects');
+    effectsLayerRef.current = effectsLayer;
 
     // Calculate node clusters for nebula effect
     const clusterRadius = 80; // px - distance to consider "close"
@@ -304,6 +521,8 @@ export function IdeologyCanvas({
         return `translate(${d.baseX}, ${d.baseY})`;
       });
 
+    nodesSelectionRef.current = nodes;
+
     // 节点圆圈 - Starfield effect with random sizes and glow
     nodes.append('circle')
       .attr('r', d => {
@@ -392,6 +611,7 @@ export function IdeologyCanvas({
         .attr('opacity', d => (matchesFilter(d) ? 0.85 : 0.2))
         .attr('stroke', d => (matchesFilter(d) ? '#8a94a8' : 'transparent'))
         .attr('stroke-width', d => (matchesFilter(d) ? 1 : 0))
+        .attr('transform', 'scale(1)') // Reset scale
         .style('filter', d => {
           const baseColor = getNodeColor(d);
           if (!matchesFilter(d)) {
@@ -406,14 +626,20 @@ export function IdeologyCanvas({
         .style('opacity', 0)
         .style('font-weight', '500');
 
+      // Remove path numbers
+      nodes.selectAll('.path-number').remove();
+
       edges
         .attr('stroke', d => getEdgeColor(d.type, false))
         .attr('stroke-width', d => (matchesEdgeFilter(d) ? 1.2 : 1))
         .attr('stroke-opacity', d => {
           if (!filterDomain || filterDomain.length === 0) return 0;
           return matchesEdgeFilter(d) ? 0.25 : 0;
-        });
+        })
+        .attr('marker-end', ''); // Remove arrows
     };
+
+    applyFilterBaseStateRef.current = applyFilterBaseState;
 
     const zoom = d3.zoom()
       .scaleExtent([0.5, 5])
@@ -556,18 +782,132 @@ export function IdeologyCanvas({
         });
     };
 
+    // Function to highlight influence path
+    const highlightPath = (pathData) => {
+      if (!pathData || !pathData.path) return;
+
+      const pathNodeIds = new Set(pathData.path.map(p => p.nodeId));
+      const pathEdgeSet = new Set(
+        pathData.edges.map(e => `${e.edge.source}-${e.edge.target}`)
+      );
+
+      // 更新节点样式 - 路径节点金色高亮
+      nodes.selectAll('circle')
+        .attr('opacity', node => {
+          if (!matchesFilter(node)) return 0.2;
+          if (pathNodeIds.has(node.id)) return 1;
+          return 0.15; // 非路径节点更加透明
+        })
+        .attr('stroke', node => {
+          if (!matchesFilter(node)) return 'transparent';
+          if (pathNodeIds.has(node.id)) return '#e6c98a'; // 金色
+          return 'transparent';
+        })
+        .attr('stroke-width', node => {
+          if (!matchesFilter(node)) return 0;
+          if (pathNodeIds.has(node.id)) return 3;
+          return 0;
+        })
+        .attr('transform', node => {
+          // 路径节点略微放大
+          if (pathNodeIds.has(node.id)) return 'scale(1.3)';
+          return 'scale(1)';
+        });
+
+      // 显示路径节点标签和序号
+      nodes.selectAll('text')
+        .interrupt()
+        .style('opacity', node => {
+          if (!matchesFilter(node)) return 0;
+          if (pathNodeIds.has(node.id)) return 1;
+          return 0;
+        })
+        .style('font-weight', node => {
+          if (pathNodeIds.has(node.id)) return 'bold';
+          return '500';
+        });
+
+      // 添加路径序号
+      nodes.each(function(node) {
+        const pathIndex = pathData.path.findIndex(p => p.nodeId === node.id);
+        if (pathIndex >= 0) {
+          d3.select(this).selectAll('.path-number').remove();
+          d3.select(this).append('text')
+            .attr('class', 'path-number')
+            .attr('dy', 20)
+            .attr('text-anchor', 'middle')
+            .style('fill', '#e6c98a')
+            .style('font-size', '16px')
+            .style('font-weight', 'bold')
+            .style('pointer-events', 'none')
+            .text(['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩'][pathIndex] || (pathIndex + 1));
+        }
+      });
+
+      // 更新边样式 - 路径边加粗并金色高亮
+      edges
+        .attr('stroke', edge => {
+          const edgeKey = `${edge.source}-${edge.target}`;
+          const isInPath = pathEdgeSet.has(edgeKey) || pathEdgeSet.has(`${edge.target}-${edge.source}`);
+          if (isInPath) return '#e6c98a'; // 金色
+          return getEdgeColor(edge.type, false);
+        })
+        .attr('stroke-width', edge => {
+          const edgeKey = `${edge.source}-${edge.target}`;
+          const isInPath = pathEdgeSet.has(edgeKey) || pathEdgeSet.has(`${edge.target}-${edge.source}`);
+          return isInPath ? 4 : 1.5;
+        })
+        .attr('stroke-opacity', edge => {
+          const edgeKey = `${edge.source}-${edge.target}`;
+          const isInPath = pathEdgeSet.has(edgeKey) || pathEdgeSet.has(`${edge.target}-${edge.source}`);
+          if (isInPath) return 1.0;
+          if (!matchesEdgeFilter(edge)) return 0;
+          return 0.05; // 非路径边几乎透明
+        })
+        .attr('marker-end', edge => {
+          const edgeKey = `${edge.source}-${edge.target}`;
+          const isInPath = pathEdgeSet.has(edgeKey) || pathEdgeSet.has(`${edge.target}-${edge.source}`);
+          return isInPath ? 'url(#arrowhead)' : '';
+        });
+
+      // 添加箭头标记定义
+      if (!svg.select('#arrowhead').node()) {
+        svg.append('defs').append('marker')
+          .attr('id', 'arrowhead')
+          .attr('markerWidth', 10)
+          .attr('markerHeight', 10)
+          .attr('refX', 9)
+          .attr('refY', 3)
+          .attr('orient', 'auto')
+          .append('polygon')
+          .attr('points', '0 0, 10 3, 0 6')
+          .style('fill', '#e6c98a');
+      }
+    };
+
+    highlightPathRef.current = highlightPath;
+
     // 核心交互：点击节点高亮关联
     nodes.on('click', function(event, d) {
       if (!matchesFilter(d)) return;
       event.stopPropagation();
+
+      // 路径模式下的点击处理
+      if (pathMode) {
+        onPathNodeSelect?.(d);
+        spawnDiscoveryPulse(d);
+        return;
+      }
+
+      // 正常模式
       onNodeSelect(d);
       highlightNode(d, this);
       spawnDiscoveryPulse(d);
       focusOnNode(d);
     });
 
-    // Handle external selection (e.g., from search)
-    if (externalSelectedNode && matchesFilter(externalSelectedNode)) {
+    // Handle external selection (e.g., from search) - only in non-path mode
+    if (!pathMode && externalSelectedNode && matchesFilter(externalSelectedNode)) {
       highlightNode(externalSelectedNode);
       spawnDiscoveryPulse(externalSelectedNode);
       focusOnNode(externalSelectedNode);
@@ -641,7 +981,7 @@ export function IdeologyCanvas({
         .style('font-weight', '500');
     });
 
-  }, [data, dimensions, externalSelectedNode, onNodeSelect, language, onRegisterControls, filterDomain]);
+  }, [data, dimensions, externalSelectedNode, language, filterDomain, pathMode, pathStart, pathEnd, pathResult]);
 
   return (
     <div style={{

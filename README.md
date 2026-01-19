@@ -1,99 +1,108 @@
-# Ideology Universe - 交互式哲学与政治思想可视化
+# Ideology Universe - Interactive Visualization of Philosophical and Political Thought
 
-探索2500年的思想演进：从古希腊哲学到当代政治理论的互动式可视化。
+**🌐 Languages**: English | **[中文](./README.zh.md)**
+
+Explore 2,500 years of intellectual evolution: an interactive visualization spanning from Ancient Greek philosophy to contemporary political theory.
 
 ![Ideology Universe](../comprehensive_visualization.png)
 
-## ✨ 核心功能
+---
 
-### ✅ 已实现（MVP v0.1）
+## ✨ Features
 
-1. **2D时间-语义空间可视化**
-   - X轴 = 历史时间（公元前500年 - 2010年）
-   - Y轴 = 语义相似度（neural embedding）
-   - 71个概念，涵盖古代至当代思想
+### 🎯 Path Tracking (v0.2 - Latest)
 
-2. **智能颜色编码**
-   - 🔵 蓝色 = 纯哲学概念
-   - 🔴 红色 = 纯政治概念
-   - 🟣 紫色 = 哲学+政治交叉
+**NEW**: Trace the historical evolution of ideas through influence chains!
 
-3. **核心交互：关系高亮**
-   - **点击任意节点** → 自动高亮所有相关节点和连线
-   - 其他节点半透明化
-   - 一目了然看到思想之间的联系
+- **Influence Path Finding** - Discover how ideas connect across centuries
+- **Historical Causality** - Paths always flow from earlier to later concepts (chronologically accurate)
+- **Path Quality Scoring** - Get confidence ratings based on relation types and time consistency
+- **Interactive Selection** - Click start and end points to find the shortest path
+- **Constellation Response** - Reachable concepts illuminate when you select a starting point
+- **3-Layer Relation Ontology** - Genealogical, Ideological, and Illustrative relation types
 
-4. **详细信息面板**
-   - 概念描述
-   - 关键人物
-   - 所属领域
-   - 所有关系（类型+描述）
+### 📊 Core Visualization (v0.1)
 
-5. **缩放与平移**
-   - 鼠标滚轮缩放
-   - 拖拽移动画布
-   - 点击空白处取消选择
+1. **2D Time-Semantic Space**
+   - X-axis = Historical timeline (500 BCE - 2010 CE)
+   - Y-axis = Semantic similarity (neural embeddings via UMAP)
+   - 71 concepts spanning ancient to contemporary thought
 
-6. **时间轴标注**
-   - X轴下方标注主要历史时期
-   - 古代、中世纪、启蒙、现代、当代
+2. **Intelligent Color Coding**
+   - 🔵 Blue = Pure philosophy
+   - 🔴 Red = Pure politics
+   - 🟢 Cyan-Green = Philosophy + Politics intersection
+
+3. **Core Interaction: Relationship Highlighting**
+   - **Click any node** → Auto-highlight all connected nodes and edges
+   - Other nodes fade to semi-transparency
+   - Instantly visualize intellectual connections
+
+4. **Detailed Information Panel**
+   - Concept descriptions
+   - Key figures
+   - Domains
+   - All relationships (with types and descriptions)
+
+5. **Zoom & Pan**
+   - Mouse wheel to zoom
+   - Drag to pan the canvas
+   - Click empty space to deselect
+
+6. **Timeline Annotations**
+   - Historical period markers on X-axis
+   - Ancient, Medieval, Enlightenment, Modern, Contemporary
 
 ---
 
-## 📝 更新日志
+## 🚀 Quick Start
 
-### 2026-01-05
-- 新增中英切换（右侧面板开关），并统一中英文界面文案
-- 视觉风格升级：典雅宇宙主题、Lora 字体、面板与背景质感优化
-- 交互增强：望远镜式聚焦、右下角缩放与重置控制
-- 图例支持多选筛选（Philosophy / Politics / Philosophy + Politics）
-- 节点缓慢闪烁与微弱漂浮，强化星空感
-- 主画布新增语义提示语（斜体浮层）
-- 交叉概念颜色调整为 Cyan-Green，更易区分
+### Prerequisites
 
----
+- Node.js 18+ and npm
 
-## 🚀 快速开始
-
-### 前置要求
-
-- Node.js 18+ 和 npm
-
-### 安装
+### Installation
 
 ```bash
-# 进入项目目录
+# Navigate to project directory
 cd ideology-universe
 
-# 安装依赖
+# Install dependencies
 npm install
 
-# 启动开发服务器
+# Start development server
 npm run dev
 ```
 
-访问 `http://localhost:3000`
+Visit `http://localhost:3000` (or the port shown in terminal)
 
 ---
 
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 ideology-universe/
 ├── src/
 │   ├── components/
-│   │   ├── IdeologyCanvas.jsx    # 主可视化画布（D3.js）
-│   │   └── InfoPanel.jsx         # 信息面板
+│   │   ├── IdeologyCanvas.jsx      # Main visualization canvas (D3.js)
+│   │   ├── InfoPanel.jsx           # Information panel
+│   │   ├── SearchBar.jsx           # Search with autocomplete
+│   │   └── LoadingAnimation.jsx    # Loading screen
 │   ├── hooks/
-│   │   └── useGraphData.js       # 数据加载 Hook
+│   │   └── useGraphData.js         # Data loading hook
 │   ├── utils/
-│   │   └── colorScheme.js        # 颜色编码逻辑
+│   │   ├── colorScheme.js          # Color coding logic
+│   │   ├── pathFinding.js          # BFS path search algorithm
+│   │   ├── relationOntology.js     # 76 relation type definitions
+│   │   └── i18n.js                 # Internationalization (EN/ZH)
 │   ├── data/
-│   │   ├── concept_positions_final.json           # 位置数据
-│   │   └── ideology_dataset_comprehensive.json    # 完整概念数据
-│   ├── App.jsx                   # 主应用
-│   ├── main.jsx                  # 入口
-│   └── index.css                 # 全局样式
+│   │   ├── concept_positions_final.json          # Position data
+│   │   └── ideology_dataset_comprehensive.json   # Full concept data
+│   ├── App.jsx                     # Main application
+│   ├── main.jsx                    # Entry point
+│   └── index.css                   # Global styles
+├── docs/
+│   └── development-logs/           # Development history
 ├── package.json
 ├── vite.config.js
 └── index.html
@@ -101,144 +110,240 @@ ideology-universe/
 
 ---
 
-## 🎨 设计特色
+## 🎨 Design Highlights
 
-### 颜色系统
+### Color System
 
-我们使用颜色来区分概念的性质：
+We use color to distinguish the nature of concepts:
 
-- **哲学概念**（如Platonism, Stoicism）→ 蓝色
-- **政治概念**（如Liberalism, Fascism）→ 红色
-- **交叉概念**（如Marxism, Confucianism）→ 青绿色（Cyan-Green）
+- **Philosophy** (e.g., Platonism, Stoicism) → Blue
+- **Politics** (e.g., Liberalism, Fascism) → Red
+- **Interdisciplinary** (e.g., Marxism, Confucianism) → Cyan-Green
 
-这突出了一个关键洞察：**很多思想横跨哲学和政治领域**，这正是思想史的魅力所在。
+This highlights a key insight: **many ideas span both philosophy and politics**, which is the charm of intellectual history.
 
-### 关系类型
+### Relationship Types
 
-可视化展示9种关系类型：
+The visualization supports **76 different relationship types**, organized into 3 layers:
 
-- `influenced_by` / `influenced` - 影响关系
-- `opposes` - 对立（红色虚线）
-- `similar_to` - 相似
-- `evolved_from` - 演化
-- `synthesized_with` - 综合
-- `foundation_for` - 奠基
-- `critiques` - 批判
-- `built_on` - 建立于
-- `related_to` - 相关
+**Genealogical Layer** (Direct Influence):
+- `influenced_by` / `influenced` - Direct influence
+- `evolved_from` / `evolved_into` - Evolution
+- `emerged_from` / `gave_rise_to` - Emergence
+- `founded_on` / `foundation_for` - Foundation
+- `built_on` / `provided_foundation_for` - Building upon
+- And 40+ more...
 
----
+**Ideological Layer** (Opposition/Critique):
+- `opposes` / `opposed_by` - Opposition (red dashed lines)
+- `critiques` / `critiqued_by` - Critique
+- `challenges` / `challenged_by` - Challenge
+- `reacts_against` - Reaction
+- And 20+ more...
 
-## 🧠 技术栈
-
-- **React 18** - UI框架
-- **D3.js v7** - 数据可视化
-- **Vite** - 构建工具
-- **Zustand** - 状态管理（轻量）
-- **sentence-transformers** - 语义嵌入（后端Python）
-
----
-
-## 📊 数据说明
-
-### 数据来源
-
-- `concept_positions_final.json` - 包含每个概念的X/Y坐标
-  - X坐标 = 历史时期（era）
-  - Y坐标 = 语义相似度（通过UMAP从768维嵌入降维）
-
-- `ideology_dataset_comprehensive.json` - 完整数据
-  - 71个概念（新增中世纪、启蒙及现代重要思想）
-  - 每个概念包含：description, key_figures, domains, relationships
-
-### 嵌入生成
-
-使用 `all-mpnet-base-v2` 模型生成768维语义嵌入，然后用UMAP降维到2D。
-
-详见 `../generate_embeddings.py`
+**Illustrative Layer** (Association):
+- `similar_to` - Similarity
+- `related_to` - Relation
+- `synthesized_with` - Synthesis
+- `exemplifies` - Exemplification
+- And 15+ more...
 
 ---
 
-## 🎯 交互示例
+## 🧠 Tech Stack
 
-### 探索马克思主义的思想网络
-
-1. 点击 **Marxism** 节点（紫色，1850年）
-2. 观察高亮的关系：
-   - ← 受 **Hegelianism**（蓝色）影响
-   - → 形成了 **Socialism**（红色）
-   - ⚔️ 对立于 **Capitalism**（红色虚线）
-3. 右侧面板显示完整描述和关键人物（Karl Marx）
-4. 点击空白处取消，继续探索
-
-### 对比东西方古代哲学
-
-1. 缩放到古代区域（X轴 -500 附近）
-2. 观察：
-   - **Confucianism**（紫色）- 东方，强调政治伦理
-   - **Platonism**（蓝色）- 西方，纯哲学
-3. 点击两者查看差异和相似之处
+- **React 18** - UI framework
+- **D3.js v7** - Data visualization
+- **Vite** - Build tool
+- **sentence-transformers** - Semantic embeddings (Python backend)
 
 ---
 
-## 🔮 未来功能（Roadmap）
+## 📊 Data Explanation
 
-### V0.2 - 搜索与过滤
-- [ ] 搜索框（自动补全）
-- [ ] 时期过滤器（按钮组）
-- [ ] 领域过滤器（多选）
-- [ ] 关系类型过滤
+### Data Sources
 
-### V0.3 - 高级交互
-- [ ] 影响路径追踪（A → B → C）
-- [ ] 对比模式（同时选中多个概念）
-- [ ] 预设视图（"古希腊哲学"、"启蒙时代"等）
-- [ ] URL分享（编码当前视图状态）
+- `concept_positions_final.json` - Contains X/Y coordinates for each concept
+  - X coordinate = Historical era
+  - Y coordinate = Semantic similarity (UMAP reduced from 768-dim embeddings)
 
-### V0.4 - 美化与优化
-- [ ] 浅色/深色模式切换
-- [ ] 响应式设计（移动端）
-- [ ] 动画过渡
-- [ ] 性能优化（Canvas渲染？）
+- `ideology_dataset_comprehensive.json` - Complete data
+  - 71 concepts (includes Medieval, Enlightenment, and modern key ideas)
+  - Each concept includes: description, key_figures, domains, relationships
 
-### V1.0 - 完整版
-- [ ] 推荐系统（"你可能感兴趣..."）
-- [ ] 时间动画（历史演进播放）
-- [ ] 导出功能（PNG/SVG）
-- [ ] 用户笔记（本地存储）
+### Embedding Generation
+
+Used `all-mpnet-base-v2` model to generate 768-dimensional semantic embeddings, then reduced to 2D using UMAP.
+
+See `../generate_embeddings.py` for details.
 
 ---
 
-## 🤝 贡献
+## 🎯 Usage Examples
 
-这是一个开源项目，欢迎贡献！
+### Example 1: Trace the Evolution of Marxism
 
-可以帮助的方向：
-- 添加更多概念（当前71个）
-- 完善关系描述
-- 翻译（英文/中文）
-- UI/UX改进
-- 性能优化
+1. Click the **🗺️ Path Mode** button (top-right controls)
+2. Click **Marxism** (purple, 1850) as start point → Glows blue
+3. Watch the constellation response: reachable concepts light up in yellow
+4. Click **Kant** (blue, 1780) as end point → Glows green
+5. See the influence path automatically calculated:
+   ```
+   ① Kant (1780)
+     ↓ influenced
+   ② Hegelianism (1830)
+     ↓ influenced
+   ③ Marxism (1850)
+   ```
+6. Info panel shows detailed path with relation descriptions
+7. Click **✕** or **🗺️** again to exit path mode
+
+### Example 2: Explore Marxism's Intellectual Network (Regular Mode)
+
+1. Click **Marxism** node (purple, 1850)
+2. Observe highlighted relationships:
+   - ← Influenced by **Hegelianism** (blue)
+   - → Gave rise to **Socialism** (red)
+   - ⚔️ Opposes **Capitalism** (red dashed line)
+3. Right panel shows full description and key figures (Karl Marx)
+4. Click empty space to deselect and continue exploring
+
+### Example 3: Compare Eastern and Western Ancient Philosophy
+
+1. Zoom to ancient region (X-axis around -500)
+2. Observe:
+   - **Confucianism** (cyan-green) - Eastern, emphasizes political ethics
+   - **Platonism** (blue) - Western, pure philosophy
+3. Click both to compare differences and similarities
 
 ---
 
-## 📄 许可
+## 📝 Changelog
 
-MIT License
+### v0.2.0 - 2026-01-19
+
+**Major Feature: Path Normalization**
+- ✨ Implemented path normalization to ensure chronological order
+- ✨ All influence paths now flow from earlier to later ideas
+- ✨ Created comprehensive relation reverse mapping (76 relation types)
+- 🐛 Fixed 3 asymmetric relation mappings (`derived_from`, `led_to`, `opposes`)
+- 🐛 Fixed array mutation bug in path normalization
+- 📚 Established development log system with bilingual documentation
+
+**Impact**: Critical fix for historical accuracy - prevents confusing time-reversed paths
+
+**Documentation**:
+- [Development Log](docs/development-logs/2026-01-19-path-normalization.md)
+- [Bug Fixes](docs/development-logs/2026-01-19-bugfixes.md)
+- [Test Plan](PATH_NORMALIZATION_TEST_PLAN.md)
+
+### v0.1.0 - 2026-01-15
+
+**Path Tracking Feature**
+- ✨ Implemented BFS-based path finding
+- ✨ Added path mode toggle (🗺️ button)
+- ✨ Star constellation effect for reachable nodes
+- ✨ Path quality scoring system
+- ✨ 3-layer relation ontology (Genealogical, Ideological, Illustrative)
+- ✨ Semantic path filtering (score ≥ 40, length ≤ 4)
+
+### v0.0.1 - 2025-01-05
+
+**Initial Release**
+- ✨ English/Chinese language toggle (right panel switch)
+- ✨ Visual style upgrade: elegant cosmic theme, Lora font
+- ✨ Interaction enhancements: telescope focus, zoom/reset controls
+- ✨ Legend supports multi-select filtering (Philosophy / Politics / Both)
+- ✨ Nodes slowly blink and float, enhancing the starry feel
+- ✨ Semantic prompt text on main canvas (italic overlay)
+- ✨ Cross-concept color adjusted to Cyan-Green for better distinction
 
 ---
 
-## 🙏 致谢
+## 🔮 Roadmap
 
-- **数据来源**：手工整理 + AI辅助
-- **嵌入模型**：sentence-transformers (all-mpnet-base-v2)
-- **可视化灵感**：D3.js Gallery, Observable
+### V0.3 - Export Feature (Next)
+- [ ] SVG export
+- [ ] PNG export (multiple resolutions)
+- [ ] Export dialog UI
+- [ ] Path-specific export mode
+
+### V0.4 - Search & Filter
+- [ ] Search box with autocomplete
+- [ ] Time period filter (button group)
+- [ ] Domain filter (multi-select)
+- [ ] Relationship type filter
+
+### V0.5 - Advanced Interaction
+- [ ] Comparison mode (select multiple concepts simultaneously)
+- [ ] Preset views ("Ancient Greek Philosophy", "Enlightenment Era", etc.)
+- [ ] URL sharing (encode current view state)
+
+### V0.6 - Polish & Optimization
+- [ ] Light/dark mode toggle
+- [ ] Responsive design (mobile)
+- [ ] Animation transitions
+- [ ] Performance optimization (Canvas rendering?)
+
+### V1.0 - Complete Version
+- [ ] Recommendation system ("You might be interested in...")
+- [ ] Timeline animation (playback historical evolution)
+- [ ] User notes (local storage)
+- [ ] PDF export with annotations
 
 ---
 
-## 📞 联系
+## 🤝 Contributing
 
-有问题或建议？欢迎提Issue！
-我的邮箱：yd2598@columbia.edu
+This is an open-source project - contributions are welcome!
+
+Ways to help:
+- Add more concepts (currently 71)
+- Improve relationship descriptions
+- Translations (English/Chinese)
+- UI/UX improvements
+- Performance optimizations
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](./LICENSE) for details.
+
+---
+
+## 🙏 Acknowledgments
+
+- **Data Source**: Hand-curated + AI-assisted
+- **Embedding Model**: sentence-transformers (all-mpnet-base-v2)
+- **Visualization Inspiration**: D3.js Gallery, Observable
+- **Design Philosophy**: Making intellectual history accessible and beautiful
+
+---
+
+## 📞 Contact
+
+Questions or suggestions? Feel free to open an issue!
+
+**Email**: yd2598@columbia.edu
+**Project**: [GitHub Repository](#)
+
+---
+
+## 📚 Documentation
+
+- [Development Logs](docs/development-logs/) - Complete development history
+- [Test Plan](PATH_NORMALIZATION_TEST_PLAN.md) - Testing guidelines
+- [Bilingual Docs Guide](docs/development-logs/BILINGUAL_DOCS_GUIDE.md) - Documentation standards
+
+---
 
 **Enjoy exploring the universe of ideas! 🌌**
+
+---
+
+<p align="center">
+  Made with ❤️ by researchers who believe ideas matter
+</p>

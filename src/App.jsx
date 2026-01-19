@@ -31,6 +31,52 @@ function App() {
   const [activeFilters, setActiveFilters] = useState([]);
   const [viewControls, setViewControls] = useState(null);
 
+  // 路径追踪状态
+  const [pathMode, setPathMode] = useState(false); // 是否处于路径选择模式
+  const [pathStart, setPathStart] = useState(null); // 路径起点
+  const [pathEnd, setPathEnd] = useState(null); // 路径终点
+  const [pathResult, setPathResult] = useState(undefined); // 计算得到的路径结果（undefined=未计算，null=未找到，object=找到）
+
+  // 切换路径追踪模式
+  const togglePathMode = () => {
+    const wasInPathMode = pathMode;
+    setPathMode(prev => !prev);
+
+    if (wasInPathMode) {
+      // 退出路径模式时清空路径状态
+      clearPath();
+    } else {
+      // 进入路径模式时，清空之前选择的节点，让用户从头开始
+      setSelectedNode(null);
+      setPathStart(null);
+      setPathEnd(null);
+      setPathResult(undefined);
+    }
+  };
+
+  // 清空路径
+  const clearPath = () => {
+    setPathStart(null);
+    setPathEnd(null);
+    setPathResult(undefined);
+    setSelectedNode(null);
+  };
+
+  // 处理路径节点选择
+  const handlePathNodeSelect = (node) => {
+    if (!pathMode) return;
+
+    if (!pathStart) {
+      // 选择起点
+      setPathStart(node);
+      setSelectedNode(node);
+    } else if (!pathEnd) {
+      // 选择终点并计算路径
+      setPathEnd(node);
+      // 路径计算将在IdeologyCanvas中完成
+    }
+  };
+
   const matchesFilter = (node, filters) => {
     if (!node || !filters || filters.length === 0) return true;
     const hasPhilosophy = node.domains?.includes('philosophy');
@@ -140,6 +186,29 @@ function App() {
           <div style={styles.viewControls}>
             <button
               type="button"
+              style={{
+                ...styles.controlButton,
+                ...(pathMode ? styles.pathButtonActive : {})
+              }}
+              onClick={togglePathMode}
+              aria-label={pathMode ? t.clearPath || "Exit path mode" : t.findPath || "Find influence path"}
+              title={pathMode ? t.clearPath || "Exit path mode" : t.findPath || "Find influence path"}
+            >
+              🗺️
+            </button>
+            {pathMode && pathStart && !pathEnd && (
+              <button
+                type="button"
+                style={styles.controlButton}
+                onClick={clearPath}
+                aria-label="Clear path"
+                title="Clear path"
+              >
+                ✕
+              </button>
+            )}
+            <button
+              type="button"
               style={styles.controlButton}
               onClick={() => viewControls?.zoomIn?.()}
               aria-label="Zoom in"
@@ -173,6 +242,12 @@ function App() {
             language={language}
             onRegisterControls={setViewControls}
             filterDomain={activeFilters}
+            pathMode={pathMode}
+            pathStart={pathStart}
+            pathEnd={pathEnd}
+            onPathNodeSelect={handlePathNodeSelect}
+            pathResult={pathResult}
+            onPathResult={setPathResult}
           />
         </div>
         <InfoPanel
@@ -180,6 +255,9 @@ function App() {
           language={language}
           totalNodes={data.nodes.length}
           onLanguageChange={setLanguage}
+          pathResult={pathResult}
+          pathMode={pathMode}
+          onClearPath={clearPath}
         />
       </div>
     </div>
@@ -379,6 +457,11 @@ const styles = {
   },
   resetButton: {
     fontSize: '18px'
+  },
+  pathButtonActive: {
+    backgroundColor: 'rgba(230, 201, 138, 0.2)',
+    borderColor: 'rgba(230, 201, 138, 0.5)',
+    color: 'var(--color-accent)'
   },
   telescopeOverlay: {
     position: 'absolute',
