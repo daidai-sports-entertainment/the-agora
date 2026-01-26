@@ -17,7 +17,7 @@ import { generateWarnings } from '../utils/pathFinding';
  * Right side information panel - displays selected concept details
  * or influence path information
  */
-export function InfoPanel({ selectedNode, language, onLanguageChange, totalNodes, pathResult, pathMode, onClearPath }) {
+export function InfoPanel({ selectedNode, language, onLanguageChange, totalNodes, pathResult, pathMode, onClearPath, allNodes, onExport }) {
   const t = getText(language);
   const [showQualityTooltip, setShowQualityTooltip] = useState(false);
 
@@ -460,6 +460,25 @@ export function InfoPanel({ selectedNode, language, onLanguageChange, totalNodes
   const color = getNodeColor(selectedNode);
   const category = formatCategory(selectedNode.domains, language);
 
+  // 计算所有关系：出边 + 入边
+  const outgoingRelationships = selectedNode.relationships || [];
+  const incomingRelationships = allNodes
+    ? allNodes
+        .filter(node => node.relationships?.some(rel => rel.target === selectedNode.id))
+        .flatMap(node =>
+          node.relationships
+            .filter(rel => rel.target === selectedNode.id)
+            .map(rel => ({
+              ...rel,
+              source: node.id,
+              sourceName: node.name,
+              isIncoming: true
+            }))
+        )
+    : [];
+
+  const totalRelationships = outgoingRelationships.length + incomingRelationships.length;
+
   return (
     <div style={styles.panel} className="info-panel">
       <div style={styles.languageRow}>
@@ -491,15 +510,27 @@ export function InfoPanel({ selectedNode, language, onLanguageChange, totalNodes
       </div>
 
       <div style={styles.header}>
-        <h2 style={{...styles.conceptName, color}}>{selectedNode.name}</h2>
-        <div style={styles.meta}>
-          <span style={styles.era}>
-            {formatEra(selectedNode.era, language)}
-          </span>
-          <span style={{...styles.category, backgroundColor: color}}>
-            {category}
-          </span>
+        <div style={styles.headerContent}>
+          <h2 style={{...styles.conceptName, color}}>{selectedNode.name}</h2>
+          <div style={styles.meta}>
+            <span style={styles.era}>
+              {formatEra(selectedNode.era, language)}
+            </span>
+            <span style={{...styles.category, backgroundColor: color}}>
+              {category}
+            </span>
+          </div>
         </div>
+        {!pathMode && onExport && (
+          <button
+            type="button"
+            onClick={onExport}
+            style={styles.exportButton}
+            title={language === 'zh' ? '导出分享' : 'Export & Share'}
+          >
+            📤
+          </button>
+        )}
       </div>
 
       <div style={styles.section}>
@@ -529,27 +560,59 @@ export function InfoPanel({ selectedNode, language, onLanguageChange, totalNodes
         </div>
       )}
 
-      {selectedNode.relationships && selectedNode.relationships.length > 0 && (
+      {totalRelationships > 0 && (
         <div style={styles.section}>
           <h3 style={styles.sectionTitle}>
-            🔗 {t.relationships} ({selectedNode.relationships.length})
+            🔗 {t.relationships} ({totalRelationships})
           </h3>
-          <div style={styles.relationships}>
-            {selectedNode.relationships.slice(0, 8).map((rel, i) => (
-              <div key={i} style={styles.relationship} className="relationship-card">
-                <div style={styles.relType}>{formatRelationType(rel.type, language)}</div>
-                <div style={styles.relTarget}>{formatNodeName(rel.target)}</div>
-                {rel.description && (
-                  <div style={styles.relDesc}>{rel.description}</div>
-                )}
+
+          {/* 出边：这个思想影响了谁 */}
+          {outgoingRelationships.length > 0 && (
+            <div style={styles.relationshipGroup}>
+              <h4 style={styles.relationshipGroupTitle}>
+                📤 {language === 'zh' ? '影响' : 'Influences'} ({outgoingRelationships.length})
+              </h4>
+              <div style={styles.relationships}>
+                {outgoingRelationships.map((rel, i) => (
+                  <div key={`out-${i}`} style={styles.relationship} className="relationship-card">
+                    <div style={styles.relType}>
+                      {formatRelationType(rel.type, language)}
+                    </div>
+                    <div style={styles.relTarget}>
+                      → {formatNodeName(rel.target)}
+                    </div>
+                    {rel.description && (
+                      <div style={styles.relDesc}>{rel.description}</div>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
-            {selectedNode.relationships.length > 8 && (
-              <div style={styles.moreRelations}>
-                {t.moreRelationships(selectedNode.relationships.length - 8)}
+            </div>
+          )}
+
+          {/* 入边：谁影响了这个思想 */}
+          {incomingRelationships.length > 0 && (
+            <div style={styles.relationshipGroup}>
+              <h4 style={styles.relationshipGroupTitle}>
+                📥 {language === 'zh' ? '被影响' : 'Influenced By'} ({incomingRelationships.length})
+              </h4>
+              <div style={styles.relationships}>
+                {incomingRelationships.map((rel, i) => (
+                  <div key={`in-${i}`} style={styles.relationship} className="relationship-card">
+                    <div style={styles.relType}>
+                      {formatRelationType(rel.type, language)}
+                    </div>
+                    <div style={styles.relTarget}>
+                      ← {rel.sourceName}
+                    </div>
+                    {rel.description && (
+                      <div style={styles.relDesc}>{rel.description}</div>
+                    )}
+                  </div>
+                ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -630,7 +693,29 @@ const styles = {
   header: {
     marginBottom: '24px',
     borderBottom: '1px solid var(--color-border)',
-    paddingBottom: '16px'
+    paddingBottom: '16px',
+    display: 'flex',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: '16px'
+  },
+  headerContent: {
+    flex: 1
+  },
+  exportButton: {
+    width: '48px',
+    height: '48px',
+    borderRadius: '12px',
+    border: '1px solid rgba(230, 201, 138, 0.3)',
+    backgroundColor: 'rgba(230, 201, 138, 0.1)',
+    color: 'var(--color-accent)',
+    fontSize: '20px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.2s ease',
+    flexShrink: 0
   },
   conceptName: {
     fontSize: '24px',
@@ -690,6 +775,16 @@ const styles = {
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
     borderRadius: '4px',
     color: 'var(--color-ink)'
+  },
+  relationshipGroup: {
+    marginBottom: '20px'
+  },
+  relationshipGroupTitle: {
+    fontSize: '14px',
+    fontWeight: 600,
+    color: 'var(--color-ink)',
+    marginBottom: '12px',
+    opacity: 0.9
   },
   relationships: {
     display: 'flex',

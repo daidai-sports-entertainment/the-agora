@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { IdeologyCanvas } from './components/IdeologyCanvas';
 import { InfoPanel } from './components/InfoPanel';
 import { WelcomeModal } from './components/WelcomeModal';
 import { SearchBar } from './components/SearchBar';
 import { LoadingAnimation } from './components/LoadingAnimation';
 import { ParticleBackground } from './components/ParticleBackground';
+import { ExportModal } from './components/ExportModal';
 import { useGraphData } from './hooks/useGraphData';
 import { getText } from './utils/i18n';
 
@@ -36,6 +37,10 @@ function App() {
   const [pathStart, setPathStart] = useState(null); // 路径起点
   const [pathEnd, setPathEnd] = useState(null); // 路径终点
   const [pathResult, setPathResult] = useState(undefined); // 计算得到的路径结果（undefined=未计算，null=未找到，object=找到）
+
+  // 导出功能状态
+  const [showExportModal, setShowExportModal] = useState(false);
+  const canvasContainerRef = useRef(null);
 
   // 切换路径追踪模式
   const togglePathMode = () => {
@@ -180,7 +185,7 @@ function App() {
       </header>
 
       <div style={styles.main}>
-        <div style={styles.canvasContainer}>
+        <div style={styles.canvasContainer} ref={canvasContainerRef}>
           {selectedNode && <div style={styles.telescopeOverlay} aria-hidden="true" />}
           <div style={styles.canvasNote}>{t.proximityNote}</div>
           <div style={styles.viewControls}>
@@ -258,8 +263,18 @@ function App() {
           pathResult={pathResult}
           pathMode={pathMode}
           onClearPath={clearPath}
+          allNodes={data.nodes}
+          onExport={() => setShowExportModal(true)}
         />
       </div>
+
+      <ExportModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        selectedNode={selectedNode}
+        language={language}
+        allNodes={data.nodes}
+      />
     </div>
   );
 }
