@@ -15,6 +15,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.3.1] - 2026-01-27
+
+### ✨ Added - Zoom Easter Egg
+
+#### Interactive User Feedback Feature
+- **Zoom extreme easter egg** - Elegant modal appears when users reach max (5x) or min (0.5x) zoom
+- **Encourages user feedback** - Prompts users to email suggestions for missing ideas or improvements
+- **5-second debounce** - Prevents spam, only triggers once per 5 seconds
+- **Bilingual support** - Custom messages for English and Chinese
+
+**Messages**:
+- **Max Zoom (5x)**:
+  - EN: "Reached the Edge of the Universe! ✨ Can't find the idea you're looking for? Email us at yd2598@columbia.edu"
+  - ZH: "探索到宇宙边缘了！✨ 看不到你想找的思想？欢迎发邮件到 yd2598@columbia.edu 告诉我们你的建议"
+
+- **Min Zoom (0.5x)**:
+  - EN: "Viewing the Whole Universe 🌌 Want to suggest new ideas? Email us at yd2598@columbia.edu"
+  - ZH: "从全局视角观察宇宙 🌌 想提交新的思想？欢迎发邮件到 yd2598@columbia.edu 帮助扩展思想宇宙"
+
+**User Experience**:
+- Non-intrusive (only at zoom extremes)
+- Easy to close with X button or background click
+- Direct mailto link for immediate feedback
+- "Continue Exploring" button to dismiss
+- Matches cosmic theme and design language
+
+**Components**:
+- `src/components/ZoomEasterEgg.jsx` (new file, 150 lines)
+- `src/components/IdeologyCanvas.jsx` (zoom event listener)
+- `src/App.jsx` (state management)
+
+**Technical Implementation**:
+- Zoom scale detection in D3 zoom event handler
+- React state management for modal visibility
+- Debounce mechanism using ref and timestamp
+- Elegant modal with gradient background and gold accents
+
+---
+
 ## [0.3.0] - 2026-01-26
 
 ### ✨ Added - Social Media Export Feature
@@ -297,4 +336,4 @@ No security vulnerabilities reported or fixed in this release.
 
 ---
 
-**Last Updated**: 2026-01-26
+**Last Updated**: 2026-01-27

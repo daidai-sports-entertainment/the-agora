@@ -21,7 +21,8 @@ export function IdeologyCanvas({
   pathEnd,
   onPathNodeSelect,
   pathResult,
-  onPathResult
+  onPathResult,
+  onZoomExtreme
 }) {
   const svgRef = useRef(null);
   const [dimensions] = useState({ width: 1200, height: 800 });
@@ -645,6 +646,14 @@ export function IdeologyCanvas({
       .scaleExtent([0.5, 5])
       .on('zoom', (event) => {
         g.attr('transform', event.transform);
+
+        // Check for zoom extremes (easter egg)
+        const scale = event.transform.k;
+        if (scale >= 5 && onZoomExtreme) {
+          onZoomExtreme('max');
+        } else if (scale <= 0.5 && onZoomExtreme) {
+          onZoomExtreme('min');
+        }
       });
 
     zoomRef.current = zoom;

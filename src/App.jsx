@@ -6,6 +6,7 @@ import { SearchBar } from './components/SearchBar';
 import { LoadingAnimation } from './components/LoadingAnimation';
 import { ParticleBackground } from './components/ParticleBackground';
 import { ExportModal } from './components/ExportModal';
+import { ZoomEasterEgg } from './components/ZoomEasterEgg';
 import { useGraphData } from './hooks/useGraphData';
 import { getText } from './utils/i18n';
 
@@ -41,6 +42,11 @@ function App() {
   // 导出功能状态
   const [showExportModal, setShowExportModal] = useState(false);
   const canvasContainerRef = useRef(null);
+
+  // 缩放彩蛋状态
+  const [showZoomEasterEgg, setShowZoomEasterEgg] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(null);
+  const lastZoomTriggerRef = useRef(0);
 
   // 切换路径追踪模式
   const togglePathMode = () => {
@@ -80,6 +86,17 @@ function App() {
       setPathEnd(node);
       // 路径计算将在IdeologyCanvas中完成
     }
+  };
+
+  // 处理缩放极限（彩蛋）
+  const handleZoomExtreme = (level) => {
+    const now = Date.now();
+    // 防抖：只有在5秒后才能再次触发
+    if (now - lastZoomTriggerRef.current < 5000) return;
+
+    lastZoomTriggerRef.current = now;
+    setZoomLevel(level);
+    setShowZoomEasterEgg(true);
   };
 
   const matchesFilter = (node, filters) => {
@@ -253,6 +270,7 @@ function App() {
             onPathNodeSelect={handlePathNodeSelect}
             pathResult={pathResult}
             onPathResult={setPathResult}
+            onZoomExtreme={handleZoomExtreme}
           />
         </div>
         <InfoPanel
@@ -274,6 +292,13 @@ function App() {
         selectedNode={selectedNode}
         language={language}
         allNodes={data.nodes}
+      />
+
+      <ZoomEasterEgg
+        isOpen={showZoomEasterEgg}
+        onClose={() => setShowZoomEasterEgg(false)}
+        zoomLevel={zoomLevel}
+        language={language}
       />
     </div>
   );
