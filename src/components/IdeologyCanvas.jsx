@@ -35,7 +35,8 @@ export function IdeologyCanvas({
   const yearToSegmentedXRef = useRef(null);
   const yScaleRef = useRef(null);
   const effectsLayerRef = useRef(null);
-  const fireworkTimersRef = useRef([]); // 存储所有烟花定时器
+  const fireworkTimersRef = useRef([]);
+  const zoomExtremeTriggeredRef = useRef({ max: false, min: false }); // 存储所有烟花定时器
 
   // 独立的effect用于计算路径（不触发重新渲染）
   useEffect(() => {
@@ -480,6 +481,102 @@ export function IdeologyCanvas({
       }
     });
 
+    // Draw shooting stars layer (behind nebulae)
+    const shootingStarsLayer = g.insert('g', ':first-child')
+      .attr('class', 'shooting-stars');
+
+    // Function to create a realistic shooting star (bright head + fading tail)
+    const createShootingStar = () => {
+      // Random position across the entire canvas
+      const startX = Math.random() * dimensions.width;
+      const startY = Math.random() * dimensions.height;
+
+      // Trajectory (60-150px) with slightly angled direction (diagonal)
+      const angle = Math.random() * Math.PI / 2 + Math.PI / 4; // 45-135 degrees for natural falling
+      const distance = 60 + Math.random() * 90;
+      const tailLength = 40 + Math.random() * 30; // Tail length
+
+      const endX = startX + Math.cos(angle) * distance;
+      const endY = startY + Math.sin(angle) * distance;
+
+      // Create gradient for the tail (from transparent to bright)
+      const gradientId = `shooting-star-tail-${Date.now()}-${Math.random()}`;
+      svg.append('defs').append('linearGradient')
+        .attr('id', gradientId)
+        .attr('x1', '0%')
+        .attr('y1', '0%')
+        .attr('x2', '100%')
+        .attr('y2', '0%')
+        .selectAll('stop')
+        .data([
+          { offset: '0%', opacity: 0 },      // Tail end: transparent
+          { offset: '70%', opacity: 0.3 },   // Mid tail: faint
+          { offset: '100%', opacity: 0.8 }   // Near head: bright
+        ])
+        .join('stop')
+        .attr('offset', d => d.offset)
+        .attr('stop-color', '#ffffff')
+        .attr('stop-opacity', d => d.opacity);
+
+      // Create shooting star group with initial opacity 0
+      const starGroup = shootingStarsLayer.append('g')
+        .style('opacity', 0);
+
+      // Tail (line with gradient)
+      const tail = starGroup.append('line')
+        .attr('x1', startX - Math.cos(angle) * tailLength)
+        .attr('y1', startY - Math.sin(angle) * tailLength)
+        .attr('x2', startX)
+        .attr('y2', startY)
+        .attr('stroke', `url(#${gradientId})`)
+        .attr('stroke-width', 2)
+        .attr('stroke-linecap', 'round');
+
+      // Head (bright circle with glow)
+      const head = starGroup.append('circle')
+        .attr('cx', startX)
+        .attr('cy', startY)
+        .attr('r', 2.5)
+        .attr('fill', '#ffffff')
+        .style('filter', 'drop-shadow(0 0 4px #ffffff) drop-shadow(0 0 8px rgba(230, 201, 138, 0.8))');
+
+      // Animate the entire group
+      const duration = 1500 + Math.random() * 1000;
+
+      starGroup
+        // Fade in quickly
+        .transition()
+        .duration(200)
+        .style('opacity', 1)
+        // Then move
+        .transition()
+        .duration(duration)
+        .ease(d3.easeLinear)
+        .attr('transform', `translate(${endX - startX}, ${endY - startY})`)
+        // Fade out
+        .transition()
+        .duration(400)
+        .style('opacity', 0)
+        .remove();
+    };
+
+    // Create shooting stars at random intervals - more frequent
+    const shootingStarInterval = setInterval(() => {
+      if (Math.random() < 0.4) { // 40% chance
+        createShootingStar();
+      }
+    }, 3000); // Check every 3 seconds
+
+    // Initial shooting stars - quicker start
+    setTimeout(() => createShootingStar(), 500);
+    setTimeout(() => createShootingStar(), 2000);
+    setTimeout(() => createShootingStar(), 3500);
+
+    // Store interval for cleanup
+    const cleanupShootingStars = () => {
+      clearInterval(shootingStarInterval);
+    };
+
     // Draw nebulae as radial gradients (behind everything)
     const nebulaLayer = g.insert('g', ':first-child')
       .attr('class', 'nebulae');
@@ -607,53 +704,119 @@ export function IdeologyCanvas({
       .style('opacity', 0)
       .text(d => d.name);
 
-    const applyFilterBaseState = () => {
-      nodes.selectAll('circle')
-        .attr('opacity', d => (matchesFilter(d) ? 0.85 : 0.2))
-        .attr('stroke', d => (matchesFilter(d) ? '#8a94a8' : 'transparent'))
-        .attr('stroke-width', d => (matchesFilter(d) ? 1 : 0))
-        .attr('transform', 'scale(1)') // Reset scale
-        .style('filter', d => {
-          const baseColor = getNodeColor(d);
-          if (!matchesFilter(d)) {
-            return `drop-shadow(0 0 2px ${toRGBA(baseColor, 0.2)})`;
-          }
-          const blurRadius = d.starSize * 1.2;
-          return `drop-shadow(0 0 ${blurRadius}px ${baseColor})`;
-        });
+    const applyFilterBaseState = (withTransition = false) => {
+      const selection = nodes.selectAll('circle');
+      const textSelection = nodes.selectAll('text');
 
-      nodes.selectAll('text')
-        .interrupt()
-        .style('opacity', 0)
-        .style('font-weight', '500');
+      if (withTransition) {
+        // Smooth transition when deselecting
+        selection
+          .interrupt() // Stop any ongoing transitions
+          .transition()
+          .duration(1200)
+          .ease(d3.easeCubicOut)
+          .attr('opacity', d => (matchesFilter(d) ? 0.85 : 0.2))
+          .attr('stroke', d => (matchesFilter(d) ? '#8a94a8' : 'transparent'))
+          .attr('stroke-width', d => (matchesFilter(d) ? 1 : 0))
+          .attr('transform', 'scale(1)') // Reset scale
+          .style('filter', d => {
+            const baseColor = getNodeColor(d);
+            if (!matchesFilter(d)) {
+              return `drop-shadow(0 0 2px ${toRGBA(baseColor, 0.2)})`;
+            }
+            const blurRadius = d.starSize * 1.2;
+            return `drop-shadow(0 0 ${blurRadius}px ${baseColor})`;
+          });
+
+        textSelection
+          .interrupt() // Stop any ongoing transitions
+          .transition()
+          .duration(800)
+          .ease(d3.easeCubicOut)
+          .style('opacity', 0)
+          .style('font-weight', '500');
+      } else {
+        // Immediate update (for filters, etc.)
+        selection
+          .attr('opacity', d => (matchesFilter(d) ? 0.85 : 0.2))
+          .attr('stroke', d => (matchesFilter(d) ? '#8a94a8' : 'transparent'))
+          .attr('stroke-width', d => (matchesFilter(d) ? 1 : 0))
+          .attr('transform', 'scale(1)') // Reset scale
+          .style('filter', d => {
+            const baseColor = getNodeColor(d);
+            if (!matchesFilter(d)) {
+              return `drop-shadow(0 0 2px ${toRGBA(baseColor, 0.2)})`;
+            }
+            const blurRadius = d.starSize * 1.2;
+            return `drop-shadow(0 0 ${blurRadius}px ${baseColor})`;
+          });
+
+        textSelection
+          .interrupt()
+          .style('opacity', 0)
+          .style('font-weight', '500');
+      }
 
       // Remove path numbers
       nodes.selectAll('.path-number').remove();
 
-      edges
-        .attr('stroke', d => getEdgeColor(d.type, false))
-        .attr('stroke-width', d => (matchesEdgeFilter(d) ? 1.2 : 1))
-        .attr('stroke-opacity', d => {
-          if (!filterDomain || filterDomain.length === 0) return 0;
-          return matchesEdgeFilter(d) ? 0.25 : 0;
-        })
-        .attr('marker-end', ''); // Remove arrows
+      // Update edges with transition if needed
+      const edgeSelection = edges;
+      if (withTransition) {
+        edgeSelection
+          .interrupt() // Stop any ongoing transitions
+          .transition()
+          .duration(1200)
+          .ease(d3.easeCubicOut)
+          .attr('stroke', d => getEdgeColor(d.type, false))
+          .attr('stroke-width', d => (matchesEdgeFilter(d) ? 1.2 : 1))
+          .attr('stroke-opacity', d => {
+            if (!filterDomain || filterDomain.length === 0) return 0;
+            return matchesEdgeFilter(d) ? 0.25 : 0;
+          })
+          .attr('marker-end', ''); // Remove arrows
+      } else {
+        edgeSelection
+          .attr('stroke', d => getEdgeColor(d.type, false))
+          .attr('stroke-width', d => (matchesEdgeFilter(d) ? 1.2 : 1))
+          .attr('stroke-opacity', d => {
+            if (!filterDomain || filterDomain.length === 0) return 0;
+            return matchesEdgeFilter(d) ? 0.25 : 0;
+          })
+          .attr('marker-end', ''); // Remove arrows
+      }
     };
 
     applyFilterBaseStateRef.current = applyFilterBaseState;
 
     const zoom = d3.zoom()
       .scaleExtent([0.5, 5])
+      .on('start', (event) => {
+        // Change cursor to grabbing when dragging starts
+        svg.style('cursor', 'grabbing');
+      })
       .on('zoom', (event) => {
         g.attr('transform', event.transform);
 
-        // Check for zoom extremes (easter egg)
+        // Check for zoom extremes (easter egg) - optimized with flag to prevent repeated calls
         const scale = event.transform.k;
-        if (scale >= 5 && onZoomExtreme) {
+        if (scale >= 5 && onZoomExtreme && !zoomExtremeTriggeredRef.current.max) {
+          zoomExtremeTriggeredRef.current.max = true;
+          zoomExtremeTriggeredRef.current.min = false;
           onZoomExtreme('max');
-        } else if (scale <= 0.5 && onZoomExtreme) {
+        } else if (scale <= 0.5 && onZoomExtreme && !zoomExtremeTriggeredRef.current.min) {
+          zoomExtremeTriggeredRef.current.min = true;
+          zoomExtremeTriggeredRef.current.max = false;
           onZoomExtreme('min');
+        } else if (scale > 0.5 && scale < 5) {
+          // Reset flags when user zooms back to normal range
+          zoomExtremeTriggeredRef.current.max = false;
+          zoomExtremeTriggeredRef.current.min = false;
         }
+      })
+      .on('end', (event) => {
+        // Change cursor back to grab when dragging ends
+        svg.style('cursor', 'grab');
       });
 
     zoomRef.current = zoom;
@@ -696,7 +859,7 @@ export function IdeologyCanvas({
 
     const resetFocus = () => {
       svg.transition()
-        .duration(700)
+        .duration(1200)
         .ease(d3.easeCubicOut)
         .call(zoom.transform, d3.zoomIdentity);
     };
@@ -924,11 +1087,14 @@ export function IdeologyCanvas({
 
     // 点击画布空白处取消选择
     svg.on('click', function() {
-      onNodeSelect(null);
-
-      applyFilterBaseState();
-
+      // Start visual transitions first
+      applyFilterBaseState(true);
       resetFocus();
+
+      // Then notify React (to avoid interrupting transitions)
+      setTimeout(() => {
+        onNodeSelect(null);
+      }, 0);
     });
 
     // 悬停效果 - Enhanced for starfield
@@ -990,6 +1156,10 @@ export function IdeologyCanvas({
         .style('font-weight', '500');
     });
 
+    // Cleanup function for shooting stars
+    return () => {
+      cleanupShootingStars();
+    };
   }, [data, dimensions, externalSelectedNode, language, filterDomain, pathMode, pathStart, pathEnd, pathResult]);
 
   return (
@@ -999,7 +1169,13 @@ export function IdeologyCanvas({
       backgroundColor: COLORS.BACKGROUND,
       overflow: 'hidden'
     }}>
-      <svg ref={svgRef} style={{ display: 'block' }} />
+      <svg
+        ref={svgRef}
+        style={{
+          display: 'block',
+          cursor: 'grab'
+        }}
+      />
     </div>
   );
 }
