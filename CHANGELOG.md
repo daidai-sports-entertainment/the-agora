@@ -15,6 +15,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.3.2] - 2026-01-31
+
+### ⚡ Performance - Major Canvas Optimization
+
+#### Rendering Performance Improvements
+- **O(n²) → O(1) node lookup** - Pre-computed `nodePositions` Map replaces `.find()` calls during edge rendering
+- **O(n²) → O(n) nebula calculation** - Spatial grid indexing for cluster detection, only checks adjacent 9 cells instead of all nodes
+- **CSS Filter → SVG Filter** - Pre-defined reusable `<filter>` elements (`glow-philosophy`, `glow-politics`, `glow-both`, `glow-dimmed`, `glow-hover-*`) replace per-node `drop-shadow` CSS
+
+#### Animation Optimization
+- **D3 Transitions → CSS Animations** - Twinkle effect now uses `@keyframes` with `animation-delay` for staggered effect
+- **Reduced drift animations** - Only 20% of nodes have drift animation (every 5th node)
+- **Shooting star memory leak fix** - Pre-created shared gradient `#shooting-star-gradient` and filter `#star-head-glow`
+- **Reduced shooting star frequency** - 40% → 30% probability, 3s → 4s interval
+
+#### Path Mode Optimization
+- **O(n×BFS) → O(BFS) reachability** - Single BFS traversal finds all reachable nodes instead of per-node path calculation
+- **Limited firework effects** - Maximum 10 nodes with particle effects
+- **Reduced particles** - 12 → 6 particles per burst, 1.5s → 2.5s interval
+
+#### Zoom Handler Optimization
+- **100ms throttle** - Zoom extreme detection throttled to reduce CPU usage
+- **Core transform unchanged** - `g.attr('transform')` still executes every frame for smooth panning
+
+**Expected Improvements**:
+- Significantly smoother panning and dragging
+- Reduced GPU load from CSS filters
+- Less memory usage from animation transitions
+- Faster initial render time
+
+**Files Modified**:
+- `src/components/IdeologyCanvas.jsx` (major refactoring)
+
+---
+
 ## [0.3.1] - 2026-01-27
 
 ### ✨ Added - Zoom Easter Egg

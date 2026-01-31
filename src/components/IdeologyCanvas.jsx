@@ -92,22 +92,35 @@ export function IdeologyCanvas({
       cleanup(); // 先清理之前的效果
       const nodes = nodesSelectionRef.current;
 
-      // 计算从起点可达的所有节点（使用与实际路径查找相同的逻辑）
-      const reachableNodes = new Set();
-      data.nodes.forEach(node => {
-        if (node.id === pathStart.id) {
-          reachableNodes.add(node.id);
-        } else {
-          // 使用相同的语义路径搜索来判断可达性
-          const path = findSemanticPath(pathStart.id, node.id, data.nodes, data.edges, {
-            maxLength: 4,
-            minScore: 40
-          });
-          if (path) {
-            reachableNodes.add(node.id);
+      // 🔧 性能优化：使用单次BFS找出所有可达节点，而不是为每个节点单独计算路径
+      // 从O(n * BFS复杂度) 降到 O(单次BFS)
+      const reachableNodes = new Set([pathStart.id]);
+
+      // 构建邻接表
+      const adjacency = new Map();
+      data.nodes.forEach(n => adjacency.set(n.id, []));
+      data.edges.forEach(edge => {
+        adjacency.get(edge.source)?.push(edge.target);
+        adjacency.get(edge.target)?.push(edge.source);
+      });
+
+      // BFS遍历，限制深度为4步（与findSemanticPath的maxLength一致）
+      const queue = [{ id: pathStart.id, depth: 0 }];
+      const visited = new Set([pathStart.id]);
+
+      while (queue.length > 0) {
+        const { id, depth } = queue.shift();
+        if (depth >= 4) continue; // 最多4步
+
+        const neighbors = adjacency.get(id) || [];
+        for (const neighborId of neighbors) {
+          if (!visited.has(neighborId)) {
+            visited.add(neighborId);
+            reachableNodes.add(neighborId);
+            queue.push({ id: neighborId, depth: depth + 1 });
           }
         }
-      });
+      }
 
       // 应用"星座回应"效果 - 更明显的视觉反馈
       nodes.selectAll('circle')
@@ -170,54 +183,57 @@ export function IdeologyCanvas({
         }
       });
 
-      // 为可达节点添加持续的烟花爆炸动画
+      // 🔧 性能优化：减少烟花动画的粒子数量和频率，限制同时动画的节点数量
       if (yearToSegmentedXRef.current && yScaleRef.current && effectsLayerRef.current) {
-        data.nodes.forEach(node => {
-          if (reachableNodes.has(node.id) && node.id !== pathStart.id) {
-            const nodeX = yearToSegmentedXRef.current(node.era);
-            const nodeY = yScaleRef.current(node.x);
+        // 限制最多10个节点有烟花效果，避免创建过多粒子
+        const reachableArray = Array.from(reachableNodes).filter(id => id !== pathStart.id);
+        const animatedNodes = reachableArray.slice(0, 10);
 
-            // 创建持续的烟花效果（每1.5秒爆发一次）
-            function createFirework() {
-              // 检查是否还在 path mode 且起点仍然选中
-              if (!pathMode || !pathStart || pathEnd || pathResult !== undefined) {
-                return; // 停止创建新烟花
-              }
+        animatedNodes.forEach((nodeId, index) => {
+          const node = data.nodes.find(n => n.id === nodeId);
+          if (!node) return;
 
-              // 每次爆发12个粒子，更密集
-              for (let i = 0; i < 12; i++) {
-                const angle = (i / 12) * Math.PI * 2;
-                const distance = 35 + Math.random() * 25;
-                const endX = nodeX + Math.cos(angle) * distance;
-                const endY = nodeY + Math.sin(angle) * distance;
+          const nodeX = yearToSegmentedXRef.current(node.era);
+          const nodeY = yScaleRef.current(node.x);
 
-                if (effectsLayerRef.current) {
-                  effectsLayerRef.current.append('circle')
-                    .attr('cx', nodeX)
-                    .attr('cy', nodeY)
-                    .attr('r', 3)
-                    .attr('fill', i % 2 === 0 ? '#ffeb3b' : '#ff9800') // 黄色和橙色交替
-                    .attr('opacity', 1)
-                    .transition()
-                    .duration(1000)
-                    .ease(d3.easeCubicOut)
-                    .attr('cx', endX)
-                    .attr('cy', endY)
-                    .attr('r', 0.8)
-                    .attr('opacity', 0)
-                    .remove();
-                }
-              }
-
-              // 1.5秒后再次爆发
-              const timerId = setTimeout(createFirework, 1500);
-              fireworkTimersRef.current.push(timerId);
+          function createFirework() {
+            if (!pathMode || !pathStart || pathEnd || pathResult !== undefined) {
+              return;
             }
 
-            // 初始延迟随机，让不同节点不同步
-            const initialTimerId = setTimeout(createFirework, Math.random() * 500);
-            fireworkTimersRef.current.push(initialTimerId);
+            // 🔧 减少粒子数量从12个到6个
+            for (let i = 0; i < 6; i++) {
+              const angle = (i / 6) * Math.PI * 2;
+              const distance = 30 + Math.random() * 20;
+              const endX = nodeX + Math.cos(angle) * distance;
+              const endY = nodeY + Math.sin(angle) * distance;
+
+              if (effectsLayerRef.current) {
+                effectsLayerRef.current.append('circle')
+                  .attr('cx', nodeX)
+                  .attr('cy', nodeY)
+                  .attr('r', 2.5)
+                  .attr('fill', i % 2 === 0 ? '#ffeb3b' : '#ff9800')
+                  .attr('opacity', 0.8)
+                  .transition()
+                  .duration(800)
+                  .ease(d3.easeCubicOut)
+                  .attr('cx', endX)
+                  .attr('cy', endY)
+                  .attr('r', 0.5)
+                  .attr('opacity', 0)
+                  .remove();
+              }
+            }
+
+            // 🔧 增加间隔时间从1.5秒到2.5秒
+            const timerId = setTimeout(createFirework, 2500);
+            fireworkTimersRef.current.push(timerId);
           }
+
+          // 错开初始时间，避免所有节点同时爆发
+          const initialTimerId = setTimeout(createFirework, index * 200 + Math.random() * 300);
+          fireworkTimersRef.current.push(initialTimerId);
         });
       }
     } else {
@@ -236,7 +252,11 @@ export function IdeologyCanvas({
     if (!data.nodes.length) return;
 
     const t = getText(language);
+    // 🔧 性能优化：预先构建节点索引Map，避免O(n)的.find()查找
     const nodeById = new Map(data.nodes.map(node => [node.id, node]));
+
+    // 🔧 性能优化：预计算节点位置，避免重复计算
+    const nodePositions = new Map();
 
     const matchesFilter = (node) => {
       if (!filterDomain || filterDomain.length === 0) return true;
@@ -267,7 +287,7 @@ export function IdeologyCanvas({
       return `rgba(${r}, ${g}, ${b}, ${alpha})`;
     };
 
-    // 清空之前的内容
+    // 清空之前的内容（包括旧的defs）
     d3.select(svgRef.current).selectAll('*').remove();
 
     const svg = d3.select(svgRef.current)
@@ -275,6 +295,10 @@ export function IdeologyCanvas({
       .attr('height', dimensions.height);
 
     svgSelectionRef.current = svg;
+
+    // 🔧 性能优化：预定义滤镜，避免每个节点都创建独立的CSS filter
+    // 创建一个defs区域来存放可复用的滤镜（必须在使用前创建）
+    const defs = svg.append('defs');
 
     // 创建主绘图组（用于缩放）
     const g = svg.append('g').attr('class', 'main-group');
@@ -312,6 +336,14 @@ export function IdeologyCanvas({
     // 保存函数到 ref 供其他 useEffect 使用
     yearToSegmentedXRef.current = yearToSegmentedX;
     yScaleRef.current = yScale;
+
+    // 🔧 性能优化：预计算所有节点位置，避免在边渲染时重复计算
+    data.nodes.forEach(node => {
+      nodePositions.set(node.id, {
+        x: yearToSegmentedX(node.era),
+        y: yScale(node.x)
+      });
+    });
 
     // Draw segmented X-axis with colored backgrounds
     const axisGroup = g.append('g')
@@ -396,28 +428,17 @@ export function IdeologyCanvas({
       nodeConnections.set(node.id, connected);
     });
 
+    // 🔧 性能优化：使用预计算的位置Map，避免O(n)的.find()查找
     // 绘制边（关系）
     const edges = g.append('g')
       .attr('class', 'edges')
       .selectAll('line')
       .data(data.edges)
       .join('line')
-      .attr('x1', d => {
-        const source = data.nodes.find(n => n.id === d.source);
-        return yearToSegmentedX(source.era);  // X-axis = time (era)
-      })
-      .attr('y1', d => {
-        const source = data.nodes.find(n => n.id === d.source);
-        return yScale(source.x);  // Y-axis = semantic embedding (x)
-      })
-      .attr('x2', d => {
-        const target = data.nodes.find(n => n.id === d.target);
-        return yearToSegmentedX(target.era);  // X-axis = time (era)
-      })
-      .attr('y2', d => {
-        const target = data.nodes.find(n => n.id === d.target);
-        return yScale(target.x);  // Y-axis = semantic embedding (x)
-      })
+      .attr('x1', d => nodePositions.get(d.source)?.x || 0)
+      .attr('y1', d => nodePositions.get(d.source)?.y || 0)
+      .attr('x2', d => nodePositions.get(d.target)?.x || 0)
+      .attr('y2', d => nodePositions.get(d.target)?.y || 0)
       .attr('stroke', d => getEdgeColor(d.type, false))
       .attr('stroke-width', 1.5)
       .attr('stroke-opacity', 0)  // Hidden by default
@@ -430,41 +451,60 @@ export function IdeologyCanvas({
     const effectsLayer = g.append('g').attr('class', 'effects');
     effectsLayerRef.current = effectsLayer;
 
-    // Calculate node clusters for nebula effect
+    // 🔧 性能优化：使用网格索引优化星云计算，从O(n²)降到O(n)
     const clusterRadius = 80; // px - distance to consider "close"
     const nebulae = [];
 
-    data.nodes.forEach((node, i) => {
-      const nodeX = yearToSegmentedX(node.era);  // X-axis = time
-      const nodeY = yScale(node.x);  // Y-axis = semantic embedding
+    // 创建空间网格索引
+    const gridSize = clusterRadius;
+    const grid = new Map();
 
-      // Count nearby nodes
+    // 首先将所有节点放入网格
+    data.nodes.forEach((node, i) => {
+      const pos = nodePositions.get(node.id);
+      const gridX = Math.floor(pos.x / gridSize);
+      const gridY = Math.floor(pos.y / gridSize);
+      const key = `${gridX},${gridY}`;
+      if (!grid.has(key)) grid.set(key, []);
+      grid.get(key).push({ node, pos, index: i });
+    });
+
+    // 然后只检查相邻网格中的节点
+    data.nodes.forEach((node, i) => {
+      const pos = nodePositions.get(node.id);
+      const gridX = Math.floor(pos.x / gridSize);
+      const gridY = Math.floor(pos.y / gridSize);
+
       let nearbyCount = 0;
       let avgColor = { r: 0, g: 0, b: 0 };
 
-      data.nodes.forEach((other, j) => {
-        if (i === j) return;
-        const otherX = yearToSegmentedX(other.era);  // X-axis = time
-        const otherY = yScale(other.x);  // Y-axis = semantic embedding
-        const distance = Math.sqrt(
-          Math.pow(nodeX - otherX, 2) +
-          Math.pow(nodeY - otherY, 2)
-        );
+      // 只检查周围9个网格
+      for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -1; dy <= 1; dy++) {
+          const key = `${gridX + dx},${gridY + dy}`;
+          const cellNodes = grid.get(key) || [];
+          for (const other of cellNodes) {
+            if (other.index === i) continue;
+            const distance = Math.sqrt(
+              Math.pow(pos.x - other.pos.x, 2) +
+              Math.pow(pos.y - other.pos.y, 2)
+            );
 
-        if (distance < clusterRadius) {
-          nearbyCount++;
-          // Get RGB from hex color
-          const color = getNodeColor(other);
-          const rgb = {
-            r: parseInt(color.slice(1,3), 16),
-            g: parseInt(color.slice(3,5), 16),
-            b: parseInt(color.slice(5,7), 16)
-          };
-          avgColor.r += rgb.r;
-          avgColor.g += rgb.g;
-          avgColor.b += rgb.b;
+            if (distance < clusterRadius) {
+              nearbyCount++;
+              const color = getNodeColor(other.node);
+              const rgb = {
+                r: parseInt(color.slice(1,3), 16),
+                g: parseInt(color.slice(3,5), 16),
+                b: parseInt(color.slice(5,7), 16)
+              };
+              avgColor.r += rgb.r;
+              avgColor.g += rgb.g;
+              avgColor.b += rgb.b;
+            }
+          }
         }
-      });
+      }
 
       // If cluster found (3+ nearby nodes), create nebula
       if (nearbyCount >= 3) {
@@ -473,106 +513,111 @@ export function IdeologyCanvas({
         avgColor.b = Math.floor(avgColor.b / nearbyCount);
 
         nebulae.push({
-          x: nodeX,
-          y: nodeY,
+          x: pos.x,
+          y: pos.y,
           color: `rgb(${avgColor.r}, ${avgColor.g}, ${avgColor.b})`,
           intensity: Math.min(nearbyCount / 10, 0.3) // Max 30% opacity
         });
       }
     });
 
+    // 🔧 性能优化：预创建可复用的流星渐变，避免内存泄漏
     // Draw shooting stars layer (behind nebulae)
     const shootingStarsLayer = g.insert('g', ':first-child')
       .attr('class', 'shooting-stars');
 
+    // 预创建一个通用的流星尾巴渐变
+    const shootingStarGradient = defs.append('linearGradient')
+      .attr('id', 'shooting-star-gradient')
+      .attr('x1', '0%')
+      .attr('y1', '0%')
+      .attr('x2', '100%')
+      .attr('y2', '0%');
+
+    shootingStarGradient.selectAll('stop')
+      .data([
+        { offset: '0%', opacity: 0 },
+        { offset: '70%', opacity: 0.3 },
+        { offset: '100%', opacity: 0.8 }
+      ])
+      .join('stop')
+      .attr('offset', d => d.offset)
+      .attr('stop-color', '#ffffff')
+      .attr('stop-opacity', d => d.opacity);
+
+    // 预创建发光滤镜用于流星头部
+    const starHeadFilter = defs.append('filter')
+      .attr('id', 'star-head-glow')
+      .attr('x', '-100%')
+      .attr('y', '-100%')
+      .attr('width', '300%')
+      .attr('height', '300%');
+    starHeadFilter.append('feGaussianBlur')
+      .attr('stdDeviation', 3)
+      .attr('result', 'glow');
+    const starMerge = starHeadFilter.append('feMerge');
+    starMerge.append('feMergeNode').attr('in', 'glow');
+    starMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
     // Function to create a realistic shooting star (bright head + fading tail)
     const createShootingStar = () => {
-      // Random position across the entire canvas
       const startX = Math.random() * dimensions.width;
       const startY = Math.random() * dimensions.height;
 
-      // Trajectory (60-150px) with slightly angled direction (diagonal)
-      const angle = Math.random() * Math.PI / 2 + Math.PI / 4; // 45-135 degrees for natural falling
+      const angle = Math.random() * Math.PI / 2 + Math.PI / 4;
       const distance = 60 + Math.random() * 90;
-      const tailLength = 40 + Math.random() * 30; // Tail length
+      const tailLength = 40 + Math.random() * 30;
 
       const endX = startX + Math.cos(angle) * distance;
       const endY = startY + Math.sin(angle) * distance;
 
-      // Create gradient for the tail (from transparent to bright)
-      const gradientId = `shooting-star-tail-${Date.now()}-${Math.random()}`;
-      svg.append('defs').append('linearGradient')
-        .attr('id', gradientId)
-        .attr('x1', '0%')
-        .attr('y1', '0%')
-        .attr('x2', '100%')
-        .attr('y2', '0%')
-        .selectAll('stop')
-        .data([
-          { offset: '0%', opacity: 0 },      // Tail end: transparent
-          { offset: '70%', opacity: 0.3 },   // Mid tail: faint
-          { offset: '100%', opacity: 0.8 }   // Near head: bright
-        ])
-        .join('stop')
-        .attr('offset', d => d.offset)
-        .attr('stop-color', '#ffffff')
-        .attr('stop-opacity', d => d.opacity);
-
-      // Create shooting star group with initial opacity 0
+      // 🔧 使用预创建的渐变，不再动态创建
       const starGroup = shootingStarsLayer.append('g')
         .style('opacity', 0);
 
-      // Tail (line with gradient)
-      const tail = starGroup.append('line')
+      starGroup.append('line')
         .attr('x1', startX - Math.cos(angle) * tailLength)
         .attr('y1', startY - Math.sin(angle) * tailLength)
         .attr('x2', startX)
         .attr('y2', startY)
-        .attr('stroke', `url(#${gradientId})`)
+        .attr('stroke', 'url(#shooting-star-gradient)')
         .attr('stroke-width', 2)
         .attr('stroke-linecap', 'round');
 
-      // Head (bright circle with glow)
-      const head = starGroup.append('circle')
+      starGroup.append('circle')
         .attr('cx', startX)
         .attr('cy', startY)
         .attr('r', 2.5)
         .attr('fill', '#ffffff')
-        .style('filter', 'drop-shadow(0 0 4px #ffffff) drop-shadow(0 0 8px rgba(230, 201, 138, 0.8))');
+        .style('filter', 'url(#star-head-glow)');
 
-      // Animate the entire group
       const duration = 1500 + Math.random() * 1000;
 
       starGroup
-        // Fade in quickly
         .transition()
         .duration(200)
         .style('opacity', 1)
-        // Then move
         .transition()
         .duration(duration)
         .ease(d3.easeLinear)
         .attr('transform', `translate(${endX - startX}, ${endY - startY})`)
-        // Fade out
         .transition()
         .duration(400)
         .style('opacity', 0)
         .remove();
     };
 
-    // Create shooting stars at random intervals - more frequent
+    // 🔧 性能优化：降低流星创建频率
     const shootingStarInterval = setInterval(() => {
-      if (Math.random() < 0.4) { // 40% chance
+      if (Math.random() < 0.3) { // 降低到30%概率
         createShootingStar();
       }
-    }, 3000); // Check every 3 seconds
+    }, 4000); // 降低检查频率到4秒
 
-    // Initial shooting stars - quicker start
-    setTimeout(() => createShootingStar(), 500);
-    setTimeout(() => createShootingStar(), 2000);
-    setTimeout(() => createShootingStar(), 3500);
+    // Initial shooting stars
+    setTimeout(() => createShootingStar(), 1000);
+    setTimeout(() => createShootingStar(), 3000);
 
-    // Store interval for cleanup
     const cleanupShootingStars = () => {
       clearInterval(shootingStarInterval);
     };
@@ -621,6 +666,40 @@ export function IdeologyCanvas({
 
     nodesSelectionRef.current = nodes;
 
+    // 创建不同颜色的发光滤镜（使用之前创建的defs）
+    ['philosophy', 'politics', 'both', 'dimmed'].forEach(type => {
+      const colors = {
+        philosophy: '#8fb4ff',
+        politics: '#d48b8b',
+        both: '#3fd6b5',
+        dimmed: '#666666'
+      };
+      const filter = defs.append('filter')
+        .attr('id', `glow-${type}`)
+        .attr('x', '-50%')
+        .attr('y', '-50%')
+        .attr('width', '200%')
+        .attr('height', '200%');
+
+      filter.append('feGaussianBlur')
+        .attr('stdDeviation', type === 'dimmed' ? 1 : 4)
+        .attr('result', 'coloredBlur');
+
+      const feMerge = filter.append('feMerge');
+      feMerge.append('feMergeNode').attr('in', 'coloredBlur');
+      feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+    });
+
+    // 获取节点对应的滤镜ID
+    const getFilterId = (node, isFiltered) => {
+      if (!isFiltered) return 'url(#glow-dimmed)';
+      const hasPhilosophy = node.domains.includes('philosophy');
+      const hasPolitics = node.domains.includes('politics');
+      if (hasPhilosophy && hasPolitics) return 'url(#glow-both)';
+      if (hasPolitics) return 'url(#glow-politics)';
+      return 'url(#glow-philosophy)';
+    };
+
     // 节点圆圈 - Starfield effect with random sizes and glow
     nodes.append('circle')
       .attr('r', d => {
@@ -633,38 +712,46 @@ export function IdeologyCanvas({
       .attr('stroke', 'none')  // Remove white border for softer look
       .attr('opacity', d => (matchesFilter(d) ? 0.85 : 0.2))
       .style('cursor', 'pointer')
-      .style('filter', d => {
-        const baseColor = getNodeColor(d);
-        if (!matchesFilter(d)) {
-          return `drop-shadow(0 0 2px ${toRGBA(baseColor, 0.2)})`;
+      // 🔧 性能优化：使用预定义的SVG滤镜替代动态CSS filter
+      .style('filter', d => getFilterId(d, matchesFilter(d)));
+
+    // 🔧 性能优化：使用CSS动画替代D3 transitions进行闪烁效果
+    // 添加CSS keyframes动画（只添加一次）
+    if (!document.getElementById('twinkle-animation-styles')) {
+      const style = document.createElement('style');
+      style.id = 'twinkle-animation-styles';
+      style.textContent = `
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.55; }
+          50% { opacity: 0.95; }
         }
-        const blurRadius = d.starSize * 1.2;
-        return `drop-shadow(0 0 ${blurRadius}px ${baseColor})`;
-      });
+        @keyframes twinkle-dim {
+          0%, 100% { opacity: 0.18; }
+          50% { opacity: 0.25; }
+        }
+        .star-node {
+          animation: twinkle 3s ease-in-out infinite;
+        }
+        .star-node-dim {
+          animation: twinkle-dim 4s ease-in-out infinite;
+        }
+      `;
+      document.head.appendChild(style);
+    }
 
-    // Add subtle twinkle animation to each node
-    nodes.selectAll('circle').each(function(d) {
-      const twinkle = () => {
-        const delay = Math.random() * 2000;
-        const duration = 1800 + Math.random() * 2600;
-        const minOpacity = matchesFilter(d) ? 0.55 : 0.18;
-        const maxOpacity = matchesFilter(d) ? 0.95 : 0.25;
-
-        d3.select(this)
-          .transition()
-          .delay(delay)
-          .duration(duration)
-          .attr('opacity', minOpacity)
-          .transition()
-          .duration(duration)
-          .attr('opacity', maxOpacity)
-          .on('end', twinkle);
-      };
-
-      twinkle();
+    // 给节点添加CSS类实现闪烁，避免每个节点独立的D3 transition
+    nodes.selectAll('circle').each(function(d, i) {
+      const circle = d3.select(this);
+      // 使用CSS动画，通过animation-delay创建错开效果
+      circle
+        .classed('star-node', matchesFilter(d))
+        .classed('star-node-dim', !matchesFilter(d))
+        .style('animation-delay', `${(i % 20) * 0.15}s`);
     });
 
-    nodes.each(function(d) {
+    // 🔧 性能优化：只对20%的节点应用漂移动画，减少并发transition数量
+    const driftNodes = data.nodes.filter((_, i) => i % 5 === 0);
+    nodes.filter(d => driftNodes.includes(d)).each(function(d) {
       const node = d3.select(this);
       const drift = () => {
         const dx = (Math.random() - 0.5) * 6;
@@ -711,25 +798,19 @@ export function IdeologyCanvas({
       if (withTransition) {
         // Smooth transition when deselecting
         selection
-          .interrupt() // Stop any ongoing transitions
+          .interrupt()
           .transition()
           .duration(1200)
           .ease(d3.easeCubicOut)
           .attr('opacity', d => (matchesFilter(d) ? 0.85 : 0.2))
           .attr('stroke', d => (matchesFilter(d) ? '#8a94a8' : 'transparent'))
           .attr('stroke-width', d => (matchesFilter(d) ? 1 : 0))
-          .attr('transform', 'scale(1)') // Reset scale
-          .style('filter', d => {
-            const baseColor = getNodeColor(d);
-            if (!matchesFilter(d)) {
-              return `drop-shadow(0 0 2px ${toRGBA(baseColor, 0.2)})`;
-            }
-            const blurRadius = d.starSize * 1.2;
-            return `drop-shadow(0 0 ${blurRadius}px ${baseColor})`;
-          });
+          .attr('transform', 'scale(1)')
+          // 🔧 性能优化：使用预定义的SVG滤镜
+          .style('filter', d => getFilterId(d, matchesFilter(d)));
 
         textSelection
-          .interrupt() // Stop any ongoing transitions
+          .interrupt()
           .transition()
           .duration(800)
           .ease(d3.easeCubicOut)
@@ -741,15 +822,9 @@ export function IdeologyCanvas({
           .attr('opacity', d => (matchesFilter(d) ? 0.85 : 0.2))
           .attr('stroke', d => (matchesFilter(d) ? '#8a94a8' : 'transparent'))
           .attr('stroke-width', d => (matchesFilter(d) ? 1 : 0))
-          .attr('transform', 'scale(1)') // Reset scale
-          .style('filter', d => {
-            const baseColor = getNodeColor(d);
-            if (!matchesFilter(d)) {
-              return `drop-shadow(0 0 2px ${toRGBA(baseColor, 0.2)})`;
-            }
-            const blurRadius = d.starSize * 1.2;
-            return `drop-shadow(0 0 ${blurRadius}px ${baseColor})`;
-          });
+          .attr('transform', 'scale(1)')
+          // 🔧 性能优化：使用预定义的SVG滤镜
+          .style('filter', d => getFilterId(d, matchesFilter(d)));
 
         textSelection
           .interrupt()
@@ -789,16 +864,24 @@ export function IdeologyCanvas({
 
     applyFilterBaseStateRef.current = applyFilterBaseState;
 
+    // 🔧 性能优化：使用节流的zoom回调，减少极值检查频率
+    let lastZoomCheck = 0;
+    const ZOOM_CHECK_THROTTLE = 100; // 最多100ms检查一次
+
     const zoom = d3.zoom()
       .scaleExtent([0.5, 5])
       .on('start', (event) => {
-        // Change cursor to grabbing when dragging starts
         svg.style('cursor', 'grabbing');
       })
       .on('zoom', (event) => {
+        // 核心transform操作，每帧都需要执行
         g.attr('transform', event.transform);
 
-        // Check for zoom extremes (easter egg) - optimized with flag to prevent repeated calls
+        // 🔧 节流极值检查，避免每帧都执行判断逻辑
+        const now = Date.now();
+        if (now - lastZoomCheck < ZOOM_CHECK_THROTTLE) return;
+        lastZoomCheck = now;
+
         const scale = event.transform.k;
         if (scale >= 5 && onZoomExtreme && !zoomExtremeTriggeredRef.current.max) {
           zoomExtremeTriggeredRef.current.max = true;
@@ -809,13 +892,11 @@ export function IdeologyCanvas({
           zoomExtremeTriggeredRef.current.max = false;
           onZoomExtreme('min');
         } else if (scale > 0.5 && scale < 5) {
-          // Reset flags when user zooms back to normal range
           zoomExtremeTriggeredRef.current.max = false;
           zoomExtremeTriggeredRef.current.min = false;
         }
       })
       .on('end', (event) => {
-        // Change cursor back to grab when dragging ends
         svg.style('cursor', 'grab');
       });
 
@@ -1097,23 +1178,50 @@ export function IdeologyCanvas({
       }, 0);
     });
 
+    // 🔧 性能优化：悬停效果使用预定义的SVG滤镜
+    // 创建悬停用的增强发光滤镜
+    ['philosophy', 'politics', 'both'].forEach(type => {
+      const colors = {
+        philosophy: '#8fb4ff',
+        politics: '#d48b8b',
+        both: '#3fd6b5'
+      };
+      const filter = defs.append('filter')
+        .attr('id', `glow-hover-${type}`)
+        .attr('x', '-100%')
+        .attr('y', '-100%')
+        .attr('width', '300%')
+        .attr('height', '300%');
+
+      filter.append('feGaussianBlur')
+        .attr('stdDeviation', 8) // 更强的模糊
+        .attr('result', 'coloredBlur');
+
+      const feMerge = filter.append('feMerge');
+      feMerge.append('feMergeNode').attr('in', 'coloredBlur');
+      feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+    });
+
+    // 获取悬停状态的滤镜ID
+    const getHoverFilterId = (node) => {
+      const hasPhilosophy = node.domains.includes('philosophy');
+      const hasPolitics = node.domains.includes('politics');
+      if (hasPhilosophy && hasPolitics) return 'url(#glow-hover-both)';
+      if (hasPolitics) return 'url(#glow-hover-politics)';
+      return 'url(#glow-hover-philosophy)';
+    };
+
     // 悬停效果 - Enhanced for starfield
     nodes.on('mouseenter', function(event, d) {
-      if (externalSelectedNode) return; // 如果已选中节点，不响应悬停
+      if (externalSelectedNode) return;
       if (!matchesFilter(d)) return;
 
-      // Enlarge node smoothly (works with any base size)
+      // Enlarge node and apply hover glow
       d3.select(this).select('circle')
         .transition()
         .duration(200)
-        .attr('transform', 'scale(1.3)'); // 30% larger
-
-      // Enhanced glow on hover
-      d3.select(this).select('circle')
-        .style('filter', () => {
-          const blurRadius = d.starSize * 2; // Double glow
-          return `drop-shadow(0 0 ${blurRadius}px ${getNodeColor(d)})`;
-        });
+        .attr('transform', 'scale(1.3)')
+        .style('filter', getHoverFilterId(d));
 
       // Show THIS node's label with elegant fade-in
       d3.select(this).select('text')
@@ -1135,18 +1243,12 @@ export function IdeologyCanvas({
       if (externalSelectedNode) return;
       if (!matchesFilter(d)) return;
 
-      // Restore node size
+      // Restore node size and normal glow
       d3.select(this).select('circle')
         .transition()
         .duration(200)
-        .attr('transform', 'scale(1)');
-
-      // Restore normal glow
-      d3.select(this).select('circle')
-        .style('filter', () => {
-          const blurRadius = d.starSize * 1.2;
-          return `drop-shadow(0 0 ${blurRadius}px ${getNodeColor(d)})`;
-        });
+        .attr('transform', 'scale(1)')
+        .style('filter', getFilterId(d, matchesFilter(d)));
 
       // Hide label with smooth fade-out
       d3.select(this).select('text')
