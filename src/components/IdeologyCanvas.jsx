@@ -25,7 +25,8 @@ export function IdeologyCanvas({
   onZoomExtreme
 }) {
   const svgRef = useRef(null);
-  const [dimensions] = useState({ width: 1200, height: 800 });
+  const containerRef = useRef(null);
+  const [dimensions, setDimensions] = useState({ width: 1200, height: 800 });
   const zoomRef = useRef(null);
   const svgSelectionRef = useRef(null);
   const nodesSelectionRef = useRef(null);
@@ -37,6 +38,30 @@ export function IdeologyCanvas({
   const effectsLayerRef = useRef(null);
   const fireworkTimersRef = useRef([]);
   const zoomExtremeTriggeredRef = useRef({ max: false, min: false }); // 存储所有烟花定时器
+
+  // 动态获取容器尺寸，适配不同屏幕大小
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const updateDimensions = () => {
+      const { clientWidth, clientHeight } = container;
+      if (clientWidth > 0 && clientHeight > 0) {
+        setDimensions({ width: clientWidth, height: clientHeight });
+      }
+    };
+
+    // 初始化尺寸
+    updateDimensions();
+
+    // 使用 ResizeObserver 监听容器大小变化
+    const resizeObserver = new ResizeObserver(() => {
+      updateDimensions();
+    });
+    resizeObserver.observe(container);
+
+    return () => resizeObserver.disconnect();
+  }, []);
 
   // 独立的effect用于计算路径（不触发重新渲染）
   useEffect(() => {
@@ -1265,7 +1290,7 @@ export function IdeologyCanvas({
   }, [data, dimensions, externalSelectedNode, language, filterDomain, pathMode, pathStart, pathEnd, pathResult]);
 
   return (
-    <div style={{
+    <div ref={containerRef} style={{
       width: '100%',
       height: '100%',
       backgroundColor: COLORS.BACKGROUND,
@@ -1275,6 +1300,8 @@ export function IdeologyCanvas({
         ref={svgRef}
         style={{
           display: 'block',
+          width: '100%',
+          height: '100%',
           cursor: 'grab'
         }}
       />
