@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { formatCategory, formatEra, getText } from '../utils/i18n';
+import { trackSearchSelect } from '../utils/analytics';
 
 /**
  * Search bar with fuzzy search and autocomplete
@@ -121,6 +122,7 @@ export function SearchBar({ data, onSelectNode, language }) {
   };
 
   const handleSelectNode = (node) => {
+    trackSearchSelect(query, node);
     onSelectNode(node);
     setQuery('');
     setIsOpen(false);

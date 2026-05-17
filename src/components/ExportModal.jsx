@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { getText } from '../utils/i18n';
 import { formatEra, formatRelationType } from '../utils/i18n';
 import { getNodeColor } from '../utils/colorScheme';
+import { trackExportImage } from '../utils/analytics';
 
 /**
  * Export modal for generating shareable images
@@ -367,6 +368,7 @@ export function ExportModal({ isOpen, onClose, selectedNode, language, allNodes 
   const handleExportPNG = () => {
     if (!previewImage) return;
 
+    trackExportImage(selectedNode);
     const link = document.createElement('a');
     link.download = `agora-${selectedNode.id}-${Date.now()}.png`;
     link.href = previewImage;

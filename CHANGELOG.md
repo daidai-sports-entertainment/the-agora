@@ -10,8 +10,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### 🎯 In Progress
-- Path visualization enhancements
+- Community voting on relationships (thumbs up / down)
 - Comprehensive testing suite
+
+---
+
+## [0.3.3] - 2026-05-17
+
+### ✨ Added - Usage Analytics (GA4)
+
+- **Google Analytics 4 integration** — session time, engagement rate, geography, and traffic sources tracked automatically
+- **Custom event tracking** via new `src/utils/analytics.js` utility:
+  - `node_click` — concept name and era when a node is selected
+  - `search_select` — query string and chosen concept when a search result is picked
+  - `path_mode_toggle` — enter/exit path mode
+  - `path_search` — start/end concepts and whether a path was found
+  - `export_image` — concept name when a PNG is downloaded
+  - `language_change` — EN/ZH switch
+  - `zoom_easter_egg` — max/min zoom level trigger
+- **Silent failure design** — analytics never break the app if GA4 fails to load
+
+**Files Modified**:
+- `index.html` (GA4 snippet)
+- `src/utils/analytics.js` (new file)
+- `src/App.jsx`
+- `src/components/SearchBar.jsx`
+- `src/components/ExportModal.jsx`
 
 ---
 

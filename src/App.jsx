@@ -9,6 +9,13 @@ import { ExportModal } from './components/ExportModal';
 import { ZoomEasterEgg } from './components/ZoomEasterEgg';
 import { useGraphData } from './hooks/useGraphData';
 import { getText } from './utils/i18n';
+import {
+  trackNodeClick,
+  trackPathModeToggle,
+  trackPathSearch,
+  trackLanguageChange,
+  trackZoomEasterEgg,
+} from './utils/analytics';
 
 function App() {
   const { data, loading, error } = useGraphData();
@@ -52,6 +59,7 @@ function App() {
   const togglePathMode = () => {
     const wasInPathMode = pathMode;
     setPathMode(prev => !prev);
+    trackPathModeToggle(!wasInPathMode);
 
     if (wasInPathMode) {
       // 退出路径模式时清空路径状态
@@ -97,6 +105,7 @@ function App() {
     lastZoomTriggerRef.current = now;
     setZoomLevel(level);
     setShowZoomEasterEgg(true);
+    trackZoomEasterEgg(level);
   };
 
   const matchesFilter = (node, filters) => {
@@ -117,6 +126,20 @@ function App() {
       setSelectedNode(null);
     }
   }, [activeFilters, selectedNode]);
+
+  // Track node clicks (fires whenever selectedNode changes to a real node)
+  useEffect(() => {
+    if (selectedNode) {
+      trackNodeClick(selectedNode);
+    }
+  }, [selectedNode]);
+
+  // Track path search completions
+  useEffect(() => {
+    if (pathStart && pathEnd && pathResult !== undefined) {
+      trackPathSearch(pathStart, pathEnd, pathResult !== null);
+    }
+  }, [pathResult]);
 
   if (loading) {
     return <LoadingAnimation language={language} />;
@@ -277,7 +300,7 @@ function App() {
           selectedNode={selectedNode}
           language={language}
           totalNodes={data.nodes.length}
-          onLanguageChange={setLanguage}
+          onLanguageChange={(lang) => { setLanguage(lang); trackLanguageChange(lang); }}
           pathResult={pathResult}
           pathMode={pathMode}
           onClearPath={clearPath}

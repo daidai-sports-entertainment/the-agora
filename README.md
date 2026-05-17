@@ -262,34 +262,30 @@ See `../generate_embeddings.py` for details.
 
 ## 🔮 Roadmap
 
-### V0.3 - Export Feature (Next)
-- [ ] SVG export
-- [ ] PNG export (multiple resolutions)
-- [ ] Export dialog UI
+### ✅ Completed
+- PNG export with social media layout and preview
+- Search bar with fuzzy autocomplete
+- Performance optimization (O(n²) → O(1) node lookup, CSS → SVG filters)
+- Zoom easter egg with user feedback prompts
+- Usage analytics (GA4) — session time, node clicks, path searches, exports
+
+### 🚧 Up Next
+
+**Community & Interaction**
+- [ ] Thumbs up / down voting on relationships
+- [ ] Comparison mode (select multiple concepts simultaneously)
+- [ ] URL sharing (encode current view state)
+- [ ] Preset views ("Ancient Greek Philosophy", "Enlightenment Era", etc.)
+
+**Polish**
+- [ ] Responsive design (mobile)
+- [ ] Light/dark mode toggle
 - [ ] Path-specific export mode
 
-### V0.4 - Search & Filter
-- [ ] Search box with autocomplete
-- [ ] Time period filter (button group)
-- [ ] Domain filter (multi-select)
-- [ ] Relationship type filter
-
-### V0.5 - Advanced Interaction
-- [ ] Comparison mode (select multiple concepts simultaneously)
-- [ ] Preset views ("Ancient Greek Philosophy", "Enlightenment Era", etc.)
-- [ ] URL sharing (encode current view state)
-
-### V0.6 - Polish & Optimization
-- [ ] Light/dark mode toggle
-- [ ] Responsive design (mobile)
-- [ ] Animation transitions
-- [ ] Performance optimization (Canvas rendering?)
-
-### V1.0 - Complete Version
+**V1.0 - Complete Version**
 - [ ] Recommendation system ("You might be interested in...")
 - [ ] Timeline animation (playback historical evolution)
 - [ ] User notes (local storage)
-- [ ] PDF export with annotations
 
 ---
 
