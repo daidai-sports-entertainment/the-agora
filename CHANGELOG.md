@@ -15,6 +15,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.0] - 2026-05-17
+
+### ✨ Added - Learning Resources Panel
+
+#### Per-Concept Reading Lists
+- **📚 Resources button** added to InfoPanel header — opens a dedicated resources panel alongside the export (📤) button
+- **Three-section layout**: Academic, Books, and Easy Reads & Watches
+- **Drill-down navigation**: Click a section to expand its links; back button returns to section overview
+- **Hyperlinked titles only** — long URLs are never shown; items display as clickable title text
+
+#### Phase 1 Content: Top 15 Concepts by Graph Connectivity
+Resources (2 academic + 3 books each) added for the following concepts:
+
+| Concept | Academic Sources | Books |
+|---|---|---|
+| Liberalism | SEP, IEP | Rawls, Mill, Locke |
+| Marxism | SEP (Marx + Analytical Marxism) | Marx/Engels, Wheen |
+| Socialism | SEP, IEP | Sunkara, Russell, Einstein |
+| Capitalism | SEP (Markets + Neoliberalism) | Smith, Piketty, Weber |
+| Enlightenment | SEP, IEP | Kant, Paine, Robertson |
+| Utilitarianism | SEP, IEP | Mill, Bentham, Singer |
+| Aristotelianism | SEP, IEP | Nicomachean Ethics, Politics, Barnes |
+| Rationalism | SEP, IEP | Descartes, Spinoza |
+| Empiricism | SEP, IEP | Locke, Hume, Berkeley |
+| Anarchism | SEP, IEP | Kropotkin (×2), Ward |
+| Nationalism | SEP, IEP | Anderson, Gellner, Moore |
+| Fascism | IEP (Totalitarianism), SEP (Arendt) | Arendt, Paxton, Passmore |
+| Idealism | SEP, IEP | Hegel, Kant, Singer |
+| Democracy | SEP, IEP | Tocqueville, Dahl, Plato |
+| Social Democracy | SEP, IEP | Giddens, Krugman, Dorrien |
+
+**Data file**: `src/data/resources.json`
+
+**Files Modified**:
+- `src/data/resources.json` (populated with 75 resource links)
+- `src/components/InfoPanel.jsx` (resources panel UI + state)
+
+---
+
 ## [0.3.3] - 2026-05-17
 
 ### ✨ Added - Usage Analytics (GA4)

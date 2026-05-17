@@ -1,0 +1,407 @@
+{
+  "liberalism": {
+    "academic": [
+      {
+        "title": "Liberalism — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/liberalism/"
+      },
+      {
+        "title": "Political Philosophy — Internet Encyclopedia of Philosophy",
+        "url": "https://iep.utm.edu/polphil/"
+      }
+    ],
+    "books": [
+      {
+        "title": "A Theory of Justice — John Rawls",
+        "url": "https://openlibrary.org/works/OL30310W"
+      },
+      {
+        "title": "On Liberty — John Stuart Mill",
+        "url": "https://openlibrary.org/works/OL1068103W"
+      },
+      {
+        "title": "Two Treatises of Government — John Locke",
+        "url": "https://openlibrary.org/works/OL880131W"
+      }
+    ],
+    "videos": []
+  },
+  "marxism": {
+    "academic": [
+      {
+        "title": "Karl Marx — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/marx/"
+      },
+      {
+        "title": "Analytical Marxism — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/marxism-analytical/"
+      }
+    ],
+    "books": [
+      {
+        "title": "The Communist Manifesto — Karl Marx & Friedrich Engels",
+        "url": "https://openlibrary.org/works/OL629052W"
+      },
+      {
+        "title": "Capital, Volume I — Karl Marx",
+        "url": "https://openlibrary.org/works/OL628450W"
+      },
+      {
+        "title": "Karl Marx: A Life — Francis Wheen",
+        "url": "https://openlibrary.org/search?title=Karl+Marx+A+Life&author=Wheen"
+      }
+    ],
+    "videos": []
+  },
+  "socialism": {
+    "academic": [
+      {
+        "title": "Socialism — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/socialism/"
+      },
+      {
+        "title": "Socialism — Internet Encyclopedia of Philosophy",
+        "url": "https://iep.utm.edu/socialis/"
+      }
+    ],
+    "books": [
+      {
+        "title": "The Socialist Manifesto — Bhaskar Sunkara",
+        "url": "https://openlibrary.org/search?title=Socialist+Manifesto&author=Sunkara"
+      },
+      {
+        "title": "Roads to Freedom — Bertrand Russell",
+        "url": "https://openlibrary.org/search?title=Roads+to+Freedom&author=Russell"
+      },
+      {
+        "title": "Why Socialism? — Albert Einstein",
+        "url": "https://monthlyreview.org/2009/05/01/why-socialism/"
+      }
+    ],
+    "videos": []
+  },
+  "capitalism": {
+    "academic": [
+      {
+        "title": "Markets — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/markets/"
+      },
+      {
+        "title": "Neoliberalism — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/neoliberalism/"
+      }
+    ],
+    "books": [
+      {
+        "title": "The Wealth of Nations — Adam Smith",
+        "url": "https://openlibrary.org/search?title=Wealth+of+Nations&author=Adam+Smith"
+      },
+      {
+        "title": "Capital in the Twenty-First Century — Thomas Piketty",
+        "url": "https://openlibrary.org/search?title=Capital+in+the+Twenty-First+Century&author=Piketty"
+      },
+      {
+        "title": "The Protestant Ethic and the Spirit of Capitalism — Max Weber",
+        "url": "https://openlibrary.org/search?title=Protestant+Ethic+Spirit+of+Capitalism&author=Weber"
+      }
+    ],
+    "videos": []
+  },
+  "enlightenment": {
+    "academic": [
+      {
+        "title": "Enlightenment — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/enlightenment/"
+      },
+      {
+        "title": "American Enlightenment Thought — Internet Encyclopedia of Philosophy",
+        "url": "https://iep.utm.edu/american-enlightenment-thought/"
+      }
+    ],
+    "books": [
+      {
+        "title": "What Is Enlightenment? — Immanuel Kant",
+        "url": "https://openlibrary.org/search?title=What+Is+Enlightenment&author=Kant"
+      },
+      {
+        "title": "The Age of Reason — Thomas Paine",
+        "url": "https://openlibrary.org/search?title=Age+of+Reason&author=Paine"
+      },
+      {
+        "title": "The Enlightenment: A Very Short Introduction — John Robertson",
+        "url": "https://openlibrary.org/search?title=Enlightenment+Very+Short+Introduction&author=Robertson"
+      }
+    ],
+    "videos": []
+  },
+  "utilitarianism": {
+    "academic": [
+      {
+        "title": "Utilitarianism, History of — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/utilitarianism-history/"
+      },
+      {
+        "title": "Act and Rule Utilitarianism — Internet Encyclopedia of Philosophy",
+        "url": "https://iep.utm.edu/util-a-r/"
+      }
+    ],
+    "books": [
+      {
+        "title": "Utilitarianism — John Stuart Mill",
+        "url": "https://openlibrary.org/books/OL7196800M/Utilitarianism"
+      },
+      {
+        "title": "An Introduction to the Principles of Morals and Legislation — Jeremy Bentham",
+        "url": "https://openlibrary.org/search?title=Introduction+to+the+Principles+of+Morals+and+Legislation&author=Bentham"
+      },
+      {
+        "title": "Practical Ethics — Peter Singer",
+        "url": "https://openlibrary.org/search?title=Practical+Ethics&author=Singer"
+      }
+    ],
+    "videos": []
+  },
+  "aristotelianism": {
+    "academic": [
+      {
+        "title": "Aristotle's Political Theory — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/aristotle-politics/"
+      },
+      {
+        "title": "Aristotle: Politics — Internet Encyclopedia of Philosophy",
+        "url": "https://iep.utm.edu/aristotle-politics/"
+      }
+    ],
+    "books": [
+      {
+        "title": "Nicomachean Ethics — Aristotle",
+        "url": "https://openlibrary.org/works/OL8273964W"
+      },
+      {
+        "title": "Politics — Aristotle",
+        "url": "https://openlibrary.org/search?title=Politics&author=Aristotle"
+      },
+      {
+        "title": "Aristotle: A Very Short Introduction — Jonathan Barnes",
+        "url": "https://openlibrary.org/search?title=Aristotle+Very+Short+Introduction&author=Barnes"
+      }
+    ],
+    "videos": []
+  },
+  "rationalism": {
+    "academic": [
+      {
+        "title": "Rationalism vs. Empiricism — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/rationalism-empiricism/"
+      },
+      {
+        "title": "Continental Rationalism — Internet Encyclopedia of Philosophy",
+        "url": "https://iep.utm.edu/continental-rationalism/"
+      }
+    ],
+    "books": [
+      {
+        "title": "Meditations on First Philosophy — René Descartes",
+        "url": "https://openlibrary.org/search?title=Meditations+on+First+Philosophy&author=Descartes"
+      },
+      {
+        "title": "Ethics — Baruch Spinoza",
+        "url": "https://openlibrary.org/search?title=Ethics&author=Spinoza"
+      },
+      {
+        "title": "Discourse on the Method — René Descartes",
+        "url": "https://openlibrary.org/search?title=Discourse+on+the+Method&author=Descartes"
+      }
+    ],
+    "videos": []
+  },
+  "empiricism": {
+    "academic": [
+      {
+        "title": "Rationalism vs. Empiricism — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/rationalism-empiricism/"
+      },
+      {
+        "title": "British Empiricism — Internet Encyclopedia of Philosophy",
+        "url": "https://iep.utm.edu/british-empiricism/"
+      }
+    ],
+    "books": [
+      {
+        "title": "An Essay Concerning Human Understanding — John Locke",
+        "url": "https://openlibrary.org/works/OL880201W"
+      },
+      {
+        "title": "An Enquiry Concerning Human Understanding — David Hume",
+        "url": "https://openlibrary.org/works/OL14982127W"
+      },
+      {
+        "title": "A Treatise Concerning the Principles of Human Knowledge — George Berkeley",
+        "url": "https://openlibrary.org/search?title=Principles+of+Human+Knowledge&author=Berkeley"
+      }
+    ],
+    "videos": []
+  },
+  "anarchism": {
+    "academic": [
+      {
+        "title": "Anarchism — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/anarchism/"
+      },
+      {
+        "title": "Political Philosophy — Internet Encyclopedia of Philosophy",
+        "url": "https://iep.utm.edu/polphil/"
+      }
+    ],
+    "books": [
+      {
+        "title": "The Conquest of Bread — Peter Kropotkin",
+        "url": "https://openlibrary.org/works/OL1105382W"
+      },
+      {
+        "title": "Mutual Aid: A Factor of Evolution — Peter Kropotkin",
+        "url": "https://openlibrary.org/search?title=Mutual+Aid+Factor+of+Evolution&author=Kropotkin"
+      },
+      {
+        "title": "Anarchism: A Very Short Introduction — Colin Ward",
+        "url": "https://openlibrary.org/search?title=Anarchism+Very+Short+Introduction&author=Colin+Ward"
+      }
+    ],
+    "videos": []
+  },
+  "nationalism": {
+    "academic": [
+      {
+        "title": "Nationalism — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/nationalism/"
+      },
+      {
+        "title": "Political Philosophy — Internet Encyclopedia of Philosophy",
+        "url": "https://iep.utm.edu/polphil/"
+      }
+    ],
+    "books": [
+      {
+        "title": "Imagined Communities — Benedict Anderson",
+        "url": "https://openlibrary.org/search?title=Imagined+Communities&author=Benedict+Anderson"
+      },
+      {
+        "title": "Nations and Nationalism — Ernest Gellner",
+        "url": "https://openlibrary.org/search?title=Nations+and+Nationalism&author=Gellner"
+      },
+      {
+        "title": "The Ethics of Nationalism — Margaret Moore",
+        "url": "https://openlibrary.org/search?title=Ethics+of+Nationalism&author=Margaret+Moore"
+      }
+    ],
+    "videos": []
+  },
+  "fascism": {
+    "academic": [
+      {
+        "title": "Totalitarianism — Internet Encyclopedia of Philosophy",
+        "url": "https://iep.utm.edu/totalita/"
+      },
+      {
+        "title": "Hannah Arendt — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/arendt/"
+      }
+    ],
+    "books": [
+      {
+        "title": "The Origins of Totalitarianism — Hannah Arendt",
+        "url": "https://openlibrary.org/search?title=Origins+of+Totalitarianism&author=Arendt"
+      },
+      {
+        "title": "The Anatomy of Fascism — Robert O. Paxton",
+        "url": "https://openlibrary.org/search?title=Anatomy+of+Fascism&author=Paxton"
+      },
+      {
+        "title": "Fascism: A Very Short Introduction — Kevin Passmore",
+        "url": "https://openlibrary.org/search?title=Fascism+Very+Short+Introduction&author=Passmore"
+      }
+    ],
+    "videos": []
+  },
+  "idealism": {
+    "academic": [
+      {
+        "title": "Idealism — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/idealism/"
+      },
+      {
+        "title": "German Idealism — Internet Encyclopedia of Philosophy",
+        "url": "https://iep.utm.edu/germidea/"
+      }
+    ],
+    "books": [
+      {
+        "title": "Phenomenology of Spirit — G. W. F. Hegel",
+        "url": "https://openlibrary.org/search?title=Phenomenology+of+Spirit&author=Hegel"
+      },
+      {
+        "title": "Critique of Pure Reason — Immanuel Kant",
+        "url": "https://openlibrary.org/search?title=Critique+of+Pure+Reason&author=Kant"
+      },
+      {
+        "title": "Hegel: A Very Short Introduction — Peter Singer",
+        "url": "https://openlibrary.org/search?title=Hegel+Very+Short+Introduction&author=Singer"
+      }
+    ],
+    "videos": []
+  },
+  "democracy": {
+    "academic": [
+      {
+        "title": "Democracy — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/democracy/"
+      },
+      {
+        "title": "Political Philosophy — Internet Encyclopedia of Philosophy",
+        "url": "https://iep.utm.edu/polphil/"
+      }
+    ],
+    "books": [
+      {
+        "title": "Democracy in America — Alexis de Tocqueville",
+        "url": "https://openlibrary.org/search?title=Democracy+in+America&author=Tocqueville"
+      },
+      {
+        "title": "On Democracy — Robert Dahl",
+        "url": "https://openlibrary.org/search?title=On+Democracy&author=Dahl"
+      },
+      {
+        "title": "The Republic — Plato",
+        "url": "https://openlibrary.org/search?title=The+Republic&author=Plato"
+      }
+    ],
+    "videos": []
+  },
+  "social_democracy": {
+    "academic": [
+      {
+        "title": "Socialism — Stanford Encyclopedia of Philosophy",
+        "url": "https://plato.stanford.edu/entries/socialism/"
+      },
+      {
+        "title": "Socialism — Internet Encyclopedia of Philosophy",
+        "url": "https://iep.utm.edu/socialis/"
+      }
+    ],
+    "books": [
+      {
+        "title": "The Third Way: The Renewal of Social Democracy — Anthony Giddens",
+        "url": "https://openlibrary.org/search?title=Third+Way+Renewal+Social+Democracy&author=Giddens"
+      },
+      {
+        "title": "The Conscience of a Liberal — Paul Krugman",
+        "url": "https://openlibrary.org/search?title=Conscience+of+a+Liberal&author=Krugman"
+      },
+      {
+        "title": "Social Democracy in the Making — Gary Dorrien",
+        "url": "https://openlibrary.org/search?title=Social+Democracy+in+the+Making&author=Dorrien"
+      }
+    ],
+    "videos": []
+  }
+}

@@ -10,7 +10,21 @@ Explore 2,500 years of intellectual evolution: an interactive visualization span
 
 ## ✨ Features
 
-### 🎯 Path Tracking (v0.2 - Latest)
+### 📚 Learning Resources (v0.4 - Latest)
+
+**NEW**: Every concept node now has a curated reading list!
+
+- **Resources Panel** — click the 📚 icon in any info panel to open a per-concept library
+- **Three sections**: Academic (SEP / IEP), Books, and Easy Reads & Watches
+- **Drill-down navigation** — click a section, read the links, hit Back to return
+- **Phase 1 coverage**: 15 highest-connectivity concepts, each with 2 academic + 3 book links
+- **Clean UI** — only titles are shown; no raw URLs
+
+**Phase 1 concepts**: Liberalism, Marxism, Socialism, Capitalism, Enlightenment, Utilitarianism, Aristotelianism, Rationalism, Empiricism, Anarchism, Nationalism, Fascism, Idealism, Democracy, Social Democracy
+
+---
+
+### 🎯 Path Tracking (v0.2)
 
 **NEW**: Trace the historical evolution of ideas through influence chains!
 
@@ -268,8 +282,14 @@ See `../generate_embeddings.py` for details.
 - Performance optimization (O(n²) → O(1) node lookup, CSS → SVG filters)
 - Zoom easter egg with user feedback prompts
 - Usage analytics (GA4) — session time, node clicks, path searches, exports
+- **Learning resources panel** — academic + book links for top 15 concepts (v0.4.0)
 
 ### 🚧 Up Next
+
+**Resources (Phase 2 & 3)**
+- [ ] Expand resources to all 71 concepts (currently covers top 15)
+- [ ] Add "Easy Reads & Watches" content (YouTube, podcasts) for top 15
+- [ ] Community resource submissions (users suggest links)
 
 **Community & Interaction**
 - [ ] Thumbs up / down voting on relationships

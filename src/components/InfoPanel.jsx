@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getNodeColor } from '../utils/colorScheme';
 import {
   formatCategory,
@@ -12,6 +12,7 @@ import {
   getLayerIcon
 } from '../utils/relationOntology';
 import { generateWarnings } from '../utils/pathFinding';
+import resourcesData from '../data/resources.json';
 
 /**
  * Right side information panel - displays selected concept details
@@ -20,6 +21,14 @@ import { generateWarnings } from '../utils/pathFinding';
 export function InfoPanel({ selectedNode, language, onLanguageChange, totalNodes, pathResult, pathMode, onClearPath, allNodes, onExport }) {
   const t = getText(language);
   const [showQualityTooltip, setShowQualityTooltip] = useState(false);
+  const [showResources, setShowResources] = useState(false);
+  const [activeSection, setActiveSection] = useState(null);
+
+  // Reset resources panel whenever the selected node changes
+  useEffect(() => {
+    setShowResources(false);
+    setActiveSection(null);
+  }, [selectedNode?.id]);
 
   const handleLanguageToggle = (nextLanguage) => {
     if (nextLanguage !== language) {
@@ -521,99 +530,113 @@ export function InfoPanel({ selectedNode, language, onLanguageChange, totalNodes
             </span>
           </div>
         </div>
-        {!pathMode && onExport && (
-          <button
-            type="button"
-            onClick={onExport}
-            style={styles.exportButton}
-            title={language === 'zh' ? '导出分享' : 'Export & Share'}
-          >
-            📤
-          </button>
+        {!pathMode && (
+          <div style={styles.headerButtons}>
+            {onExport && (
+              <button
+                type="button"
+                onClick={onExport}
+                style={styles.exportButton}
+                title={language === 'zh' ? '导出分享' : 'Export & Share'}
+              >
+                📤
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => { setShowResources(prev => !prev); setActiveSection(null); }}
+              style={{
+                ...styles.exportButton,
+                ...(showResources ? styles.resourcesButtonActive : {})
+              }}
+              title={language === 'zh' ? '学习资源' : 'Learning Resources'}
+            >
+              📚
+            </button>
+          </div>
         )}
       </div>
 
-      <div style={styles.section}>
-        <h3 style={styles.sectionTitle}>{t.description}</h3>
-        <p style={styles.description}>{selectedNode.description}</p>
-      </div>
-
-      {selectedNode.key_figures && selectedNode.key_figures.length > 0 && (
-        <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>👤 {t.keyFigures}</h3>
-          <ul style={styles.list}>
-            {selectedNode.key_figures.map((figure, i) => (
-              <li key={i} style={styles.listItem}>{figure}</li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {selectedNode.domains && selectedNode.domains.length > 0 && (
-        <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>🏷️ {t.domains}</h3>
-          <div style={styles.tags}>
-            {selectedNode.domains.map((domain, i) => (
-              <span key={i} style={styles.tag}>{formatDomain(domain, language)}</span>
-            ))}
+      {showResources ? (
+        <ResourcesPanel
+          nodeId={selectedNode.id}
+          resources={resourcesData[selectedNode.id]}
+          activeSection={activeSection}
+          onSectionClick={setActiveSection}
+          onBack={() => setActiveSection(null)}
+          language={language}
+        />
+      ) : (
+        <>
+          <div style={styles.section}>
+            <h3 style={styles.sectionTitle}>{t.description}</h3>
+            <p style={styles.description}>{selectedNode.description}</p>
           </div>
-        </div>
-      )}
 
-      {totalRelationships > 0 && (
-        <div style={styles.section}>
-          <h3 style={styles.sectionTitle}>
-            🔗 {t.relationships} ({totalRelationships})
-          </h3>
+          {selectedNode.key_figures && selectedNode.key_figures.length > 0 && (
+            <div style={styles.section}>
+              <h3 style={styles.sectionTitle}>👤 {t.keyFigures}</h3>
+              <ul style={styles.list}>
+                {selectedNode.key_figures.map((figure, i) => (
+                  <li key={i} style={styles.listItem}>{figure}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-          {/* 出边：这个思想影响了谁 */}
-          {outgoingRelationships.length > 0 && (
-            <div style={styles.relationshipGroup}>
-              <h4 style={styles.relationshipGroupTitle}>
-                📤 {language === 'zh' ? '影响' : 'Influences'} ({outgoingRelationships.length})
-              </h4>
-              <div style={styles.relationships}>
-                {outgoingRelationships.map((rel, i) => (
-                  <div key={`out-${i}`} style={styles.relationship} className="relationship-card">
-                    <div style={styles.relType}>
-                      {formatRelationType(rel.type, language)}
-                    </div>
-                    <div style={styles.relTarget}>
-                      → {formatNodeName(rel.target)}
-                    </div>
-                    {rel.description && (
-                      <div style={styles.relDesc}>{rel.description}</div>
-                    )}
-                  </div>
+          {selectedNode.domains && selectedNode.domains.length > 0 && (
+            <div style={styles.section}>
+              <h3 style={styles.sectionTitle}>🏷️ {t.domains}</h3>
+              <div style={styles.tags}>
+                {selectedNode.domains.map((domain, i) => (
+                  <span key={i} style={styles.tag}>{formatDomain(domain, language)}</span>
                 ))}
               </div>
             </div>
           )}
 
-          {/* 入边：谁影响了这个思想 */}
-          {incomingRelationships.length > 0 && (
-            <div style={styles.relationshipGroup}>
-              <h4 style={styles.relationshipGroupTitle}>
-                📥 {language === 'zh' ? '被影响' : 'Influenced By'} ({incomingRelationships.length})
-              </h4>
-              <div style={styles.relationships}>
-                {incomingRelationships.map((rel, i) => (
-                  <div key={`in-${i}`} style={styles.relationship} className="relationship-card">
-                    <div style={styles.relType}>
-                      {formatRelationType(rel.type, language)}
-                    </div>
-                    <div style={styles.relTarget}>
-                      ← {rel.sourceName}
-                    </div>
-                    {rel.description && (
-                      <div style={styles.relDesc}>{rel.description}</div>
-                    )}
+          {totalRelationships > 0 && (
+            <div style={styles.section}>
+              <h3 style={styles.sectionTitle}>
+                🔗 {t.relationships} ({totalRelationships})
+              </h3>
+
+              {outgoingRelationships.length > 0 && (
+                <div style={styles.relationshipGroup}>
+                  <h4 style={styles.relationshipGroupTitle}>
+                    📤 {language === 'zh' ? '影响' : 'Influences'} ({outgoingRelationships.length})
+                  </h4>
+                  <div style={styles.relationships}>
+                    {outgoingRelationships.map((rel, i) => (
+                      <div key={`out-${i}`} style={styles.relationship} className="relationship-card">
+                        <div style={styles.relType}>{formatRelationType(rel.type, language)}</div>
+                        <div style={styles.relTarget}>→ {formatNodeName(rel.target)}</div>
+                        {rel.description && <div style={styles.relDesc}>{rel.description}</div>}
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </div>
+              )}
+
+              {incomingRelationships.length > 0 && (
+                <div style={styles.relationshipGroup}>
+                  <h4 style={styles.relationshipGroupTitle}>
+                    📥 {language === 'zh' ? '被影响' : 'Influenced By'} ({incomingRelationships.length})
+                  </h4>
+                  <div style={styles.relationships}>
+                    {incomingRelationships.map((rel, i) => (
+                      <div key={`in-${i}`} style={styles.relationship} className="relationship-card">
+                        <div style={styles.relType}>{formatRelationType(rel.type, language)}</div>
+                        <div style={styles.relTarget}>← {rel.sourceName}</div>
+                        {rel.description && <div style={styles.relDesc}>{rel.description}</div>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );
@@ -626,6 +649,248 @@ function formatNodeName(name) {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
+
+// ─── Resources Panel ──────────────────────────────────────────────────────────
+
+const SECTIONS = [
+  {
+    key: 'academic',
+    icon: '🎓',
+    labelEN: 'Academic',
+    labelZH: '学术资源',
+    descEN: 'Encyclopedias & peer-reviewed sources',
+    descZH: '百科全书与学术文章',
+  },
+  {
+    key: 'books',
+    icon: '📖',
+    labelEN: 'Books',
+    labelZH: '推荐书目',
+    descEN: 'Primary texts & accessible reads',
+    descZH: '原典与入门书籍',
+  },
+  {
+    key: 'videos',
+    icon: '🎬',
+    labelEN: 'Easy Reads & Watches',
+    labelZH: '轻松入门',
+    descEN: 'Videos, podcasts & accessible articles',
+    descZH: '视频、播客与入门文章',
+  },
+];
+
+function ResourcesPanel({ nodeId, resources, activeSection, onSectionClick, onBack, language }) {
+  const isZH = language === 'zh';
+
+  // Detail view — links for a specific section
+  if (activeSection) {
+    const section = SECTIONS.find(s => s.key === activeSection);
+    const links = resources?.[activeSection] || [];
+
+    return (
+      <div style={rStyles.container}>
+        <button type="button" onClick={onBack} style={rStyles.backButton}>
+          ← {isZH ? '返回' : 'Back'}
+        </button>
+        <h3 style={rStyles.sectionHeading}>
+          {section.icon} {isZH ? section.labelZH : section.labelEN}
+        </h3>
+
+        {links.length === 0 ? (
+          <div style={rStyles.emptyState}>
+            <p style={rStyles.emptyIcon}>🔭</p>
+            <p style={rStyles.emptyText}>
+              {isZH ? '内容即将上线，敬请期待。' : 'Content coming soon.'}
+            </p>
+          </div>
+        ) : (
+          <div style={rStyles.linkList}>
+            {links.map((item, i) => (
+              <a
+                key={i}
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={rStyles.linkItem}
+              >
+                <span style={rStyles.linkTitle}>{item.title}</span>
+                <span style={rStyles.linkArrow}>↗</span>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Overview — three section rows
+  return (
+    <div style={rStyles.container}>
+      <p style={rStyles.overviewLabel}>
+        {isZH ? '选择资源类型' : 'Choose a resource type'}
+      </p>
+      <div style={rStyles.sectionList}>
+        {SECTIONS.map(section => {
+          const count = resources?.[section.key]?.length || 0;
+          const hasContent = count > 0;
+          return (
+            <button
+              key={section.key}
+              type="button"
+              onClick={() => hasContent && onSectionClick(section.key)}
+              style={{
+                ...rStyles.sectionRow,
+                ...(!hasContent ? rStyles.sectionRowDisabled : {})
+              }}
+            >
+              <span style={rStyles.sectionIcon}>{section.icon}</span>
+              <div style={rStyles.sectionText}>
+                <span style={rStyles.sectionLabel}>
+                  {isZH ? section.labelZH : section.labelEN}
+                </span>
+                <span style={rStyles.sectionDesc}>
+                  {hasContent
+                    ? (isZH ? section.descZH : section.descEN)
+                    : (isZH ? '即将上线' : 'Coming soon')}
+                </span>
+              </div>
+              <span style={{
+                ...rStyles.sectionChevron,
+                ...(!hasContent ? { opacity: 0.2 } : {})
+              }}>›</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+const rStyles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    paddingBottom: '24px',
+  },
+  overviewLabel: {
+    fontSize: '12px',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+    color: 'var(--color-muted)',
+    margin: '0 0 8px 0',
+  },
+  sectionList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+  },
+  sectionRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '14px',
+    padding: '14px 16px',
+    backgroundColor: 'rgba(13, 23, 41, 0.75)',
+    borderRadius: '12px',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    cursor: 'pointer',
+    textAlign: 'left',
+    transition: 'all 0.2s ease',
+    width: '100%',
+  },
+  sectionRowDisabled: {
+    opacity: 0.45,
+    cursor: 'default',
+  },
+  sectionIcon: {
+    fontSize: '22px',
+    flexShrink: 0,
+  },
+  sectionText: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '3px',
+  },
+  sectionLabel: {
+    fontSize: '15px',
+    fontWeight: 600,
+    color: 'var(--color-ink)',
+  },
+  sectionDesc: {
+    fontSize: '12px',
+    color: 'rgba(200, 210, 230, 0.75)',
+  },
+  sectionChevron: {
+    fontSize: '20px',
+    color: 'var(--color-accent)',
+    flexShrink: 0,
+  },
+  backButton: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    background: 'none',
+    border: 'none',
+    color: 'var(--color-accent)',
+    fontSize: '14px',
+    cursor: 'pointer',
+    padding: '4px 0',
+    marginBottom: '8px',
+  },
+  sectionHeading: {
+    fontSize: '16px',
+    fontWeight: 600,
+    color: 'var(--color-accent)',
+    margin: '0 0 16px 0',
+  },
+  linkList: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px',
+  },
+  linkItem: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '12px',
+    padding: '12px 16px',
+    backgroundColor: 'rgba(13, 23, 41, 0.75)',
+    borderRadius: '12px',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    textDecoration: 'none',
+    transition: 'all 0.2s ease',
+  },
+  linkTitle: {
+    fontSize: '14px',
+    color: 'var(--color-ink)',
+    lineHeight: '1.4',
+    flex: 1,
+  },
+  linkArrow: {
+    fontSize: '16px',
+    color: 'var(--color-accent)',
+    flexShrink: 0,
+  },
+  emptyState: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '40px 20px',
+    opacity: 0.6,
+  },
+  emptyIcon: {
+    fontSize: '32px',
+    margin: 0,
+  },
+  emptyText: {
+    fontSize: '14px',
+    color: 'var(--color-muted)',
+    textAlign: 'center',
+    margin: 0,
+  },
+};
 
 const styles = {
   panel: {
@@ -702,6 +967,11 @@ const styles = {
   headerContent: {
     flex: 1
   },
+  headerButtons: {
+    display: 'flex',
+    gap: '8px',
+    flexShrink: 0,
+  },
   exportButton: {
     width: '48px',
     height: '48px',
@@ -716,6 +986,10 @@ const styles = {
     justifyContent: 'center',
     transition: 'all 0.2s ease',
     flexShrink: 0
+  },
+  resourcesButtonActive: {
+    backgroundColor: 'rgba(230, 201, 138, 0.25)',
+    borderColor: 'rgba(230, 201, 138, 0.6)',
   },
   conceptName: {
     fontSize: '24px',
