@@ -69,7 +69,7 @@ export function InfoPanel({ selectedNode, language, onLanguageChange, totalNodes
         </div>
 
         <div style={styles.header}>
-          <h2 style={{...styles.conceptName, color: '#e6c98a'}}>
+          <h2 style={{...styles.conceptName, color: 'var(--color-accent)'}}>
             {language === 'zh' ? '影响路径' : 'Influence Path'}
           </h2>
           <div style={styles.meta}>
@@ -894,14 +894,14 @@ const rStyles = {
 
 const styles = {
   panel: {
-    width: '400px',
+    width: '380px',
     height: '100%',
-    background: 'linear-gradient(180deg, rgba(14, 20, 34, 0.96), rgba(10, 14, 26, 0.98))',
+    backgroundColor: 'var(--color-panel)',
     color: 'var(--color-ink)',
+    fontFamily: 'var(--font-ui)',
     padding: '24px',
     overflowY: 'auto',
-    boxShadow: '-10px 0 30px rgba(3, 5, 10, 0.55)',
-    borderLeft: '1px solid var(--color-border)',
+    borderLeft: '1px solid rgba(255, 255, 255, 0.06)',
     position: 'relative'
   },
   languageRow: {
@@ -928,15 +928,16 @@ const styles = {
     background: 'transparent',
     color: 'var(--color-muted)',
     fontSize: '12px',
-    padding: '6px 12px',
+    fontFamily: 'var(--font-ui)',
+    fontWeight: 400,
+    padding: '5px 11px',
     borderRadius: '999px',
     cursor: 'pointer',
-    letterSpacing: '0.5px'
+    letterSpacing: '-0.1px'
   },
   languageOptionActive: {
-    backgroundColor: 'rgba(227, 201, 154, 0.2)',
-    color: 'var(--color-accent)',
-    boxShadow: '0 6px 16px rgba(3, 5, 10, 0.35)'
+    backgroundColor: 'rgba(157, 120, 247, 0.15)',
+    color: 'var(--color-accent)'
   },
   welcome: {
     display: 'flex',
@@ -973,30 +974,30 @@ const styles = {
     flexShrink: 0,
   },
   exportButton: {
-    width: '48px',
-    height: '48px',
-    borderRadius: '12px',
-    border: '1px solid rgba(230, 201, 138, 0.3)',
-    backgroundColor: 'rgba(230, 201, 138, 0.1)',
-    color: 'var(--color-accent)',
-    fontSize: '20px',
+    width: '36px',
+    height: '36px',
+    borderRadius: '8px',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    backgroundColor: 'transparent',
+    color: 'var(--color-muted)',
+    fontSize: '17px',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    transition: 'all 0.2s ease',
+    transition: 'border-color 0.15s, color 0.15s',
     flexShrink: 0
   },
   resourcesButtonActive: {
-    backgroundColor: 'rgba(230, 201, 138, 0.25)',
-    borderColor: 'rgba(230, 201, 138, 0.6)',
+    backgroundColor: 'rgba(157, 120, 247, 0.25)',
+    borderColor: 'rgba(157, 120, 247, 0.6)',
   },
   conceptName: {
-    fontSize: '24px',
+    fontSize: '22px',
     fontWeight: 600,
-    margin: '0 0 12px 0',
+    margin: '0 0 10px 0',
     fontFamily: 'var(--font-title)',
-    letterSpacing: '0.3px'
+    letterSpacing: '-0.4px'
   },
   meta: {
     display: 'flex',
@@ -1004,39 +1005,50 @@ const styles = {
     alignItems: 'center'
   },
   era: {
-    fontSize: '14px',
+    fontSize: '12px',
+    fontFamily: 'var(--font-ui)',
+    fontWeight: 400,
     color: 'var(--color-muted)'
   },
   category: {
-    fontSize: '12px',
-    padding: '4px 12px',
-    borderRadius: '12px',
-    color: '#fff',
+    fontSize: '11px',
+    fontFamily: 'var(--font-ui)',
     fontWeight: 600,
-    letterSpacing: '0.4px'
+    padding: '3px 10px',
+    borderRadius: '999px',
+    color: '#fff',
+    letterSpacing: '0'
   },
   section: {
     marginBottom: '24px'
   },
   sectionTitle: {
-    fontSize: '16px',
+    fontSize: '10px',
     fontWeight: 600,
-    color: 'var(--color-accent)',
-    marginBottom: '12px'
+    fontFamily: 'var(--font-ui)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.7px',
+    color: 'var(--color-muted)',
+    marginBottom: '10px',
+    opacity: 0.7
   },
   description: {
-    fontSize: '14px',
-    lineHeight: '1.6',
+    fontSize: '15px',
+    fontFamily: 'var(--font-ui)',
+    fontWeight: 400,
+    lineHeight: '1.65',
     color: 'var(--color-ink)'
   },
   list: {
     margin: 0,
-    paddingLeft: '20px',
-    fontSize: '14px'
+    paddingLeft: '18px',
+    fontSize: '14px',
+    fontFamily: 'var(--font-ui)'
   },
   listItem: {
-    marginBottom: '8px',
-    color: 'var(--color-ink)'
+    marginBottom: '6px',
+    color: 'var(--color-ink)',
+    fontFamily: 'var(--font-ui)'
   },
   tags: {
     display: 'flex',
@@ -1066,17 +1078,20 @@ const styles = {
     gap: '12px'
   },
   relationship: {
-    padding: '12px',
-    backgroundColor: 'rgba(13, 23, 41, 0.75)',
-    borderRadius: '12px',
+    padding: '10px 12px',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderRadius: '8px',
     fontSize: '13px',
-    border: '1px solid rgba(255, 255, 255, 0.06)',
-    boxShadow: '0 10px 24px rgba(3, 6, 12, 0.35)'
+    fontFamily: 'var(--font-ui)',
+    border: '1px solid rgba(255, 255, 255, 0.07)'
   },
   relType: {
+    fontSize: '11px',
+    fontFamily: 'var(--font-ui)',
     fontWeight: 600,
+    letterSpacing: '0.1px',
     color: 'var(--color-accent)',
-    marginBottom: '4px'
+    marginBottom: '3px'
   },
   relTarget: {
     color: 'var(--color-ink)',
@@ -1084,8 +1099,8 @@ const styles = {
   },
   relDesc: {
     fontSize: '12px',
-    color: 'var(--color-muted)',
-    fontStyle: 'italic'
+    fontFamily: 'var(--font-ui)',
+    color: 'var(--color-muted)'
   },
   moreRelations: {
     fontSize: '12px',
@@ -1122,9 +1137,9 @@ const styles = {
     display: 'flex',
     gap: '16px',
     padding: '12px',
-    backgroundColor: 'rgba(230, 201, 138, 0.1)',
+    backgroundColor: 'rgba(157, 120, 247, 0.1)',
     borderRadius: '12px',
-    border: '1px solid rgba(230, 201, 138, 0.2)'
+    border: '1px solid rgba(157, 120, 247, 0.2)'
   },
   pathStat: {
     display: 'flex',
@@ -1140,7 +1155,7 @@ const styles = {
   pathStatValue: {
     fontSize: '20px',
     fontWeight: 'bold',
-    color: '#e6c98a'
+    color: 'var(--color-accent)'
   },
   pathSteps: {
     display: 'flex',
@@ -1153,12 +1168,12 @@ const styles = {
     padding: '12px',
     backgroundColor: 'rgba(13, 23, 41, 0.75)',
     borderRadius: '12px',
-    border: '1px solid rgba(230, 201, 138, 0.3)',
+    border: '1px solid rgba(157, 120, 247, 0.3)',
     boxShadow: '0 10px 24px rgba(3, 6, 12, 0.35)'
   },
   pathStepNumber: {
     fontSize: '20px',
-    color: '#e6c98a',
+    color: 'var(--color-accent)',
     fontWeight: 'bold',
     flexShrink: 0
   },
@@ -1186,12 +1201,12 @@ const styles = {
   },
   pathArrowIcon: {
     fontSize: '20px',
-    color: '#e6c98a'
+    color: 'var(--color-accent)'
   },
   pathArrowLabel: {
     fontSize: '12px',
     fontWeight: 600,
-    color: '#e6c98a',
+    color: 'var(--color-accent)',
     textTransform: 'uppercase',
     letterSpacing: '0.5px'
   },
@@ -1229,7 +1244,7 @@ const styles = {
     padding: '16px',
     backgroundColor: 'rgba(13, 23, 41, 0.75)',
     borderRadius: '12px',
-    border: '1px solid rgba(230, 201, 138, 0.3)',
+    border: '1px solid rgba(157, 120, 247, 0.3)',
     boxShadow: '0 10px 24px rgba(3, 6, 12, 0.35)'
   },
   qualityBadge: {
@@ -1237,9 +1252,9 @@ const styles = {
     alignItems: 'center',
     gap: '8px',
     padding: '8px 12px',
-    backgroundColor: 'rgba(230, 201, 138, 0.15)',
+    backgroundColor: 'rgba(157, 120, 247, 0.15)',
     borderRadius: '8px',
-    border: '1px solid rgba(230, 201, 138, 0.3)'
+    border: '1px solid rgba(157, 120, 247, 0.3)'
   },
   qualityBadgeIcon: {
     fontSize: '18px'
@@ -1247,7 +1262,7 @@ const styles = {
   qualityBadgeText: {
     fontSize: '14px',
     fontWeight: 600,
-    color: '#e6c98a'
+    color: 'var(--color-accent)'
   },
   qualityScore: {
     display: 'flex',
@@ -1289,9 +1304,9 @@ const styles = {
   },
   constellationHint: {
     padding: '12px',
-    backgroundColor: 'rgba(230, 201, 138, 0.08)',
+    backgroundColor: 'rgba(157, 120, 247, 0.08)',
     borderRadius: '8px',
-    border: '1px solid rgba(230, 201, 138, 0.2)'
+    border: '1px solid rgba(157, 120, 247, 0.2)'
   },
   constellationText: {
     fontSize: '13px',
@@ -1325,7 +1340,7 @@ const styles = {
     padding: '16px',
     backgroundColor: 'rgba(13, 23, 41, 0.98)',
     borderRadius: '12px',
-    border: '1px solid rgba(230, 201, 138, 0.4)',
+    border: '1px solid rgba(157, 120, 247, 0.4)',
     boxShadow: '0 12px 32px rgba(3, 6, 12, 0.6)',
     backdropFilter: 'blur(8px)'
   },
@@ -1333,9 +1348,9 @@ const styles = {
     width: '32px',
     height: '32px',
     borderRadius: '8px',
-    border: '1px solid rgba(230, 201, 138, 0.3)',
-    backgroundColor: 'rgba(230, 201, 138, 0.1)',
-    color: '#e6c98a',
+    border: '1px solid rgba(157, 120, 247, 0.3)',
+    backgroundColor: 'rgba(157, 120, 247, 0.1)',
+    color: 'var(--color-accent)',
     fontSize: '16px',
     cursor: 'pointer',
     display: 'flex',
@@ -1343,8 +1358,8 @@ const styles = {
     justifyContent: 'center',
     transition: 'all 0.2s ease',
     ':hover': {
-      backgroundColor: 'rgba(230, 201, 138, 0.2)',
-      borderColor: 'rgba(230, 201, 138, 0.5)'
+      backgroundColor: 'rgba(157, 120, 247, 0.2)',
+      borderColor: 'rgba(157, 120, 247, 0.5)'
     }
   }
 };

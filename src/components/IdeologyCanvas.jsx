@@ -973,7 +973,7 @@ export function IdeologyCanvas({
     const spawnDiscoveryPulse = (node) => {
       const nodeX = yearToSegmentedX(node.era);
       const nodeY = yScale(node.x);
-      const pulseColor = '#e6c98a';
+      const pulseColor = '#9d78f7';
 
       effectsLayer.append('circle')
         .attr('cx', nodeX)
@@ -983,7 +983,7 @@ export function IdeologyCanvas({
         .attr('stroke', pulseColor)
         .attr('stroke-width', 2)
         .attr('opacity', 0.9)
-        .style('filter', 'drop-shadow(0 0 12px rgba(230, 201, 138, 0.65))')
+        .style('filter', 'drop-shadow(0 0 12px rgba(157, 120, 247, 0.65))')
         .transition()
         .duration(1200)
         .ease(d3.easeCubicOut)
@@ -1016,7 +1016,7 @@ export function IdeologyCanvas({
         })
         .attr('stroke', node => {
           if (!matchesFilter(node)) return 'transparent';
-          if (node.id === d.id) return '#e6c98a'; // 选中节点金色边框
+          if (node.id === d.id) return '#9d78f7'; // 选中节点金色边框
           if (connectedIds.has(node.id)) return '#e9e4da';
           return '#6b768a';
         })
@@ -1078,7 +1078,7 @@ export function IdeologyCanvas({
         })
         .attr('stroke', node => {
           if (!matchesFilter(node)) return 'transparent';
-          if (pathNodeIds.has(node.id)) return '#e6c98a'; // 金色
+          if (pathNodeIds.has(node.id)) return '#9d78f7'; // 金色
           return 'transparent';
         })
         .attr('stroke-width', node => {
@@ -1114,7 +1114,7 @@ export function IdeologyCanvas({
             .attr('class', 'path-number')
             .attr('dy', 20)
             .attr('text-anchor', 'middle')
-            .style('fill', '#e6c98a')
+            .style('fill', '#9d78f7')
             .style('font-size', '16px')
             .style('font-weight', 'bold')
             .style('pointer-events', 'none')
@@ -1127,7 +1127,7 @@ export function IdeologyCanvas({
         .attr('stroke', edge => {
           const edgeKey = `${edge.source}-${edge.target}`;
           const isInPath = pathEdgeSet.has(edgeKey) || pathEdgeSet.has(`${edge.target}-${edge.source}`);
-          if (isInPath) return '#e6c98a'; // 金色
+          if (isInPath) return '#9d78f7'; // 金色
           return getEdgeColor(edge.type, false);
         })
         .attr('stroke-width', edge => {
@@ -1159,7 +1159,7 @@ export function IdeologyCanvas({
           .attr('orient', 'auto')
           .append('polygon')
           .attr('points', '0 0, 10 3, 0 6')
-          .style('fill', '#e6c98a');
+          .style('fill', '#9d78f7');
       }
     };
 

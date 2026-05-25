@@ -94,7 +94,7 @@ const styles = {
   modal: {
     backgroundColor: 'rgba(14, 20, 34, 0.98)',
     borderRadius: '16px',
-    border: '2px solid rgba(230, 201, 138, 0.3)',
+    border: '2px solid rgba(157, 120, 247, 0.3)',
     boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
     maxWidth: '500px',
     width: '90%',
@@ -105,7 +105,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '24px',
-    borderBottom: '1px solid rgba(230, 201, 138, 0.2)'
+    borderBottom: '1px solid rgba(157, 120, 247, 0.2)'
   },
   title: {
     fontSize: '24px',
@@ -118,7 +118,7 @@ const styles = {
     width: '36px',
     height: '36px',
     borderRadius: '8px',
-    border: '1px solid rgba(230, 201, 138, 0.3)',
+    border: '1px solid rgba(157, 120, 247, 0.3)',
     backgroundColor: 'transparent',
     color: 'var(--color-accent)',
     fontSize: '20px',
@@ -154,15 +154,15 @@ const styles = {
   },
   footer: {
     padding: '16px 24px',
-    borderTop: '1px solid rgba(230, 201, 138, 0.2)',
+    borderTop: '1px solid rgba(157, 120, 247, 0.2)',
     display: 'flex',
     justifyContent: 'center'
   },
   button: {
     padding: '12px 32px',
     borderRadius: '8px',
-    border: '1px solid rgba(230, 201, 138, 0.4)',
-    backgroundColor: 'rgba(230, 201, 138, 0.2)',
+    border: '1px solid rgba(157, 120, 247, 0.4)',
+    backgroundColor: 'rgba(157, 120, 247, 0.2)',
     color: 'var(--color-accent)',
     fontSize: '14px',
     fontWeight: 600,

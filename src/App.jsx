@@ -347,8 +347,8 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#1a1a2e',
-    color: '#eaeaea'
+    backgroundColor: '#130f24',
+    color: '#ffffff'
   },
   loadingText: {
     fontSize: '24px',
@@ -371,7 +371,7 @@ const styles = {
   },
   header: {
     height: '80px',
-    background: 'linear-gradient(135deg, rgba(15, 24, 40, 0.95), rgba(18, 33, 60, 0.9))',
+    background: 'linear-gradient(135deg, rgba(16, 12, 28, 0.95), rgba(24, 18, 44, 0.9))',
     borderBottom: '1px solid var(--color-border)',
     display: 'flex',
     alignItems: 'center',
@@ -386,14 +386,14 @@ const styles = {
     position: 'absolute',
     inset: 0,
     backgroundImage: `
-      radial-gradient(circle at 12% 20%, rgba(230, 215, 180, 0.4) 0 1px, transparent 2px),
+      radial-gradient(circle at 12% 20%, rgba(255, 255, 255, 0.4) 0 1px, transparent 2px),
       radial-gradient(circle at 75% 25%, rgba(140, 180, 255, 0.45) 0 1.4px, transparent 3px),
       radial-gradient(circle at 40% 55%, rgba(255, 255, 255, 0.28) 0 1px, transparent 2px),
-      radial-gradient(circle at 85% 70%, rgba(180, 146, 224, 0.32) 0 1.2px, transparent 2.6px),
-      radial-gradient(circle at 25% 75%, rgba(230, 201, 138, 0.3) 0 1px, transparent 2px),
+      radial-gradient(circle at 85% 70%, rgba(157, 120, 247, 0.38) 0 1.2px, transparent 2.6px),
+      radial-gradient(circle at 25% 75%, rgba(255, 255, 255, 0.3) 0 1px, transparent 2px),
       radial-gradient(circle at 55% 18%, rgba(255, 255, 255, 0.26) 0 0.9px, transparent 2px),
       radial-gradient(circle at 18% 60%, rgba(140, 180, 255, 0.32) 0 1px, transparent 2.4px),
-      radial-gradient(circle at 62% 48%, rgba(230, 215, 180, 0.28) 0 0.9px, transparent 2px)
+      radial-gradient(circle at 62% 48%, rgba(157, 120, 247, 0.28) 0 0.9px, transparent 2px)
     `,
     opacity: 0.85,
     mixBlendMode: 'screen',
@@ -410,18 +410,18 @@ const styles = {
     zIndex: 1
   },
   logo: {
-    fontSize: '28px',
+    fontSize: '26px',
     fontWeight: 600,
     margin: 0,
     fontFamily: 'var(--font-title)',
-    letterSpacing: '0.4px',
-    background: 'linear-gradient(135deg, var(--color-accent), var(--color-glow))',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    backgroundClip: 'text'
+    letterSpacing: '-0.3px',
+    color: 'var(--color-accent)'
   },
   tagline: {
-    fontSize: '13px',
+    fontSize: '11px',
+    fontFamily: 'var(--font-ui)',
+    fontWeight: 400,
+    letterSpacing: '-0.1px',
     color: 'var(--color-muted)',
     margin: 0
   },
@@ -449,20 +449,24 @@ const styles = {
   legendButton: {
     display: 'flex',
     alignItems: 'center',
-    gap: '8px',
-    fontSize: '14px',
-    color: 'var(--color-ink)',
+    gap: '6px',
+    fontSize: '12px',
+    fontFamily: 'var(--font-ui)',
+    fontWeight: 400,
+    letterSpacing: '-0.1px',
+    color: 'var(--color-muted)',
     background: 'transparent',
     border: '1px solid transparent',
-    padding: '6px 10px',
+    padding: '5px 12px',
     borderRadius: '999px',
     cursor: 'pointer',
-    transition: 'all 0.2s ease',
+    transition: 'all 0.15s ease',
     outline: 'none'
   },
   legendButtonActive: {
-    borderColor: 'rgba(230, 201, 138, 0.35)',
-    color: 'var(--color-accent)'
+    borderColor: 'rgba(157, 120, 247, 0.3)',
+    color: 'var(--color-ink)',
+    backgroundColor: 'rgba(157, 120, 247, 0.08)'
   },
   dot: {
     width: '12px',
@@ -489,11 +493,11 @@ const styles = {
     left: '24px',
     right: '24px',
     textAlign: 'center',
-    fontStyle: 'italic',
-    fontSize: '13px',
-    color: 'rgba(168, 177, 194, 0.65)',
-    letterSpacing: '0.2px',
-    textShadow: '0 6px 18px rgba(4, 6, 12, 0.8)',
+    fontFamily: 'var(--font-ui)',
+    fontWeight: 300,
+    fontSize: '12px',
+    color: 'rgba(148, 144, 184, 0.5)',
+    letterSpacing: '0',
     zIndex: 1,
     pointerEvents: 'none'
   },
@@ -507,30 +511,34 @@ const styles = {
     zIndex: 2
   },
   controlButton: {
-    width: '40px',
-    height: '40px',
-    borderRadius: '12px',
-    border: '1px solid rgba(255, 255, 255, 0.12)',
-    backgroundColor: 'rgba(12, 18, 32, 0.9)',
-    color: 'var(--color-ink)',
-    fontSize: '20px',
+    width: '36px',
+    height: '36px',
+    borderRadius: '8px',
+    border: '1px solid rgba(255, 255, 255, 0.08)',
+    backgroundColor: 'rgba(28, 24, 42, 0.92)',
+    color: 'var(--color-muted)',
+    fontFamily: 'var(--font-ui)',
+    fontSize: '18px',
     cursor: 'pointer',
-    boxShadow: '0 12px 30px rgba(3, 6, 12, 0.5)',
-    backdropFilter: 'blur(8px)'
+    backdropFilter: 'blur(8px)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'border-color 0.15s ease, color 0.15s ease'
   },
   resetButton: {
     fontSize: '18px'
   },
   pathButtonActive: {
-    backgroundColor: 'rgba(230, 201, 138, 0.2)',
-    borderColor: 'rgba(230, 201, 138, 0.5)',
+    backgroundColor: 'rgba(157, 120, 247, 0.2)',
+    borderColor: 'rgba(157, 120, 247, 0.5)',
     color: 'var(--color-accent)'
   },
   telescopeOverlay: {
     position: 'absolute',
     inset: 0,
     pointerEvents: 'none',
-    background: 'radial-gradient(circle at center, rgba(234, 209, 164, 0.12) 0%, rgba(11, 16, 30, 0.65) 58%, rgba(6, 8, 15, 0.92) 100%)',
+    background: 'radial-gradient(circle at center, rgba(157, 120, 247, 0.1) 0%, rgba(10, 8, 20, 0.65) 58%, rgba(6, 5, 12, 0.92) 100%)',
     boxShadow: 'inset 0 0 120px rgba(0, 0, 0, 0.7)',
     animation: 'lensPulse 3.2s ease-in-out infinite',
     zIndex: 1

@@ -10,10 +10,10 @@ export const COLORS = {
   POLITICS: '#d48b8b',     // 红色
   BOTH: '#3fd6b5',         // 青绿色
   EDGE_DEFAULT: '#5e6a7d', // 边的默认颜色
-  EDGE_HIGHLIGHT: '#d8b77a', // 边的高亮颜色
-  EDGE_OPPOSE: '#d48b8b',  // 对立关系的边
-  BACKGROUND: '#0b0f1a',   // 深色背景
-  TEXT: '#e9e4da'          // 文字颜色
+  EDGE_HIGHLIGHT: '#9d78f7', // 边的高亮颜色
+  EDGE_OPPOSE: '#c084fc',  // 对立关系的边 — 较浅紫色，虚线已表示对立
+  BACKGROUND: '#07060f',   // 深色背景
+  TEXT: '#ffffff'          // 文字颜色
 };
 
 /**
@@ -62,7 +62,7 @@ export function getNodeStyle(isSelected, isConnected, isDimmed) {
     return {
       opacity: 1,
       strokeWidth: 3,
-      strokeColor: '#ffd700' // 金色边框
+      strokeColor: '#9d78f7' // 选中节点边框
     };
   }
 

@@ -85,13 +85,13 @@ const styles = {
     left: '50%',
     width: '30px',
     height: '30px',
-    backgroundColor: '#e6c98a',
+    backgroundColor: '#9d78f7',
     borderRadius: '50%',
     transform: 'translate(-50%, -50%)',
     boxShadow: `
-      0 0 20px #e6c98a,
-      0 0 40px rgba(230, 201, 138, 0.8),
-      0 0 60px rgba(230, 201, 138, 0.5)
+      0 0 20px #9d78f7,
+      0 0 40px rgba(157, 120, 247, 0.8),
+      0 0 60px rgba(157, 120, 247, 0.5)
     `,
     animation: 'pulse 2s ease-in-out infinite'
   },
@@ -101,7 +101,7 @@ const styles = {
     left: '50%',
     width: '120px',
     height: '120px',
-    border: '1px solid rgba(230, 201, 138, 0.2)',
+    border: '1px solid rgba(157, 120, 247, 0.2)',
     borderRadius: '50%',
     transform: 'translate(-50%, -50%)',
     animation: 'rotate1 3s linear infinite'
@@ -168,7 +168,7 @@ const styles = {
   title: {
     fontSize: '32px',
     fontWeight: 600,
-    background: 'linear-gradient(135deg, #e6c98a, #8fb4ff, #d48b8b)',
+    background: 'linear-gradient(135deg, #9d78f7, #8fb4ff, #d48b8b)',
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     backgroundClip: 'text',

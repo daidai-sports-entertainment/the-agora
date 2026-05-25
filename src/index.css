@@ -4,16 +4,17 @@
 
 :root {
   --font-title: 'Lora', 'Georgia', serif;
-  --font-body: 'Lora', 'Georgia', serif;
-  --color-bg: #0b0f1a;
-  --color-surface: #0f1524;
-  --color-panel: #101a2d;
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-ink: #e9e4da;
-  --color-muted: #a8b1c2;
-  --color-accent: #e6c98a;
-  --color-accent-strong: #d8b77a;
-  --color-glow: #8fb4ff;
+  --font-body: system-ui, -apple-system, 'Inter', sans-serif;
+  --font-ui: system-ui, -apple-system, 'Inter', sans-serif;
+  --color-bg: #07060f;
+  --color-surface: #100c1c;
+  --color-panel: #18132a;
+  --color-border: rgba(157, 120, 247, 0.18);
+  --color-ink: #ffffff;
+  --color-muted: #9490b8;
+  --color-accent: #9d78f7;
+  --color-accent-strong: #7f5de0;
+  --color-glow: #9d78f7;
   --color-philosophy: #8fb4ff;
   --color-politics: #d48b8b;
   --color-both: #3fd6b5;
@@ -22,7 +23,7 @@
 /* Beautiful custom scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-accent) #0e1424;
+  scrollbar-color: var(--color-accent) #0a0814;
 }
 
 /* Webkit browsers (Chrome, Safari, Edge) */
@@ -32,25 +33,25 @@
 }
 
 *::-webkit-scrollbar-track {
-  background: #0e1424;
+  background: #0a0814;
   border-radius: 10px;
   margin: 4px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #e6c98a 0%, #b79f6c 100%);
+  background: linear-gradient(180deg, #9d78f7 0%, #7f5de0 100%);
   border-radius: 10px;
-  border: 2px solid #0e1424;
+  border: 2px solid #0a0814;
   transition: all 0.3s ease;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #f0d9a6 0%, #e6c98a 100%);
-  border: 2px solid #141d32;
+  background: linear-gradient(180deg, #b899ff 0%, #9d78f7 100%);
+  border: 2px solid #120e22;
 }
 
 *::-webkit-scrollbar-thumb:active {
-  background: linear-gradient(180deg, #b79f6c 0%, #907a4b 100%);
+  background: linear-gradient(180deg, #7f5de0 0%, #6344c0 100%);
 }
 
 /* Smooth scrolling */
@@ -66,7 +67,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
-  background: radial-gradient(circle at top, rgba(22, 31, 50, 0.9) 0%, rgba(7, 9, 16, 0.98) 65%);
+  background: radial-gradient(circle at top, rgba(20, 14, 40, 0.9) 0%, rgba(7, 6, 15, 0.98) 65%);
   color: var(--color-ink);
 }
 
@@ -86,14 +87,14 @@ button:focus-visible {
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(circle at 12% 18%, rgba(230, 215, 180, 0.38) 0 1px, transparent 2px),
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.38) 0 1px, transparent 2px),
     radial-gradient(circle at 82% 28%, rgba(140, 180, 255, 0.42) 0 1.6px, transparent 3px),
     radial-gradient(circle at 30% 55%, rgba(255, 255, 255, 0.3) 0 1.2px, transparent 2.5px),
     radial-gradient(circle at 68% 78%, rgba(180, 146, 224, 0.32) 0 1.3px, transparent 2.6px),
-    radial-gradient(circle at 45% 38%, rgba(230, 201, 138, 0.32) 0 1.1px, transparent 2.4px),
+    radial-gradient(circle at 45% 38%, rgba(255, 255, 255, 0.32) 0 1.1px, transparent 2.4px),
     radial-gradient(circle at 22% 70%, rgba(140, 180, 255, 0.28) 0 0.9px, transparent 2px),
     radial-gradient(circle at 75% 52%, rgba(255, 255, 255, 0.24) 0 0.8px, transparent 2px),
-    radial-gradient(circle at 10% 50%, rgba(230, 215, 180, 0.3) 0 0.9px, transparent 2px),
+    radial-gradient(circle at 10% 50%, rgba(255, 255, 255, 0.3) 0 0.9px, transparent 2px),
     radial-gradient(circle at 55% 65%, rgba(140, 180, 255, 0.32) 0 1px, transparent 2.2px),
     radial-gradient(circle at 88% 18%, rgba(255, 255, 255, 0.26) 0 0.9px, transparent 2px),
     radial-gradient(circle at 40% 85%, rgba(180, 146, 224, 0.28) 0 1px, transparent 2.2px);
@@ -110,11 +111,11 @@ button:focus-visible {
   inset: 0;
   background-image:
     radial-gradient(circle at 18% 82%, rgba(140, 180, 255, 0.35) 0 1px, transparent 2.5px),
-    radial-gradient(circle at 58% 12%, rgba(230, 215, 180, 0.3) 0 0.9px, transparent 2px),
+    radial-gradient(circle at 58% 12%, rgba(255, 255, 255, 0.3) 0 0.9px, transparent 2px),
     radial-gradient(circle at 84% 58%, rgba(255, 255, 255, 0.28) 0 1px, transparent 2px),
     radial-gradient(circle at 48% 88%, rgba(180, 146, 224, 0.26) 0 0.9px, transparent 2.2px),
     radial-gradient(circle at 65% 40%, rgba(140, 180, 255, 0.3) 0 0.9px, transparent 2.2px),
-    radial-gradient(circle at 30% 35%, rgba(230, 215, 180, 0.26) 0 0.8px, transparent 2px);
+    radial-gradient(circle at 30% 35%, rgba(255, 255, 255, 0.26) 0 0.8px, transparent 2px);
   opacity: 0.88;
   mix-blend-mode: screen;
   animation: panelDrift 18s linear infinite;
@@ -150,7 +151,7 @@ button:focus-visible {
 
 .relationship-card:hover {
   transform: translateX(4px);
-  box-shadow: 0 10px 28px rgba(230, 201, 138, 0.2);
+  box-shadow: 0 10px 28px rgba(157, 120, 247, 0.2);
 }
 
 @keyframes lensPulse {
